@@ -165,6 +165,42 @@ table.t th { background: var(--primary-soft); color: var(--primary-ink); font-we
 .refs-list .r span { width: 2em; text-align: right; color: var(--muted); flex: none; }
 .refs-list input { flex: 1; min-width: 0; border: 1px solid var(--fill-line); border-radius: var(--r-sm); background: var(--surface); padding: 8px 12px; }
 
+
+/* 雲端協作 */
+.mode-tag { font-size: 13px; font-weight: 500; color: var(--ok); background: var(--ok-soft); border-radius: 999px; padding: 4px 12px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.mode-tag.admin { color: var(--primary-ink); background: var(--primary-soft); }
+.entry { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.entry .card { display: flex; flex-direction: column; gap: 4px; }
+.entry .eh { margin: 0; font-size: 18px; color: var(--ink); }
+.inrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 12px; }
+.inrow input[type=text] { flex: 1 1 160px; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; }
+.inrow select { flex: 1 1 200px; min-width: 0; }
+.whobar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 13.5px; }
+.whobar label { color: var(--muted); }
+.whobar input { flex: 1 1 160px; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 6px 10px; }
+.btn.sm { padding: 4px 12px; font-size: 13px; }
+.linkbtn { border: 0; background: none; color: var(--primary); cursor: pointer; font-size: 12.5px; padding: 0 4px; text-decoration: underline; text-underline-offset: 2px; }
+.frow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: -4px; }
+.frow .count { margin: 0 0 0 auto; }
+.fm { font-size: 12px; color: var(--muted); }
+.fm.warn { color: var(--warn); font-weight: 500; }
+.hist { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; }
+.hrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.hrow:last-child { border-bottom: 0; padding-bottom: 0; }
+.hmeta { font-size: 12px; color: var(--muted); grid-column: 1; }
+.htext { font-size: 13px; grid-column: 1; }
+.hrow .btn { grid-column: 2; grid-row: 1 / span 2; }
+.cbox { background: var(--primary-soft); border: 1px solid var(--primary-mid); border-radius: var(--r-sm); padding: 10px 12px; }
+.cm-h { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 700; color: var(--primary-ink); margin-bottom: 4px; }
+.cm-h span { font-weight: 400; color: var(--muted); font-size: 12px; }
+.cm-t { font-size: 14px; }
+.cbox textarea { width: 100%; min-height: 70px; border: 1px solid var(--primary-mid); border-radius: var(--r-sm); background: var(--surface); padding: 8px 10px; resize: vertical; }
+table.t.admin td { vertical-align: middle; }
+.prog { display: inline-block; width: 70px; height: 7px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; vertical-align: middle; }
+.prog i { display: block; height: 100%; background: var(--fill); }
+code.tok { font-size: 11.5px; color: var(--muted); margin-right: 6px; }
+.muted { color: var(--muted); font-size: 12.5px; }
+
 /* 手冊預覽 */
 #handbook { padding-block: 28px 60px; padding-inline: 16px; background: #e9edf3; }
 .sheet { background: var(--sheet-bg); color: var(--sheet-ink); font-family: var(--font-doc); width: 100%; max-width: 210mm; margin: 0 auto 24px; padding: 18mm 18mm 20mm; box-shadow: 0 4px 22px rgba(28, 52, 92, .14); font-size: 12pt; line-height: 1.7; }
@@ -235,7 +271,8 @@ table.t th { background: var(--primary-soft); color: var(--primary-ink); font-we
       <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#2a6fbe"/><path d="M8 15h24" stroke="#b9d2f0" stroke-width="2.5" stroke-linecap="round"/><path d="M8 25h24" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="25" r="3.2" fill="#fff"/><circle cx="26" cy="25" r="3.2" fill="#cf7419"/></svg>
       <div><b>病主緩和臨床指引模板</b><span>研發小組線上填寫・依現行法</span></div>
     </div>
-    <div class="soc">
+    <span class="mode-tag" id="mode-tag" hidden></span>
+    <div class="soc" id="soc-wrap">
       <label for="soc">學會</label>
       <select id="soc"></select>
     </div>
@@ -522,37 +559,218 @@ function firstSentence(t) {
 }
 
 // ====================================================================
-// 四、狀態與儲存
+// 四、狀態、本機儲存與雲端
 // ====================================================================
 const KEY = 'pspg-template-v2:';
-const state = { socId: '', data: null, view: 'edit' };
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyBRUhMLJTnJXOJYfnEyVm5QHuEBCodGWZU',
+  authDomain: 'pspg-template.firebaseapp.com',
+  projectId: 'pspg-template',
+  storageBucket: 'pspg-template.firebasestorage.app',
+  messagingSenderId: '375377788459',
+  appId: '1:375377788459:web:adefb48d71f4dfe068b46e'
+};
+const FBV = '10.12.2';
+// mode：'' 起始頁／'local' 本機試填／'cloud' 雲端協作（state.admin 為核心團隊）／'admin-list' 核心團隊總覽
+const state = { mode: '', socId: '', token: '', data: null, view: 'edit', admin: false };
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { /* 無法刪除時略過 */ } }
 function blank() {
   const f = {}; CODES.forEach(k => { f[k] = ''; });
-  return { meta: { target: '', team: '', version: '' }, f, refs: ['', '', ''] };
+  return { meta: { target: '', team: '', version: '' }, f, fm: {}, c: {}, refs: ['', '', ''] };
+}
+function normalize(d) {
+  const b = blank(); d = d || {};
+  return {
+    meta: Object.assign(b.meta, d.meta || {}), f: Object.assign(b.f, d.f || {}), fm: d.fm || {}, c: d.c || {},
+    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs,
+    soc: d.soc, updatedAt: d.updatedAt, updatedBy: d.updatedBy
+  };
 }
 function socOf(id) { return SOCIETIES.find(s => s.id === id); }
-function load(id) {
+function loadLocal(id) {
   let d = null;
-  try { const raw = localStorage.getItem(KEY + id); if (raw) d = JSON.parse(raw); } catch (e) { d = null; }
-  const b = blank();
-  if (!d) return b;
-  d.meta = Object.assign(b.meta, d.meta || {});
-  d.f = Object.assign(b.f, d.f || {});
-  d.refs = Array.isArray(d.refs) && d.refs.length ? d.refs : b.refs;
-  return d;
+  const raw = lsGet(KEY + id);
+  if (raw) { try { d = JSON.parse(raw); } catch (e) { d = null; } }
+  return normalize(d);
 }
 let saveTimer = null;
-function save() {
+function saveLocal() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem(KEY + state.socId, JSON.stringify(state.data));
-      localStorage.setItem(KEY + 'last', state.socId);
-      $('#st-save').textContent = '已自動儲存於本機瀏覽器 ' + new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
-      $('#st-save').textContent = '此瀏覽器無法自動儲存，請以「匯出草稿檔」保存';
-    }
+    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs }));
+    lsSet(KEY + 'last', state.socId);
+    setStatus(ok ? '已存於本機瀏覽器 ' + hhmm() : '此瀏覽器無法自動儲存，請以「匯出草稿檔」保存');
   }, 400);
+}
+function setStatus(t) { const el = $('#st-save'); if (el) el.textContent = t; }
+function hhmm(d) { return (d || new Date()).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' }); }
+function when(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return `${d.getMonth() + 1}/${d.getDate()} ${hhmm(d)}`;
+}
+function editorName() { return (lsGet(KEY + 'name') || '').trim() || '未具名'; }
+
+// ---------- Firebase（動態載入；無網路時本機試填仍可用）----------
+let FB = null;
+async function fb() {
+  if (FB) return FB;
+  const base = `https://www.gstatic.com/firebasejs/${FBV}/`;
+  const [app, fs, au] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-firestore.js'), import(base + 'firebase-auth.js')]);
+  const a = app.initializeApp(FIREBASE_CONFIG);
+  FB = { fs, au, db: fs.getFirestore(a), auth: au.getAuth(a) };
+  return FB;
+}
+function errText(e) {
+  const c = (e && (e.code || e.message)) || '';
+  if (/permission-denied/.test(c)) return '沒有權限（邀請碼無效，或此帳號不在核心團隊名單）';
+  if (/unavailable|network|Failed to fetch/i.test(c)) return '無法連線，請檢查網路';
+  return c;
+}
+let unsub = null;
+const pending = new Map();      // 欄位路徑 → 計時器（尚未上傳之本機修改）
+const remoteWaiting = new Set(); // 正在編輯時收到他人更新之欄位
+async function openCloud(token, asAdmin) {
+  setStatus('連線中…');
+  try {
+    const { fs, db } = await fb();
+    const ref = fs.doc(db, 'drafts', token);
+    const snap = await fs.getDoc(ref);
+    if (!snap.exists()) throw { code: 'permission-denied' };
+    const d = snap.data();
+    if (!socOf(d.soc)) throw { message: '資料中的學會代碼無法辨識' };
+    if (unsub) unsub();
+    pending.clear(); remoteWaiting.clear();
+    state.mode = 'cloud'; state.admin = !!asAdmin; state.token = token; state.socId = d.soc; state.data = normalize(d);
+    if (!asAdmin) lsSet(KEY + 'token', token);
+    $('#soc').value = d.soc;
+    renderEditor();
+    setStatus('已連線雲端' + (d.updatedAt ? '；最後更新 ' + when(d.updatedAt) + '（' + (d.updatedBy || '') + '）' : ''));
+    unsub = fs.onSnapshot(ref, s => { if (s.exists()) applyRemote(s.data()); }, () => setStatus('與雲端的連線中斷，請重新整理頁面'));
+  } catch (e) {
+    if (!asAdmin) lsDel(KEY + 'token');
+    renderLanding();
+    setStatus('無法開啟：' + errText(e));
+  }
+}
+function applyRemote(d) {
+  const nd = normalize(d);
+  CODES.forEach(k => {
+    state.data.fm[k] = nd.fm[k];
+    state.data.c[k] = nd.c[k];
+    if (!pending.has('f.' + k)) {
+      const el = $('#f-' + k), remote = nd.f[k] || '';
+      if (el && el.value !== remote) {
+        if (document.activeElement === el) remoteWaiting.add(k);
+        else { el.value = remote; state.data.f[k] = remote; updateCount(k); }
+      } else state.data.f[k] = remote;
+    }
+    showFm(k); renderComment(k);
+  });
+  ['target', 'team', 'version'].forEach(m => {
+    if (pending.has('meta.' + m)) return;
+    const el = $('#m-' + m), remote = nd.meta[m] || '';
+    state.data.meta[m] = remote;
+    if (el && el.value !== remote && document.activeElement !== el) el.value = remote;
+  });
+  if (!pending.has('refs') && !(document.activeElement && document.activeElement.id && document.activeElement.id.startsWith('ref-'))) {
+    if (JSON.stringify(nd.refs) !== JSON.stringify(state.data.refs)) { state.data.refs = nd.refs; renderRefs(); }
+  }
+  updateProgress();
+}
+function queueCloud(path, value) {
+  clearTimeout(pending.get(path));
+  const t = setTimeout(() => pushCloud(path, value, t), 1200);
+  pending.set(path, t);
+  setStatus('儲存中…');
+}
+function flushCloud(path) {
+  if (!pending.has(path)) return;
+  clearTimeout(pending.get(path));
+  const val = path === 'refs' ? state.data.refs : getPath(state.data, path);
+  pushCloud(path, val, pending.get(path));
+}
+async function pushCloud(path, value, t) {
+  try {
+    const { fs, db } = await fb();
+    const upd = { [path]: value, updatedAt: fs.serverTimestamp(), updatedBy: editorName() };
+    const m = path.match(/^f\.(\w+)$/);
+    if (m) upd['fm.' + m[1]] = { by: editorName(), at: fs.serverTimestamp() };
+    await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
+    if (pending.get(path) === t) pending.delete(path);
+    setStatus('已同步至雲端 ' + hhmm());
+    if (m) maybeHistory(m[1], value, false);
+  } catch (e) {
+    setStatus('儲存失敗：' + errText(e) + '。內容仍在畫面上，請稍後再試或匯出草稿檔');
+  }
+}
+const lastHist = {};
+async function maybeHistory(code, text, force) {
+  const now = Date.now();
+  if (!force && lastHist[code] && now - lastHist[code] < 5 * 60 * 1000) return;
+  lastHist[code] = now;
+  try {
+    const { fs, db } = await fb();
+    await fs.addDoc(fs.collection(db, 'drafts', state.token, 'history'), { code, text, by: editorName(), at: fs.serverTimestamp() });
+  } catch (e) { /* 歷史版本寫入失敗不影響主要儲存 */ }
+}
+async function loadHistory(code) {
+  const box = $('#hist-' + code); if (!box) return;
+  box.hidden = false; box.innerHTML = '<p class="refline">讀取中…</p>';
+  try {
+    const { fs, db } = await fb();
+    const qs = await fs.getDocs(fs.query(fs.collection(db, 'drafts', state.token, 'history'), fs.orderBy('at', 'desc'), fs.limit(200)));
+    const list = []; qs.forEach(s => { const h = s.data(); if (h.code === code) list.push(h); });
+    if (!list.length) { box.innerHTML = '<p class="refline">尚無歷史版本。每格約每五分鐘自動保留一份。</p>'; return; }
+    histCache[code] = list.slice(0, 15);
+    box.innerHTML = histCache[code].map((h, i) => `<div class="hrow"><div class="hmeta">${esc(when(h.at))}　${esc(h.by || '')}</div><div class="htext">${esc((h.text || '').slice(0, 120))}${(h.text || '').length > 120 ? '…' : ''}</div><button class="btn sm" type="button" data-restore="${code}:${i}">還原此版本</button></div>`).join('');
+  } catch (e) { box.innerHTML = `<p class="refline">無法讀取：${esc(errText(e))}</p>`; }
+}
+const histCache = {};
+function restoreHistory(code, i) {
+  const h = (histCache[code] || [])[i]; if (!h) return;
+  const el = $('#f-' + code); if (!el) return;
+  maybeHistory(code, el.value, true);
+  el.value = h.text || ''; state.data.f[code] = el.value; updateCount(code);
+  queueCloud('f.' + code, el.value); flushCloud('f.' + code);
+  $('#hist-' + code).hidden = true;
+}
+async function pushComment(code, text) {
+  try {
+    const { fs, db, auth } = await fb();
+    const by = (auth.currentUser && (auth.currentUser.displayName || auth.currentUser.email)) || '核心團隊';
+    await fs.updateDoc(fs.doc(db, 'drafts', state.token), { ['c.' + code]: { text, by, at: fs.serverTimestamp() } });
+    setStatus('意見已儲存 ' + hhmm());
+  } catch (e) { setStatus('意見儲存失敗：' + errText(e)); }
+}
+// ---------- 核心團隊 ----------
+async function adminSignIn() {
+  setStatus('登入中…');
+  try {
+    const { au, auth } = await fb();
+    if (!auth.currentUser) await au.signInWithPopup(auth, new au.GoogleAuthProvider());
+    await renderAdmin();
+  } catch (e) { setStatus('登入失敗：' + errText(e)); }
+}
+async function adminSignOut() {
+  try { const { au, auth } = await fb(); await au.signOut(auth); } catch (e) { /* 略過 */ }
+  state.admin = false; renderLanding(); setStatus('已登出');
+}
+function randToken() {
+  const a = new Uint8Array(18); crypto.getRandomValues(a);
+  return Array.from(a, b => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
+}
+function inviteLink(token) { return location.origin + location.pathname + '#k=' + token; }
+async function createInvite(socId) {
+  try {
+    const { fs, db } = await fb();
+    const token = randToken();
+    const b = blank();
+    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, meta: b.meta, f: b.f, fm: {}, c: {}, refs: b.refs, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
+    await renderAdmin();
+  } catch (e) { setStatus('建立失敗：' + errText(e)); }
 }
 
 // ====================================================================
@@ -561,6 +779,7 @@ function save() {
 function $(s, r) { return (r || document).querySelector(s); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 function br(s) { return esc(s).replace(/\n/g, '<br>'); }
+function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) {
   const ks = p.split('.'); let a = o;
   ks.slice(0, -1).forEach(k => { if (a[k] == null || typeof a[k] !== 'object') a[k] = {}; a = a[k]; });
@@ -592,7 +811,7 @@ function groupsHTML(groups, inEditor) {
 function isDone(k) { return !!(state.data.f[k] || '').trim(); }
 
 // ====================================================================
-// 六、填寫畫面
+// 六、畫面
 // ====================================================================
 function rolesTable(prof) {
   return `<div class="tbl-wrap"><table class="t"><tr><th></th>${STAGES.map(s => `<th>${ZH[s.n - 1]}　${esc(s.name)}</th>`).join('')}</tr>
@@ -603,50 +822,129 @@ function diagTable(prof) {
   return `<div class="tbl-wrap"><table class="t"><tr><th>款別／疾病</th><th>確診資格依據</th><th>本會</th></tr>
     ${prof.diag.map(d => `<tr><td>${esc(d.label)}${d.sub ? `<br><span style="color:var(--muted)">${esc(d.sub)}</span>` : ''}</td><td>${esc(d.basis)}</td><td class="st-${d.st}">${ST_LABEL[d.st]}</td></tr>`).join('')}</table></div>`;
 }
+const TILES = `<div class="tiles">
+  <div class="tile"><b><span class="sw orange"></span>填寫橘色框</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。</p></div>
+  <div class="tile"><b><span class="sw blue"></span>閱讀藍色框</b><p>共通基準由核心團隊依現行法維護，請勿修改，點開即可閱讀。</p></div>
+  <div class="tile"><b><span class="sw green"></span>角色已預設</b><p>本會於各階段之角色與可擔任確診之款別，由核心團隊依法定資格預設，本會不勾選。</p></div>
+  <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入者，內容即時存到雲端，同一學會之成員看到同一份；每格保留歷史版本。</p></div>
+</div>`;
+function updateCount(k) { const c = $('#cnt-' + k); if (c) c.textContent = (($('#f-' + k) || {}).value || '').length + ' 字'; }
+function showFm(k) {
+  const el = $('#fm-' + k); if (!el) return;
+  const m = state.data.fm[k];
+  let t = m && m.at ? `最後由 ${m.by || '未具名'} 於 ${when(m.at)} 修改` : '';
+  if (remoteWaiting.has(k)) t = '其他成員剛更新此格；離開此格後即顯示最新內容';
+  el.textContent = t;
+  el.classList.toggle('warn', remoteWaiting.has(k));
+}
+function renderComment(k) {
+  const box = $('#cm-' + k); if (!box) return;
+  const c = state.data.c[k];
+  if (state.admin) {
+    const ta = $('#cmt-' + k);
+    if (ta && document.activeElement !== ta && c && ta.value !== (c.text || '')) ta.value = c.text || '';
+    const meta = $('#cmm-' + k); if (meta) meta.textContent = c && c.at ? `${c.by || ''}　${when(c.at)}` : '';
+    return;
+  }
+  box.hidden = !(c && (c.text || '').trim());
+  if (!box.hidden) box.innerHTML = `<div class="cm-h">核心團隊意見<span>${esc(c.by || '')}　${esc(when(c.at))}</span></div><div class="cm-t">${br(c.text)}</div>`;
+}
 function fillHTML(k, prof) {
   const F = FILLS[k];
   const label = k === '3A' && !prof.diag.length ? F.refLabel : F.label;
   const ref3 = k === '3A' && prof.diag.length ? `<details class="ref-dx"><summary>本會可擔任確診之款別與疾病（共 ${prof.diag.length} 項，核心團隊預設）</summary>${diagTable(prof)}</details>` : '';
   const v = state.data.f[k] || '';
+  const cloud = state.mode === 'cloud';
+  const cm = !cloud ? '' : state.admin
+    ? `<div class="cbox admin" id="cm-${k}"><label class="cm-h" for="cmt-${k}">核心團隊意見<span id="cmm-${k}"></span></label><textarea id="cmt-${k}" data-c="${k}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[k] || {}).text || '')}</textarea></div>`
+    : `<div class="cbox" id="cm-${k}" hidden></div>`;
   return `<div class="fill" id="card-${k}">
     <label class="lab" for="f-${k}"><span class="code">${codeOf(k)}</span><span>${esc(label)}</span></label>
     ${ref3}
     <textarea id="f-${k}" data-k="f.${k}">${esc(v)}</textarea>
-    <div class="count" id="cnt-${k}">${v.length} 字</div>
+    <div class="frow"><span class="fm" id="fm-${k}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${k}">歷史版本</button>` : ''}<span class="count" id="cnt-${k}">${v.length} 字</span></div>
+    ${cloud ? `<div class="hist" id="hist-${k}" hidden></div>` : ''}
+    ${cm}
   </div>`;
 }
-const TILES = `<div class="tiles">
-  <div class="tile"><b><span class="sw orange"></span>填寫橘色框</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。</p></div>
-  <div class="tile"><b><span class="sw blue"></span>閱讀藍色框</b><p>共通基準由核心團隊依現行法維護，請勿修改，點開即可閱讀。</p></div>
-  <div class="tile"><b><span class="sw green"></span>角色已預設</b><p>本會於各階段之角色與可擔任確診之款別，由核心團隊依法定資格預設，本會不勾選。</p></div>
-  <div class="tile"><b><span class="sw gray"></span>記得匯出草稿</b><p>內容自動存在這台電腦的瀏覽器。換電腦或交核心團隊前，請按「匯出草稿檔」。</p></div>
-</div>`;
-function renderPicker() {
+function renderRefs() {
+  const box = $('#refs-list'); if (!box) return;
+  box.innerHTML = state.data.refs.map((r, i) => `<div class="r"><span>${i + 1}.</span><input type="text" id="ref-${i}" data-k="refs.${i}" value="${esc(r)}" aria-label="文獻 ${i + 1}"></div>`).join('');
+}
+function setToolbar() {
+  const has = !!state.socId && (state.mode === 'local' || state.mode === 'cloud');
+  ['#btn-export', '#btn-print', '#tab-book', '#btn-import'].forEach(s => { $(s).disabled = !has; });
+  $('#soc-wrap').hidden = state.mode === 'cloud' || state.mode === 'admin-list';
+  const tag = $('#mode-tag');
+  tag.hidden = !(state.mode === 'cloud' || state.mode === 'admin-list');
+  tag.textContent = state.mode === 'admin-list' ? '核心團隊總覽' : (state.admin ? '核心團隊檢閱：' : '雲端協作：') + ((socOf(state.socId) || {}).name || '');
+  tag.className = 'mode-tag' + (state.admin || state.mode === 'admin-list' ? ' admin' : '');
+}
+function renderLanding() {
+  state.mode = ''; state.socId = ''; state.data = null; state.admin = false;
+  if (unsub) { unsub(); unsub = null; }
+  setToolbar();
   $('#nav').innerHTML = '';
+  $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
   $('#main').innerHTML = `<section class="card hero">
     <div class="eyebrow">給各學會研發小組</div>
     <h2>本模板之使用</h2>
     <p class="lead">本網頁供各學會研發小組訂定「○○醫學會病主緩和臨床指引」。逐階段往下填寫，完成後即可預覽並列印成手冊。</p>
     ${TILES}
-    <div class="pick">
-      <select id="soc-pick" aria-label="選擇學會"><option value="">請選擇您的學會</option>${SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select>
-    </div>
-  </section>`;
-  $('#soc-pick').addEventListener('change', e => { if (e.target.value) switchSoc(e.target.value); });
-  $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
-  ['#btn-export', '#btn-print', '#tab-book'].forEach(s => { $(s).disabled = true; });
+  </section>
+  <div class="entry">
+    <section class="card">
+      <div class="eyebrow">研發小組</div>
+      <h3 class="eh">以邀請碼進入</h3>
+      <p class="lead">輸入核心團隊提供之邀請碼或邀請連結。內容即時存到雲端，同一學會之成員共同編輯同一份。</p>
+      <form id="form-code" class="inrow"><input type="text" id="in-code" placeholder="邀請碼或邀請連結" autocomplete="off" aria-label="邀請碼"><button class="btn primary" type="submit">進入</button></form>
+    </section>
+    <section class="card">
+      <div class="eyebrow">試用</div>
+      <h3 class="eh">本機試填</h3>
+      <p class="lead">不需邀請碼，內容只存在這台電腦之瀏覽器，不與他人共享。</p>
+      <div class="inrow"><select id="soc-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+    </section>
+    <section class="card">
+      <div class="eyebrow">核心團隊</div>
+      <h3 class="eh">總覽與檢閱</h3>
+      <p class="lead">以列入核心團隊名單之 Google 帳號登入，可查看各學會進度、建立邀請碼並填寫意見。</p>
+      <div class="inrow"><button class="btn" type="button" id="btn-admin">以 Google 帳號登入</button></div>
+    </section>
+  </div>`;
+  $('#form-code').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = $('#in-code').value.trim(); const m = v.match(/k=([a-z0-9]+)/i);
+    const tk = (m ? m[1] : v).trim();
+    if (tk.length >= 12) openCloud(tk, false); else setStatus('邀請碼格式不正確');
+  });
+  $('#soc-pick').addEventListener('change', e => { if (e.target.value) openLocal(e.target.value); });
+  $('#btn-admin').addEventListener('click', adminSignIn);
+}
+function openLocal(id) {
+  if (unsub) { unsub(); unsub = null; }
+  state.mode = 'local'; state.admin = false; state.token = ''; state.socId = id; state.data = loadLocal(id);
+  $('#soc').value = id;
+  renderEditor();
+  setStatus('本機試填（內容只存在這台電腦）');
 }
 function renderEditor() {
   const soc = socOf(state.socId), prof = profile(soc), d = state.data;
-  ['#btn-export', '#btn-print', '#tab-book'].forEach(s => { $(s).disabled = false; });
+  const cloud = state.mode === 'cloud';
+  setToolbar();
   $('#nav').innerHTML = [`<a href="#sec-guide"><span class="dot fixed"></span>本模板之使用</a>`, `<a href="#sec-basic"><span class="dot fixed"></span>本會資料與角色</a>`, `<div class="sep"></div>`]
     .concat(STAGES.map(s => `<a href="#sec-s${s.n}"><span class="dot" data-stage="${s.n}"></span>階段${ZH[s.n - 1]}　${esc(s.name)}</a>`))
     .concat([`<a href="#sec-common"><span class="dot fixed"></span>各階段通用</a>`, `<div class="sep"></div>`, `<a href="#sec-refs"><span class="dot fixed"></span>參考文獻</a>`]).join('');
+
+  const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
+  const adminBar = state.admin ? `<div class="whobar"><span>您正以核心團隊身分檢閱；修改內容與研發小組相同即時生效。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>` : '';
+  const localBar = state.mode === 'local' ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向核心團隊索取邀請碼。</p>` : '';
 
   const guide = `<section class="card hero" id="sec-guide">
     <div class="eyebrow">給研發小組</div>
     <h2>本模板之使用</h2>
     <p class="lead">本網頁供研發小組訂定「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
+    ${who}${adminBar}${localBar}
     ${TILES}
   </section>`;
 
@@ -693,27 +991,89 @@ function renderEditor() {
     <div class="eyebrow">選填</div>
     <h2>參考文獻</h2>
     <p class="lead">本會建議所依據之文獻，建議採APA或Vancouver格式。</p>
-    <div class="fill"><div class="refs-list" id="refs-list">${d.refs.map((r, i) => `<div class="r"><span>${i + 1}.</span><input type="text" id="ref-${i}" data-k="refs.${i}" value="${esc(r)}" aria-label="文獻 ${i + 1}"></div>`).join('')}</div>
+    <div class="fill"><div class="refs-list" id="refs-list"></div>
     <div><button class="btn" type="button" id="btn-addref">新增一筆</button></div></div>
   </section>`;
 
   $('#main').innerHTML = guide + basic + `<div class="stages">${stages}${common}</div>` + refs;
+  renderRefs();
+  CODES.forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
 }
+async function renderAdmin() {
+  setStatus('讀取各學會資料…');
+  let rows = [];
+  try {
+    const { fs, db } = await fb();
+    const qs = await fs.getDocs(fs.collection(db, 'drafts'));
+    qs.forEach(s => rows.push(s.data()));
+  } catch (e) {
+    let email = '';
+    try { email = FB.auth.currentUser ? FB.auth.currentUser.email : ''; } catch (x) { /* 略過 */ }
+    renderLanding();
+    setStatus(`無法開啟總覽：${errText(e)}${email ? '（目前帳號：' + email + '）' : ''}`);
+    return;
+  }
+  if (unsub) { unsub(); unsub = null; }
+  state.mode = 'admin-list'; state.admin = true; state.socId = ''; state.data = null;
+  setToolbar();
+  $('#nav').innerHTML = '';
+  $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
+  const email = FB.auth.currentUser ? FB.auth.currentUser.email : '';
+  const body = SOCIETIES.map(s => {
+    const list = rows.filter(r => r.soc === s.id);
+    if (!list.length) return `<tr><td>${esc(s.name)}</td><td colspan="3" class="muted">尚未建立邀請碼</td><td><button class="btn sm" type="button" data-create="${s.id}">建立邀請碼</button></td></tr>`;
+    return list.map(r => {
+      const n = CODES.filter(k => ((r.f || {})[k] || '').trim()).length;
+      return `<tr><td>${esc(s.name)}</td><td><span class="prog"><i style="width:${n / CODES.length * 100}%"></i></span> ${n}／${CODES.length}</td><td>${esc(when(r.updatedAt))}<br><span class="muted">${esc(r.updatedBy || '')}</span></td>
+        <td><code class="tok">${esc(r.token)}</code><button class="linkbtn" type="button" data-copy="${esc(inviteLink(r.token))}">複製邀請連結</button></td>
+        <td><button class="btn sm primary" type="button" data-open="${esc(r.token)}">檢閱</button></td></tr>`;
+    }).join('');
+  }).join('');
+  $('#main').innerHTML = `<section class="card hero">
+    <div class="eyebrow">核心團隊</div>
+    <h2>各學會總覽</h2>
+    <p class="lead">登入帳號：${esc(email)}。建立邀請碼後，將邀請連結交給該學會研發小組；持有連結者即可共同編輯該學會之內容，請勿公開張貼。</p>
+    <div class="inrow" style="margin-top:12px"><button class="btn" type="button" id="btn-refresh">重新整理</button><button class="btn" type="button" id="btn-signout">登出</button></div>
+  </section>
+  <section class="card"><div class="tbl-wrap"><table class="t admin"><tr><th>學會</th><th>已填</th><th>最後更新</th><th>邀請碼</th><th></th></tr>${body}</table></div></section>`;
+  setStatus('已載入 ' + rows.length + ' 份');
+}
 function updateProgress() {
+  if (!state.data) return;
   const done = CODES.filter(isDone).length;
   $('#st-prog').textContent = `已填 ${done}／${CODES.length} 格`;
   $('#st-bar').style.width = (done / CODES.length * 100) + '%';
   STAGES.forEach(s => { const dot = document.querySelector(`.dot[data-stage="${s.n}"]`); if (dot) dot.classList.toggle('done', s.fills.every(isDone)); });
 }
 function onInput(e) {
-  const el = e.target, k = el.dataset && el.dataset.k;
+  const el = e.target;
+  if (el.id === 'in-name') { lsSet(KEY + 'name', el.value.trim()); return; }
+  if (el.dataset && el.dataset.c) { clearTimeout(el._t); el._t = setTimeout(() => pushComment(el.dataset.c, el.value), 1200); return; }
+  const k = el.dataset && el.dataset.k;
   if (!k) return;
   setPath(state.data, k, el.value);
   const m = k.match(/^f\.(\w+)$/);
-  if (m) { const c = $('#cnt-' + m[1]); if (c) c.textContent = el.value.length + ' 字'; }
+  if (m) updateCount(m[1]);
   updateProgress();
-  save();
+  if (state.mode === 'cloud') {
+    if (k.startsWith('refs.')) queueCloud('refs', state.data.refs.slice());
+    else queueCloud(k, el.value);
+  } else saveLocal();
+}
+function onBlur(e) {
+  const el = e.target;
+  if (state.mode !== 'cloud') return;
+  const k = el.dataset && el.dataset.k;
+  if (k) {
+    const path = k.startsWith('refs.') ? 'refs' : k;
+    flushCloud(path);
+    const m = k.match(/^f\.(\w+)$/);
+    if (m && remoteWaiting.has(m[1]) && !pending.has(path)) {
+      remoteWaiting.delete(m[1]);
+      setTimeout(() => { if (FB) FB.fs.getDoc(FB.fs.doc(FB.db, 'drafts', state.token)).then(s => s.exists() && applyRemote(s.data())); }, 1500);
+    }
+  }
 }
 
 // ====================================================================
@@ -813,7 +1173,7 @@ function renderHandbook() {
 // 八、事件
 // ====================================================================
 function setView(v) {
-  if (v === 'book' && !state.socId) return;
+  if (v === 'book' && !state.data) return;
   state.view = v;
   $('#tab-edit').setAttribute('aria-selected', v === 'edit');
   $('#tab-book').setAttribute('aria-selected', v === 'book');
@@ -822,19 +1182,10 @@ function setView(v) {
   if (v === 'book') renderHandbook();
   window.scrollTo(0, 0);
 }
-function switchSoc(id) {
-  if (!socOf(id)) { state.socId = ''; state.data = null; $('#soc').value = ''; renderPicker(); setView('edit'); return; }
-  state.socId = id;
-  state.data = load(id);
-  $('#soc').value = id;
-  $('#st-save').textContent = '尚未修改';
-  renderEditor();
-  if (state.view === 'book') renderHandbook();
-}
 function exportDraft() {
-  if (!state.socId) return;
+  if (!state.data) return;
   const soc = socOf(state.socId);
-  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: state.data };
+  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   const dt = new Date(), ymd = `${dt.getFullYear() - 1911}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`;
@@ -845,46 +1196,77 @@ function exportDraft() {
 }
 function importDraft(file) {
   const rd = new FileReader();
-  rd.onload = () => {
+  rd.onload = async () => {
     try {
       const p = JSON.parse(rd.result);
       if (p.kind !== 'pspg-template-draft' || p.version !== 2 || !p.data || !socOf(p.society)) throw new Error('格式不符');
-      try { localStorage.setItem(KEY + p.society, JSON.stringify(p.data)); } catch (e) { /* 無法儲存時仍載入畫面 */ }
-      switchSoc(p.society);
-      state.data = Object.assign(blank(), p.data);
-      renderEditor();
-      $('#st-save').textContent = `已匯入草稿檔（${p.societyName}）`;
+      if (state.mode === 'cloud') {
+        if (p.society !== state.socId) { setStatus('匯入失敗：草稿檔屬於「' + p.societyName + '」，與目前學會不同'); return; }
+        if (!window.confirm('匯入會以草稿檔內容取代雲端上本學會目前之內容（歷史版本會保留），確定嗎？')) return;
+        const nd = normalize(p.data);
+        CODES.forEach(k => maybeHistory(k, state.data.f[k] || '', true));
+        const { fs, db } = await fb();
+        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
+        CODES.forEach(k => { upd['fm.' + k] = { by: editorName() + '（匯入）', at: fs.serverTimestamp() }; });
+        await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
+        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs });
+        renderEditor();
+        setStatus('已匯入草稿檔並同步至雲端');
+      } else {
+        lsSet(KEY + p.society, JSON.stringify(p.data));
+        openLocal(p.society);
+        setStatus(`已匯入草稿檔（${p.societyName}），本機試填`);
+      }
     } catch (e) {
-      $('#st-save').textContent = '匯入失敗：檔案不是本模板匯出的草稿檔';
+      setStatus('匯入失敗：' + (e.message === '格式不符' ? '檔案不是本模板匯出的草稿檔' : errText(e)));
     }
   };
   rd.readAsText(file);
 }
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); setStatus('已複製邀請連結'); }
+  catch (e) { window.prompt('請複製以下邀請連結', t); }
+}
 function init() {
   $('#soc').innerHTML = `<option value="">請選擇學會</option>` + SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
-  let start = '';
-  try { const l = localStorage.getItem(KEY + 'last'); if (l && socOf(l)) start = l; } catch (e) { /* 無法讀取時從選擇學會開始 */ }
-  const h = (location.hash || '').slice(1).split('-')[0];
-  if (socOf(h)) start = h;
-  switchSoc(start);
-  $('#soc').addEventListener('change', e => switchSoc(e.target.value));
+  $('#soc').addEventListener('change', e => { if (e.target.value) openLocal(e.target.value); else renderLanding(); });
   $('#tab-edit').addEventListener('click', () => setView('edit'));
   $('#tab-book').addEventListener('click', () => setView('book'));
-  $('#main').addEventListener('input', onInput);
-  $('#main').addEventListener('click', e => {
-    if (e.target.id === 'btn-addref') {
-      state.data.refs.push('');
-      const i = state.data.refs.length - 1;
-      $('#refs-list').insertAdjacentHTML('beforeend', `<div class="r"><span>${i + 1}.</span><input type="text" id="ref-${i}" data-k="refs.${i}" value="" aria-label="文獻 ${i + 1}"></div>`);
-      $('#ref-' + i).focus(); save();
-    }
+  const main = $('#main');
+  main.addEventListener('input', onInput);
+  main.addEventListener('focusout', onBlur);
+  main.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    if (t.id === 'btn-addref') {
+      state.data.refs.push(''); renderRefs();
+      const i = state.data.refs.length - 1; $('#ref-' + i).focus();
+      if (state.mode === 'cloud') queueCloud('refs', state.data.refs.slice()); else saveLocal();
+    } else if (t.id === 'btn-leave') { lsDel(KEY + 'token'); history.replaceState(null, '', location.pathname); renderLanding(); setStatus('已離開'); }
+    else if (t.id === 'btn-back-admin' || t.id === 'btn-refresh') renderAdmin();
+    else if (t.id === 'btn-signout') adminSignOut();
+    else if (t.dataset.hist) { const box = $('#hist-' + t.dataset.hist); if (box && !box.hidden) box.hidden = true; else loadHistory(t.dataset.hist); }
+    else if (t.dataset.restore) { const [c, i] = t.dataset.restore.split(':'); restoreHistory(c, +i); }
+    else if (t.dataset.create) createInvite(t.dataset.create);
+    else if (t.dataset.copy) copyText(t.dataset.copy);
+    else if (t.dataset.open) openCloud(t.dataset.open, true);
   });
   $('#btn-export').addEventListener('click', exportDraft);
   $('#btn-import').addEventListener('click', () => $('#file-import').click());
   $('#file-import').addEventListener('change', e => { if (e.target.files[0]) importDraft(e.target.files[0]); e.target.value = ''; });
-  $('#btn-print').addEventListener('click', () => { if (!state.socId) return; renderHandbook(); setView('book'); setTimeout(() => window.print(), 100); });
-  window.addEventListener('beforeprint', renderHandbook);
-  if (/-book$/.test(location.hash) && state.socId) setView('book');
+  $('#btn-print').addEventListener('click', () => { if (!state.data) return; renderHandbook(); setView('book'); setTimeout(() => window.print(), 100); });
+  window.addEventListener('beforeprint', () => { if (state.data) renderHandbook(); });
+
+  const h = (location.hash || '').slice(1);
+  const km = h.match(/^k=([a-z0-9]+)/i);
+  if (km) { history.replaceState(null, '', location.pathname); openCloud(km[1], false); return; }
+  if (h === 'admin') { renderLanding(); adminSignIn(); return; }
+  const sid = h.split('-')[0];
+  if (socOf(sid)) { openLocal(sid); if (/-book$/.test(h)) setView('book'); return; }
+  const saved = lsGet(KEY + 'token');
+  if (saved) { openCloud(saved, false); return; }
+  const last = lsGet(KEY + 'last');
+  if (last && socOf(last)) { openLocal(last); return; }
+  renderLanding();
 }
 init();
 </script>
