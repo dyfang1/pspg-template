@@ -196,6 +196,11 @@ table.t th { background: var(--primary-soft); color: var(--primary-ink); font-we
 .cm-t { font-size: 14px; }
 .cbox textarea { width: 100%; min-height: 70px; border: 1px solid var(--primary-mid); border-radius: var(--r-sm); background: var(--surface); padding: 8px 10px; resize: vertical; }
 table.t.admin td { vertical-align: middle; }
+table.t.admin tr.testrow td { background: #fffbf3; }
+.acts-cell { white-space: nowrap; }
+.acts-cell .btn + .btn { margin-left: 6px; }
+.btn.danger { color: #b3261e; border-color: #f0c4bf; }
+.btn.danger:hover:not(:disabled) { border-color: #b3261e; color: #b3261e; }
 .prog { display: inline-block; width: 70px; height: 7px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; vertical-align: middle; }
 .prog i { display: block; height: 100%; background: var(--fill); }
 code.tok { font-size: 11.5px; color: var(--muted); margin-right: 6px; }
@@ -469,6 +474,9 @@ const K5 = [
 // ====================================================================
 const ALL_LEAD = { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' };
 const SOCIETIES = [
+  { id: 'test', name: '【測試用】工作坊練習', domain: '〔本專科〕', base: '工作坊練習用；角色與確診資格僅為示範，不代表任何學會',
+    test: true, m1: 'yes', m1n: '示範', n23: 'yes', n4: 'yes', k5: { '神經': 'yes', '心臟': 'yes' }, roles: { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' },
+    note: '此為工作坊練習用之示範設定，各學會實際之角色與確診資格以核心團隊之預設為準。' },
   { id: 'dementia', name: '台灣臨床失智症學會', domain: '失智症照護', base: '會員多為神經科或精神科專科醫師',
     m1: 'yes', n23: 'member', n4: 'member', k5: { '神經': 'member', '精神': 'member' }, roles: ALL_LEAD },
   { id: 'neuro', name: '台灣神經醫學會', domain: '神經醫學', base: '神經科（部定專科）',
@@ -643,7 +651,7 @@ async function openCloud(token, asAdmin) {
     if (!socOf(d.soc)) throw { message: '資料中的學會代碼無法辨識' };
     if (unsub) unsub();
     pending.clear(); remoteWaiting.clear();
-    state.mode = 'cloud'; state.admin = !!asAdmin; state.token = token; state.socId = d.soc; state.data = normalize(d);
+    state.mode = 'cloud'; state.admin = !!asAdmin; state.token = token; state.socId = d.soc; state.label = d.label || ''; state.data = normalize(d);
     if (!asAdmin) lsSet(KEY + 'token', token);
     $('#soc').value = d.soc;
     renderEditor();
@@ -754,6 +762,27 @@ async function adminSignIn() {
     await renderAdmin();
   } catch (e) { setStatus('登入失敗：' + errText(e)); }
 }
+// 以 #admin 開啟時：已登入者直接進總覽；未登入者停在起始頁，等使用者自己按登入鈕（避免瀏覽器擋下自動跳出之視窗）
+async function adminEntry() {
+  setStatus('檢查登入狀態…');
+  try {
+    const { au, auth } = await fb();
+    await new Promise(res => { const off = au.onAuthStateChanged(auth, () => { off(); res(); }); });
+    if (auth.currentUser) await renderAdmin();
+    else setStatus('請按「核心團隊」卡片中的「以 Google 帳號登入」');
+  } catch (e) { setStatus('無法檢查登入狀態：' + errText(e)); }
+}
+async function deleteDraft(token) {
+  if (!window.confirm('確定刪除這份練習資料？內容與歷史版本會一併刪除，無法復原。')) return;
+  try {
+    const { fs, db } = await fb();
+    const hs = await fs.getDocs(fs.collection(db, 'drafts', token, 'history'));
+    await Promise.all(hs.docs.map(d => fs.deleteDoc(d.ref)));
+    await fs.deleteDoc(fs.doc(db, 'drafts', token));
+    await renderAdmin();
+    setStatus('已刪除');
+  } catch (e) { setStatus('刪除失敗：' + errText(e)); }
+}
 async function adminSignOut() {
   try { const { au, auth } = await fb(); await au.signOut(auth); } catch (e) { /* 略過 */ }
   state.admin = false; renderLanding(); setStatus('已登出');
@@ -764,11 +793,16 @@ function randToken() {
 }
 function inviteLink(token) { return location.origin + location.pathname + '#k=' + token; }
 async function createInvite(socId) {
+  let label = '';
+  if ((socOf(socId) || {}).test) {
+    label = (window.prompt('這組練習邀請碼的名稱（例如：第1桌）', '') || '').trim();
+    if (!label) return;
+  }
   try {
     const { fs, db } = await fb();
     const token = randToken();
     const b = blank();
-    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, meta: b.meta, f: b.f, fm: {}, c: {}, refs: b.refs, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
+    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, label, meta: b.meta, f: b.f, fm: {}, c: {}, refs: b.refs, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
     await renderAdmin();
   } catch (e) { setStatus('建立失敗：' + errText(e)); }
 }
@@ -877,7 +911,7 @@ function setToolbar() {
   $('#soc-wrap').hidden = state.mode === 'cloud' || state.mode === 'admin-list';
   const tag = $('#mode-tag');
   tag.hidden = !(state.mode === 'cloud' || state.mode === 'admin-list');
-  tag.textContent = state.mode === 'admin-list' ? '核心團隊總覽' : (state.admin ? '核心團隊檢閱：' : '雲端協作：') + ((socOf(state.socId) || {}).name || '');
+  tag.textContent = state.mode === 'admin-list' ? '核心團隊總覽' : (state.admin ? '核心團隊檢閱：' : '雲端協作：') + ((socOf(state.socId) || {}).name || '') + (state.label ? '（' + state.label + '）' : '');
   tag.className = 'mode-tag' + (state.admin || state.mode === 'admin-list' ? ' admin' : '');
 }
 function renderLanding() {
@@ -1022,13 +1056,16 @@ async function renderAdmin() {
   const email = FB.auth.currentUser ? FB.auth.currentUser.email : '';
   const body = SOCIETIES.map(s => {
     const list = rows.filter(r => r.soc === s.id);
-    if (!list.length) return `<tr><td>${esc(s.name)}</td><td colspan="3" class="muted">尚未建立邀請碼</td><td><button class="btn sm" type="button" data-create="${s.id}">建立邀請碼</button></td></tr>`;
-    return list.map(r => {
+    const nameCell = r => `<td>${esc(s.name)}${r && r.label ? `<br><span class="muted">${esc(r.label)}</span>` : ''}</td>`;
+    const rowsHTML = list.map(r => {
       const n = CODES.filter(k => ((r.f || {})[k] || '').trim()).length;
-      return `<tr><td>${esc(s.name)}</td><td><span class="prog"><i style="width:${n / CODES.length * 100}%"></i></span> ${n}／${CODES.length}</td><td>${esc(when(r.updatedAt))}<br><span class="muted">${esc(r.updatedBy || '')}</span></td>
+      return `<tr${s.test ? ' class="testrow"' : ''}>${nameCell(r)}<td><span class="prog"><i style="width:${n / CODES.length * 100}%"></i></span> ${n}／${CODES.length}</td><td>${esc(when(r.updatedAt))}<br><span class="muted">${esc(r.updatedBy || '')}</span></td>
         <td><code class="tok">${esc(r.token)}</code><button class="linkbtn" type="button" data-copy="${esc(inviteLink(r.token))}">複製邀請連結</button></td>
-        <td><button class="btn sm primary" type="button" data-open="${esc(r.token)}">檢閱</button></td></tr>`;
+        <td class="acts-cell"><button class="btn sm primary" type="button" data-open="${esc(r.token)}">檢閱</button>${s.test ? `<button class="btn sm danger" type="button" data-del="${esc(r.token)}">刪除</button>` : ''}</td></tr>`;
     }).join('');
+    if (s.test) return rowsHTML + `<tr class="testrow"><td>${esc(s.name)}</td><td colspan="3" class="muted">${list.length ? '已建立 ' + list.length + ' 組練習邀請碼；可再建立，例如一桌一組。' : '工作坊練習用，可建立多組邀請碼，例如一桌一組。'}</td><td><button class="btn sm" type="button" data-create="${s.id}">${list.length ? '再建立一組' : '建立練習邀請碼'}</button></td></tr>`;
+    if (!list.length) return `<tr>${nameCell(null)}<td colspan="3" class="muted">尚未建立邀請碼</td><td><button class="btn sm" type="button" data-create="${s.id}">建立邀請碼</button></td></tr>`;
+    return rowsHTML;
   }).join('');
   $('#main').innerHTML = `<section class="card hero">
     <div class="eyebrow">核心團隊</div>
@@ -1142,17 +1179,19 @@ function renderHandbook() {
 
   const stageBlocks = STAGES.map(s => `<h3>階段${ZH[s.n - 1]}｜${esc(s.name)}</h3><div class="steps">步驟：${esc(s.steps)}</div><div class="pos">${esc(s.pos)}</div><div class="bh">共通基準</div>${groupsHTML(s.groups, false)}${s.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}${s.fills.map(k => recBlock(k, prof)).join('')}`).join('');
   const commonBlock = `<div class="keep"><h3>${esc(COMMON.name)}</h3><div class="pos">${esc(COMMON.pos)}</div><div class="bh">共通基準</div><ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}</div>`;
-  const stagesSheet = `<section class="sheet"><h2>四、各階段之共通基準與本專科內容</h2>${stageBlocks}${commonBlock}</section>`;
+  const stagesSheet = `<section class="sheet"><h2>五、各階段之共通基準與本專科內容</h2>${stageBlocks}${commonBlock}</section>`;
 
   const sumRows = CODES.map(k => { const fs = firstSentence(d.f[k]); return fs ? `<tr><td>${codeOf(k)}</td><td>${ZH[FILLS[k].stage - 1]}</td><td>${esc(fs)}</td></tr>` : ''; }).join('');
+  const summarySheet = `<section class="sheet">
+    <h2>四、本會建議一覽</h2>
+    <p class="muted">本會於各階段之建議一覽，由各填寫格之第一句自動彙整；共通基準不重列，各條之說明見五、各階段。</p>
+    ${sumRows ? `<table><tr><th style="width:9%">編號</th><th style="width:8%">階段</th><th>本會建議</th></tr>${sumRows}</table>` : '<p class="empty">（尚未填寫）</p>'}
+  </section>`;
   const rec = `<section class="sheet">
-    <h2>五、病歷記載檢核</h2>
+    <h2>六、病歷記載檢核</h2>
     <p class="muted">依§14執行預立醫療決定者，不負刑事與行政責任（§14 V）；是否依§14執行，以病歷記載為憑。§17規定確診、照會、意願確認等事項應詳細記載，相關文件連同病歷保存。本表將其拆為八項，供醫師執行後自查與院內檢核；未標★者為§17所定事項，標★者為本指引建議記載。</p>
     <table><tr><th style="width:5%">＃</th><th style="width:20%">事項</th><th>應記載內容</th><th style="width:18%">法源</th><th style="width:6%">☐</th></tr>
     ${RECORDS.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>☐</td></tr>`).join('')}</table>
-    <h2>六、本會建議一覽</h2>
-    <p class="muted">本會於各階段之建議一覽；共通基準不重列，各條之說明見四、各階段。</p>
-    ${sumRows ? `<table><tr><th style="width:9%">編號</th><th style="width:8%">階段</th><th>本會建議</th></tr>${sumRows}</table>` : '<p class="empty">（尚未填寫）</p>'}
     <h2>七、參考文獻</h2>
     ${d.refs.some(r => (r || '').trim()) ? `<ol>${d.refs.filter(r => (r || '').trim()).map(r => `<li>${esc(r)}</li>`).join('')}</ol>` : '<p class="empty">（無）</p>'}
   </section>`;
@@ -1166,7 +1205,7 @@ function renderHandbook() {
     <table><tr><th style="width:20%">縮寫</th><th>全稱</th></tr>${ABBR.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>
   </section>`;
 
-  $('#handbook').innerHTML = cover + intro + ov + stagesSheet + rec + app;
+  $('#handbook').innerHTML = cover + intro + ov + summarySheet + stagesSheet + rec + app;
 }
 
 // ====================================================================
@@ -1247,6 +1286,7 @@ function init() {
     else if (t.dataset.hist) { const box = $('#hist-' + t.dataset.hist); if (box && !box.hidden) box.hidden = true; else loadHistory(t.dataset.hist); }
     else if (t.dataset.restore) { const [c, i] = t.dataset.restore.split(':'); restoreHistory(c, +i); }
     else if (t.dataset.create) createInvite(t.dataset.create);
+    else if (t.dataset.del) deleteDraft(t.dataset.del);
     else if (t.dataset.copy) copyText(t.dataset.copy);
     else if (t.dataset.open) openCloud(t.dataset.open, true);
   });
@@ -1256,10 +1296,15 @@ function init() {
   $('#btn-print').addEventListener('click', () => { if (!state.data) return; renderHandbook(); setView('book'); setTimeout(() => window.print(), 100); });
   window.addEventListener('beforeprint', () => { if (state.data) renderHandbook(); });
 
+  window.addEventListener('hashchange', () => {
+    const hh = (location.hash || '').slice(1), kk = hh.match(/^k=([a-z0-9]+)/i);
+    if (kk) { history.replaceState(null, '', location.pathname); openCloud(kk[1], false); }
+    else if (hh === 'admin') { history.replaceState(null, '', location.pathname); adminEntry(); }
+  });
   const h = (location.hash || '').slice(1);
   const km = h.match(/^k=([a-z0-9]+)/i);
   if (km) { history.replaceState(null, '', location.pathname); openCloud(km[1], false); return; }
-  if (h === 'admin') { renderLanding(); adminSignIn(); return; }
+  if (h === 'admin') { history.replaceState(null, '', location.pathname); renderLanding(); adminEntry(); return; }
   const sid = h.split('-')[0];
   if (socOf(sid)) { openLocal(sid); if (/-book$/.test(h)) setView('book'); return; }
   const saved = lsGet(KEY + 'token');
