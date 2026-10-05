@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>病主緩和臨床指引模板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 版面：明亮單一亮色主題。上方工具列＋左側導覽＋主欄；五階段串在一條直的時間軸上。藍＝共通基準（不可改），橘＝本會填寫。手冊預覽為 A4 紙張、標楷體。 */
+:root {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --bg-tint: #eaf2fc;
+  --surface: #ffffff;
+  --ink: #1c2534;
+  --muted: #5d6a7e;
+  --line: #e1e7f0;
+  --primary: #2a6fbe;
+  --primary-ink: #1d5394;
+  --primary-soft: #e9f1fb;
+  --primary-mid: #b9d2f0;
+  --fill: #cf7419;
+  --fill-ink: #a65a10;
+  --fill-soft: #fff6ec;
+  --fill-line: #f3cfa5;
+  --ok: #23866a;
+  --ok-soft: #e4f5ef;
+  --warn: #a8620a;
+  --warn-soft: #fff4dd;
+  --rail: #cfdff3;
+  --shadow: 0 1px 2px rgba(28, 52, 92, .06), 0 6px 20px rgba(28, 52, 92, .07);
+  --sheet-bg: #ffffff;
+  --sheet-ink: #1a1a1a;
+  --sheet-muted: #555b66;
+  --sheet-line: #9aa1ab;
+  --sheet-navy: #2b4c7e;
+  --sheet-fill: #b8641a;
+  --sheet-head: #e7edf5;
+  --font-ui: "Noto Sans TC", system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-doc: "Times New Roman", "BiauKai", "DFKai-SB", "標楷體", "Kaiti TC", "STKaiti", serif;
+  --r: 12px;
+  --r-sm: 8px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+button, select, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--primary-mid); outline-offset: 2px; }
+
+/* 工具列 */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(255, 255, 255, .94); backdrop-filter: saturate(1.4) blur(8px); border-bottom: 1px solid var(--line); }
+.topbar::before { content: ""; display: block; height: 3px; background: linear-gradient(90deg, var(--primary) 0 72%, var(--fill) 72% 100%); }
+.topbar-in { max-width: 1240px; margin: 0 auto; padding-block: 12px; padding-inline: 16px; display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; margin-right: auto; }
+.brand svg { width: 38px; height: 38px; flex: none; }
+.brand div { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.brand b { font-size: 17px; font-weight: 700; letter-spacing: .03em; }
+.brand span { font-size: 12.5px; color: var(--muted); }
+.soc { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.soc label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+select { padding: 8px 34px 8px 12px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235d6a7e' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 12px center; appearance: none; cursor: pointer; }
+.soc select { max-width: 260px; }
+.tabs { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.tabs button { border: 0; background: transparent; padding: 6px 16px; border-radius: 999px; cursor: pointer; color: var(--muted); font-weight: 500; }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--primary-ink); box-shadow: 0 1px 3px rgba(28, 52, 92, .15); }
+.tabs button:disabled { opacity: .45; cursor: not-allowed; }
+.acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: border-color .15s, background .15s; }
+.btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary-ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn.primary:hover:not(:disabled) { background: var(--primary-ink); color: #fff; }
+.status { font-size: 12.5px; color: var(--muted); width: 100%; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.status .bar { flex: 1 1 160px; max-width: 320px; height: 8px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; }
+.status .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--fill), #e89a45); width: 0; border-radius: 999px; transition: width .35s; }
+#st-prog { color: var(--fill-ink); font-weight: 500; }
+
+/* 填寫畫面 */
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 80px; padding-inline: 16px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; }
+.nav { position: sticky; top: 132px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.nav a { color: var(--ink); text-decoration: none; padding: 7px 12px; border-radius: var(--r-sm); display: flex; gap: 10px; align-items: center; }
+.nav a:hover { background: var(--surface); box-shadow: var(--shadow); }
+.nav .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--fill); flex: none; background: var(--surface); }
+.nav .dot.done { background: var(--fill); }
+.nav .dot.fixed { border-color: var(--primary); }
+.nav .sep { height: 1px; background: var(--line); margin: 6px 12px; }
+main { min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px 24px; min-width: 0; box-shadow: var(--shadow); }
+.card h2 { font-size: 21px; font-weight: 700; margin: 0 0 4px; text-wrap: balance; letter-spacing: .02em; }
+.card h3 { font-size: 15px; font-weight: 700; margin: 18px 0 8px; color: var(--primary-ink); }
+.eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--primary); font-weight: 500; }
+.lead { color: var(--muted); margin: 6px 0 0; max-width: 70ch; }
+.notice { background: var(--warn-soft); color: var(--warn); border-radius: var(--r-sm); padding: 10px 14px; font-size: 13px; }
+
+.hero { background: linear-gradient(135deg, #ffffff 0%, var(--bg-tint) 100%); }
+.hero h2 { font-size: 24px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 16px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; min-width: 0; }
+.tile b { display: flex; align-items: center; gap: 8px; font-size: 14.5px; margin-bottom: 2px; }
+.tile p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.sw.orange { background: var(--fill-soft); border: 1.5px dashed var(--fill); }
+.sw.blue { background: var(--primary-soft); border: 1.5px solid var(--primary); }
+.sw.green { background: var(--ok-soft); border: 1.5px solid var(--ok); }
+.sw.gray { background: var(--bg); border: 1.5px solid var(--muted); }
+.pick { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
+.pick select { min-width: 260px; max-width: 100%; padding-block: 11px; font-size: 16px; }
+
+.basic-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 14px; }
+.field label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
+.field + .field { margin-top: 12px; }
+.field textarea, .field input[type=text] { width: 100%; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); padding: 9px 12px; resize: vertical; transition: border-color .15s, box-shadow .15s; }
+.field textarea { min-height: 70px; }
+.field textarea:focus, .field input:focus { border-color: var(--fill); box-shadow: 0 0 0 3px var(--fill-soft); outline: none; }
+
+/* 五階段時間軸 */
+.stages { position: relative; display: flex; flex-direction: column; gap: 24px; padding-left: 58px; }
+.stages::before { content: ""; position: absolute; left: 21px; top: 24px; bottom: 24px; width: 3px; border-radius: 2px; background: linear-gradient(var(--primary-mid), var(--rail) 40%, #bfe0d3); }
+.stage { position: relative; }
+.stage .badge { position: absolute; left: -58px; top: 18px; width: 45px; height: 45px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: 19px; font-weight: 700; box-shadow: 0 0 0 5px var(--bg); }
+.stage.common .badge { background: var(--surface); color: var(--primary); border: 2px solid var(--primary); font-size: 15px; }
+.stage-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.stage-head h2 { margin: 0; }
+.steps { font-size: 13.5px; color: var(--primary-ink); margin: 10px 0 0; background: var(--primary-soft); border-radius: var(--r-sm); padding: 7px 12px; }
+.pos { color: var(--muted); margin: 10px 0 0; max-width: 72ch; }
+details.base { margin-top: 14px; border: 1px solid var(--primary-mid); border-radius: var(--r-sm); background: var(--primary-soft); }
+details.base summary { cursor: pointer; padding: 10px 14px; color: var(--primary-ink); font-size: 14px; font-weight: 500; list-style: none; display: flex; align-items: center; gap: 8px; }
+details.base summary::-webkit-details-marker { display: none; }
+details.base summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+details.base[open] summary::before { transform: rotate(45deg); }
+details.base .in { padding: 0 16px 12px; }
+.base ul { margin: 6px 0; padding-left: 1.2em; }
+.base li { margin-bottom: 7px; font-size: 14px; }
+.base .gh { font-size: 13.5px; color: var(--primary-ink); margin: 12px 0 2px; font-weight: 700; }
+.tag { font-size: 12px; color: var(--primary); white-space: nowrap; }
+.tag.c { color: var(--muted); }
+.refline { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+
+.fill { margin-top: 16px; border: 1.5px dashed var(--fill-line); background: var(--fill-soft); border-radius: var(--r-sm); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fill .lab { color: var(--fill-ink); font-weight: 700; font-size: 15px; display: flex; gap: 8px; align-items: baseline; }
+.fill .lab .code { background: var(--fill); color: #fff; border-radius: 6px; padding: 0 7px; font-size: 12.5px; font-weight: 700; letter-spacing: .02em; flex: none; }
+.fill textarea { width: 100%; min-height: 150px; border: 1px solid var(--fill-line); border-radius: var(--r-sm); background: var(--surface); padding: 11px 13px; resize: vertical; line-height: 1.75; transition: border-color .15s, box-shadow .15s; }
+.fill textarea:focus { border-color: var(--fill); box-shadow: 0 0 0 3px #fde4c8; outline: none; }
+.count { font-size: 12px; color: var(--muted); text-align: right; margin-top: -4px; }
+.ref-dx summary { cursor: pointer; font-size: 13px; color: var(--fill-ink); }
+
+.tbl-wrap { overflow-x: auto; margin-top: 8px; }
+table.t { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; background: var(--surface); }
+table.t th, table.t td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+table.t tr:last-child td { border-bottom: 0; }
+table.t th { background: var(--primary-soft); color: var(--primary-ink); font-weight: 700; }
+.base table.t { margin: 6px 0 10px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 500; padding: 1px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.lead { background: var(--primary-soft); color: var(--primary-ink); }
+.pill.co { background: var(--ok-soft); color: var(--ok); }
+.pill.ref { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.pill.tbd { background: var(--warn-soft); color: var(--warn); border: 1px dashed var(--warn); }
+.st-yes { color: var(--ok); font-weight: 500; }
+.st-member { color: var(--primary-ink); font-weight: 500; }
+.st-gray { color: var(--warn); font-weight: 500; }
+.refs-list { display: flex; flex-direction: column; gap: 8px; }
+.refs-list .r { display: flex; gap: 8px; align-items: center; }
+.refs-list .r span { width: 2em; text-align: right; color: var(--muted); flex: none; }
+.refs-list input { flex: 1; min-width: 0; border: 1px solid var(--fill-line); border-radius: var(--r-sm); background: var(--surface); padding: 8px 12px; }
+
+/* 手冊預覽 */
+#handbook { padding-block: 28px 60px; padding-inline: 16px; background: #e9edf3; }
+.sheet { background: var(--sheet-bg); color: var(--sheet-ink); font-family: var(--font-doc); width: 100%; max-width: 210mm; margin: 0 auto 24px; padding: 18mm 18mm 20mm; box-shadow: 0 4px 22px rgba(28, 52, 92, .14); font-size: 12pt; line-height: 1.7; }
+.sheet h1 { font-size: 20pt; font-weight: normal; margin: 0 0 10pt; }
+.sheet h2 { font-size: 15pt; font-weight: normal; margin: 18pt 0 8pt; }
+.sheet h2:first-child, .sheet h1:first-child { margin-top: 0; }
+.sheet h3 { font-size: 13pt; font-weight: normal; color: var(--sheet-navy); border-left: 4pt solid var(--sheet-navy); padding-left: 7pt; margin: 16pt 0 4pt; }
+.sheet p { text-align: justify; margin: 0 0 8pt; }
+.sheet .muted { color: var(--sheet-muted); font-size: 10.5pt; }
+.sheet .steps { color: var(--sheet-navy); font-size: 10pt; margin: 0 0 4pt 11pt; background: none; padding: 0; }
+.sheet .pos { color: var(--sheet-muted); font-size: 11pt; margin: 0 0 6pt 11pt; }
+.sheet .bh { color: var(--sheet-navy); font-size: 10.5pt; margin: 6pt 0 2pt 11pt; letter-spacing: .05em; }
+.sheet .gh { font-size: 10.5pt; color: var(--sheet-navy); margin: 6pt 0 2pt 11pt; }
+.sheet ul { margin: 0 0 6pt 11pt; padding-left: 14pt; font-size: 11pt; }
+.sheet li { margin-bottom: 2pt; text-align: justify; }
+.sheet .tag { color: var(--sheet-navy); font-size: 9.5pt; white-space: normal; }
+.sheet .tag.c { color: var(--sheet-muted); }
+.sheet .ref { color: var(--sheet-muted); font-size: 9.5pt; margin: 2pt 0 0 11pt; }
+.sheet .rec { margin: 8pt 0 4pt 11pt; padding: 6pt 10pt; border-left: 3pt solid var(--sheet-fill); }
+.sheet .rec .code { color: var(--sheet-fill); font-size: 10.5pt; }
+.sheet .rec p { margin: 0 0 4pt; }
+.sheet .empty { color: var(--sheet-muted); font-style: italic; }
+.sheet table { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 4pt 0 8pt; }
+.sheet ul + table, .sheet .gh + table { margin-left: 11pt; width: calc(100% - 11pt); }
+.sheet th, .sheet td { border: 1px solid var(--sheet-line); padding: 3pt 5pt; text-align: left; vertical-align: top; line-height: 1.5; }
+.sheet th { background: var(--sheet-head); color: var(--sheet-navy); font-weight: normal; }
+.sheet .cover { min-height: 230mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10pt; }
+.sheet .cover .org { font-size: 20pt; color: var(--sheet-navy); }
+.sheet .cover .ttl { font-size: 30pt; letter-spacing: .12em; }
+.sheet .cover .sub { font-size: 11pt; color: var(--sheet-muted); margin-top: 40pt; line-height: 2; }
+.sheet svg { width: 100%; height: auto; display: block; }
+.sheet .note { color: var(--sheet-muted); font-size: 9.5pt; }
+
+@media (max-width: 900px) {
+  .topbar { position: static; }
+  .wrap { grid-template-columns: minmax(0, 1fr); padding-block: 18px 60px; }
+  .nav { position: static; flex-direction: row; overflow-x: auto; gap: 6px; padding-bottom: 4px; }
+  .nav a { white-space: nowrap; background: var(--surface); border: 1px solid var(--line); }
+  .nav .sep { display: none; }
+  .basic-grid { grid-template-columns: minmax(0, 1fr); }
+  .stages { padding-left: 0; }
+  .stages::before { display: none; }
+  .stage .badge { position: static; width: 36px; height: 36px; font-size: 16px; box-shadow: none; margin-bottom: 8px; }
+  .card { padding: 18px 16px; }
+  .sheet { padding: 8mm 6mm; font-size: 11pt; }
+  .sheet .cover { min-height: 120mm; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+@page { size: A4; margin: 18mm 18mm 20mm; @bottom-center { content: counter(page) " / " counter(pages); font-size: 9pt; color: #777; } }
+@media print {
+  body, #handbook { background: #fff; }
+  .topbar, #editor { display: none !important; }
+  #handbook { display: block !important; padding: 0; }
+  .sheet { box-shadow: none; margin: 0; padding: 0; max-width: none; break-after: page; }
+  .sheet:last-child { break-after: auto; }
+  .sheet .cover { min-height: 240mm; }
+  h2, h3 { break-after: avoid; }
+  .rec, tr, li, .keep { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#2a6fbe"/><path d="M8 15h24" stroke="#b9d2f0" stroke-width="2.5" stroke-linecap="round"/><path d="M8 25h24" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="25" r="3.2" fill="#fff"/><circle cx="26" cy="25" r="3.2" fill="#cf7419"/></svg>
+      <div><b>病主緩和臨床指引模板</b><span>研發小組線上填寫・依現行法</span></div>
+    </div>
+    <div class="soc">
+      <label for="soc">學會</label>
+      <select id="soc"></select>
+    </div>
+    <div class="tabs" role="tablist">
+      <button id="tab-edit" role="tab" aria-selected="true">填寫</button>
+      <button id="tab-book" role="tab" aria-selected="false">手冊預覽</button>
+    </div>
+    <div class="acts">
+      <button class="btn" id="btn-export" type="button">匯出草稿檔</button>
+      <button class="btn" id="btn-import" type="button">匯入草稿檔</button>
+      <input type="file" id="file-import" accept=".json,application/json" hidden>
+      <button class="btn primary" id="btn-print" type="button">列印／存成 PDF</button>
+    </div>
+    <div class="status"><span id="st-prog"></span><span class="bar"><i id="st-bar"></i></span><span id="st-save">請先選擇學會</span></div>
+  </div>
+</header>
+
+<div id="editor">
+  <div class="wrap">
+    <nav class="nav" id="nav" aria-label="階段導覽"></nav>
+    <main id="main"></main>
+  </div>
+</div>
+
+<div id="handbook" hidden></div>
+
+<script>
+'use strict';
+// ====================================================================
+// 一、固定內容（共通基準，依現行法；核心團隊維護；與學會版模板 v0.38 同源）
+// ====================================================================
+const LAW = 'law', CON = 'con', NOTE = 'note', TABLE = 'table';
+const ZH = ['一', '二', '三', '四', '五'];
+const SIT_TABLE = {
+  head: ['情境', '處理', '依據'],
+  rows: [
+    ['AD載明拒絕；病人現時表示接受LST／ANH，且明確表示變更AD', '給予治療，並協助其以書面完成變更；其後意識昏迷者，依變更之意思持續治療。', '§4 I、§8 I；細則§6'],
+    ['AD載明拒絕；病人現時表示接受LST／ANH，無變更AD之意（無明確表示者推定為此）', '依現時意思給予治療，AD不因此失效；日後意識昏迷或無法清楚表達意願且符合臨床條件時，得依AD執行。', '§4 I、§14 I；細則§8'],
+    ['AD未載明拒絕；病人現時以書面表示不接受', '協助病人完成變更AD；變更程序完成前，仍依原AD為之。', '§12 III、IV；細則§8'],
+    ['AD未載明拒絕；病人現時以口頭表示不接受', '依AD終止、撤除或不施行之拒絕，不得以口頭表示為之。請病人以書面為之並完成變更AD，程序完成前依原AD。', '§8 I、§14 I；細則§6']
+  ]
+};
+const STAGES = [
+  { n: 1, name: '病情與ACP、AD之告知',
+    steps: '病情告知 → 告知得經ACP為預立醫療決定 → 重症溝通（SIC）',
+    pos: '病人自主的起點是知情。診斷與病程進展是讓病人知道自己有權預先規劃的關鍵時機。',
+    groups: [{ items: [
+      ['病人對於病情、醫療選項及各選項之可能成效與風險預後，有知情之權利；對於醫師提供之醫療選項，有選擇與決定之權利。', LAW, '§4 I'],
+      ['具完全行為能力之人，得經預立醫療照護諮商為預立醫療決定。', LAW, '§8、§9'],
+      ['病人就診時，醫療機構或醫師應以其所判斷之適當時機及方式，將病情、治療方針、處置、用藥、預後情形及可能之不良反應等告知本人；病人為無行為能力人、限制行為能力人、受輔助宣告之人或不能為意思表示或受意思表示時，醫療機構或醫師應以適當方式告知本人及其關係人。', LAW, '§5 I、II'],
+      ['醫療團隊宜於病人確診嚴重疾病或病程進展之適當時機，主動告知其得經ACP為預立醫療決定。', CON, ''],
+      ['病情告知與得為預立醫療決定之權利告知，均宜循序漸進、兼顧病人之心理準備度；並運用SIC了解病人之病情理解、價值觀與照護目標。', CON, '']
+    ]}],
+    refs: [], fills: ['1A'] },
+  { n: 2, name: '積極治療與及早共同照護',
+    steps: '積極治療 → 嚴重度／預後評估 → 徵得同意後啟動緩和共同照護 → 積極治療與緩和醫療並行',
+    pos: '嚴重度與預後之客觀評估，使醫病雙方對何時討論緩和醫療有共同依據；緩和醫療與積極治療並行，不是治療的終點。',
+    groups: [{ items: [
+      ['對符合重症或病程進展條件之病人，宜及早啟動緩和共同照護，不宜延遲至末期；共同照護自此同時提供積極治療與緩和醫療，並持續至後續各階段。', CON, ''],
+      ['啟動共同照護之時機，以台灣安寧緩和醫學學會提供之各大類疾病共通原則為基礎，並尊重各專科依疾病特性之判斷。', CON, ''],
+      ['病程進展常為再次溝通之契機；宜以SIC重新確認病人對病情、預後之理解與照護目標。', CON, ''],
+      ['是否及何時啟動緩和共同照護，宜以SDM與病人共同形成，並於啟動前徵得病人同意進行緩和共同照護評估；病人無法表達意願時，徵得關係人同意。', CON, ''],
+      ['本階段非§14之法定步驟；法定之照會確認見階段三。', NOTE, '']
+    ]}],
+    refs: [], fills: ['2A', '2B'] },
+  { n: 3, name: '臨床條件確診與照會確認',
+    steps: '主治醫師徵詢意願並啟動程序 → 二位相關專科醫師確診 → 緩和醫療團隊至少二次照會確認 → 病歷記載',
+    pos: '確診在此指的是確認病人是否已符合得依其預立醫療決定終止、撤除或不施行LST／ANH之臨床條件；照會確認則確保病人的預立醫療決定及其內容被正確理解。',
+    groups: [
+      { h: '（一）啟動', items: [
+        ['病人之主治醫師宜於其判斷之適當時機徵詢病人意願，並啟動確診及照會確認程序。', CON, '']
+      ]},
+      { h: '（二）確診', items: [
+        ['病主法§14 I列五款臨床條件（末期病人／不可逆轉之昏迷狀況／永久植物人狀態／極重度失智／其他經中央主管機關公告之病人疾病狀況或痛苦難以忍受、疾病無法治癒且依當時醫療水準無其他合適解決方法之情形）；病人符合其一且有AD者，醫療機構或醫師得依其AD終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部。', LAW, '§14 I'],
+        ['各款應由二位具相關專科醫師資格之醫師確診；第一款依《安寧緩和醫療條例》§3第二款認定（細則§10 I），第二至四款之定義見細則§11–13，第五款依衛福部公告（細則§14）。', LAW, '§14 II、細則§10–14'],
+        ['第一至四款確診醫師之專科資格，依款別分別規定於細則§10–13 II；第五款各疾病之確診專科，依衛福部公告附件逐疾病指定。', LAW, '細則§10–13 II'],
+        ['所稱專科醫師，指領有專科醫師證書者（醫師法§7-1）。', CON, ''],
+        ['向病人或其關係人說明「已符合臨床條件」時，宜以SIC審慎傳達，兼顧資訊揭露與情緒支持。', CON, '']
+      ]},
+      { h: '（三）照會確認', items: [
+        ['確診後，應經緩和醫療團隊至少二次照會，確認病人之AD及其內容。', LAW, '§14 II、細則§15'],
+        ['確診與照會確認事項應詳細記載於病歷。', LAW, '§17']
+      ]}
+    ],
+    refs: ['照會之評估要點、二次照會之間隔與內容、緩和醫療團隊之組成，由台灣安寧緩和醫學學會提供共通建議；照會之啟動流程與聯絡窗口，由各醫院依院內流程訂定。'], fills: ['3A'] },
+  { n: 4, name: '意願確認與治療決策',
+    steps: '意思能力評估 →〔有意思能力〕§15確認、臨床意思表示與AD不一致之處理／〔意識昏迷或無法清楚表達意願〕HCA依AD代理表達 → 限時嘗試之決策',
+    pos: '尊重病人的決定是各階段的核心；確認意願的目的是實現它，不是重新審查它。限時嘗試則使是否繼續治療有明確之評估時點與停損點。',
+    groups: [
+      { h: '（一）病人有意思能力', items: [
+        ['意思能力之判斷，以病人能理解並表達其對該決定之意思為已足，不宜採過度嚴苛之標準。', CON, ''],
+        ['醫療機構或醫師對第一款（末期病人）及第五款病人，於開始執行AD前，應向有意思能力之意願人確認該決定之內容及範圍。', LAW, '§15'],
+        ['病人於臨床醫療過程中之意思表示與其AD不一致時，依下表處理。', LAW, '§8 I、§12 III、IV；細則§6、§8'],
+        [SIT_TABLE, TABLE, '']
+      ]},
+      { h: '（二）病人意識昏迷或無法清楚表達意願', items: [
+        ['由醫療委任代理人依其AD內容代理表達；有二人以上者均得單獨代理；有指定順位者依順位行使，先順位者不為意思表示或無法聯繫時由後順位者行使，後順位者已為意思表示後，先順位者不得提出不同意思表示。', LAW, '§10、細則§7 II'],
+        ['醫療委任代理人不為§10 III第三款之代理表達，或經醫療機構確認無法聯繫時，意願人之預立醫療決定不予執行。', LAW, '細則§7 I'],
+        ['前點之不予執行，僅及於須由醫療委任代理人代理表達之部分（衛部醫字第1081660131號函）：預立醫療決定書選項三（由醫療委任代理人代為決定）者，該項無從執行；選項二（限時嘗試）者，僅期間內提前停止之權落空，仍於期滿後停止；選項一、四不受影響。', CON, '']
+      ]},
+      { h: '（三）限時嘗試', items: [
+        ['病人之預立醫療決定已載明限時嘗試（衛福部公告之預立醫療決定書選項二：於一段時間內接受嘗試，之後停止）者，得依其所載之期間與條件執行；期間內得隨時表達停止之意願者，第一、五款為意識清楚之本人或醫療委任代理人，第二至四款為醫療委任代理人。', LAW, '§8 III及預立醫療決定書格式'],
+        ['AD未涵蓋或療效不確定之治療，宜以SDM與病人共同約定限時嘗試之期程、評估指標與停損點；屆期未達預期療效者，轉銜為以緩和醫療為主之照護。', CON, '']
+      ]},
+      { h: '（四）各情形共通', items: [
+        ['病人之關係人不得妨礙醫療機構或醫師依病人就醫療選項決定之作為。', LAW, '§4 II'],
+        ['宜於各階段使病人之關係人知悉其AD及決定；以SDM整合臨床選項與病人之價值觀，以SIC釐清照護目標與不可接受之底線。', CON, '']
+      ]}
+    ],
+    refs: [], fills: ['4A', '4B', '4C'] },
+  { n: 5, name: '執行、緩和醫療與善終照護',
+    steps: '依AD終止、撤除或不施行 → 持續緩和醫療 → 病歷記載 → 全人照護',
+    pos: '執行病人的決定，是尊重病人自主的最後一步；法律所定者為門檻，持續的緩和醫療與其後的全人照護才是照護的實質。',
+    groups: [{ items: [
+      ['醫療機構或醫師依AD終止、撤除或不施行維持生命治療或人工營養及流體餵養時，應提供病人緩和醫療及其他適當處置；醫療機構依其人員、設備及專長能力無法提供時，應建議轉診並提供協助。', LAW, '§16'],
+      ['醫療機構或醫師遇危急病人，除符合§14 I、II及《安寧緩和醫療條例》相關規定者外，仍應先予適當急救或採取必要措施，不得無故拖延。', LAW, '§7'],
+      ['所執行事項應詳細記載於病歷。', LAW, '§17'],
+      ['依§14終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部者，不負刑事與行政責任；因此所生之損害，除有故意或重大過失且違反病人預立醫療決定者外，不負賠償責任。', LAW, '§14 V'],
+      ['撤除維持生命治療（如撤除呼吸器）或終止人工營養及流體餵養時，宜有標準化之症狀控制與舒適照護流程；其共通標準由台灣安寧緩和醫學學會提供，並由各專科予以客製化。', CON, ''],
+      ['執行後宜持續提供身、心、社會、靈性之全人照護，由多專業團隊（社工師、心理師、靈性關懷人員／宗教師、藝術治療師等）協力；宜以SIC持續討論照護目標並與關係人溝通，提供預期性哀傷支持。', CON, '']
+    ]}],
+    refs: ['法源另見§3第七款（緩和醫療之定義）。全人照護內容與團隊角色由台灣安寧緩和醫學學會提供。'], fills: ['5A'] }
+];
+const COMMON = {
+  name: '各階段通用｜醫療機構或醫師無法執行AD時之處理',
+  pos: '醫療機構或醫師得不執行病人之AD，但AD不因此失效——以告知與轉診接力，確保病人意願仍有實現之途徑。',
+  items: [
+    ['醫療機構或醫師依其專業或意願無法執行病人AD時，得不施行；惟應將其情形告知病人或關係人。', LAW, '§14 III、IV'],
+    ['醫療機構或醫師不施行時，應建議病人轉診並提供協助。', LAW, '細則§16'],
+    ['醫師於任一階段（含受請求確診／照會之初）表明不執行時，均適用上開處理。', CON, '']
+  ],
+  refs: ['轉診銜接之在地流程，由各醫院依院內流程訂定。']
+};
+const OVERVIEW = [
+  ['一', '病情與ACP、AD之告知', '病情告知→告知得經ACP為預立醫療決定→重症溝通（SIC）', '把握診斷之溝通契機，讓病人知道自己有權預先規劃', '§4、§5、§8、§9'],
+  ['二', '積極治療與及早共同照護', '積極治療→嚴重度／預後評估→徵得同意後啟動緩和共同照護→積極治療與緩和醫療並行', '以專科指標客觀判定進展，及早啟動共同照護，不待末期', '—（臨床建議）'],
+  ['三', '臨床條件確診與照會確認', '主治醫師徵詢意願並啟動程序→二位相關專科醫師確診→緩和醫療團隊至少二次照會確認→病歷記載', '§14 II之法定程序：二位相關專科醫師確診臨床條件，緩和醫療團隊確認病人之AD及其內容', '§14 I、II；細則§10–14、§15；§17'],
+  ['四', '意願確認與治療決策', '意思能力評估→有意思能力：§15確認、臨床意思表示與AD不一致之處理／意識昏迷或無法清楚表達意願：HCA依AD代理表達→限時嘗試之決策', '尊重病人之AD；以SDM整合選項與病人之價值觀', '§15、§10、§4 II、§8、§12 III、IV；細則§6、§7、§8；預立醫療決定書格式'],
+  ['五', '執行、緩和醫療與善終照護', '依AD終止、撤除或不施行→持續緩和醫療→病歷記載→全人照護', '法律所定者為門檻，持續緩和醫療與全人照護為實質', '§16、§7、§17、§14 V、§3第七款'],
+  ['※', '各階段通用', '醫療機構或醫師無法執行AD時：告知→建議轉診→提供協助', '得不施行，惟AD不因此失效', '§14 III、IV；細則§16']
+];
+const RECORDS = [
+  ['臨床條件確診', '二位相關專科醫師之姓名、專科別、確診日期；所符合之款別與依據之檢查', '§14 II；細則§10–14'],
+  ['緩和醫療團隊照會確認', '照會日期（至少二次）、團隊成員、確認之AD內容', '§14 II；細則§15'],
+  ['意願確認', '意思能力評估方式與結果★；§15確認之對象、日期與確認之內容範圍；或HCA身分證明與代理表達內容★', '§15；§10（★）'],
+  ['意思表示與AD之關係', '病人臨床書面明示之意思表示（如有）及其與AD之一致性處理', '§12 III、IV；細則§8'],
+  ['執行', '終止、撤除或不施行之項目、時間、執行醫師；限時嘗試之約定與屆期評估★', '§14 I'],
+  ['緩和醫療★', '持續提供之緩和醫療及其他適當處置；無法提供時之轉診建議與協助', '§16（★建議記載）'],
+  ['無法執行時', '不施行之事由、告知對象與日期、轉診建議與協助內容', '§14 III、IV；細則§16'],
+  ['文件保存', '同意書、病人之書面意思表示及預立醫療決定連同病歷保存', '§17']
+];
+const LAWS = [
+  ['§3', '用語定義：維持生命治療、人工營養及流體餵養、預立醫療決定、意願人、醫療委任代理人、預立醫療照護諮商、緩和醫療。'],
+  ['§4', '病人之知情、選擇與決定權；病人之法定代理人、配偶、親屬、醫療委任代理人或與病人有特別密切關係之人（統稱關係人）不得妨礙醫療機構或醫師依病人就醫療選項決定之作為。'],
+  ['§5', '病情告知：醫療機構或醫師應以其所判斷之適當時機及方式，將病情、治療方針、處置、用藥、預後情形及可能之不良反應等告知本人；病人未明示反對時，亦得告知其關係人（I）。病人為無行為能力人、限制行為能力人、受輔助宣告之人或不能為意思表示或受意思表示時，應以適當方式告知本人及其關係人（II）。'],
+  ['§7', '醫療機構或醫師遇危急病人，除符合§14 I、II及《安寧緩和醫療條例》相關規定者外，仍應先予適當急救或採取必要措施，不得無故拖延。'],
+  ['§8、§9', '具完全行為能力之人得經預立醫療照護諮商為預立醫療決定，並得隨時以書面撤回或變更之；其內容、範圍及格式由中央主管機關定之；應經醫療機構核章，並經公證人公證或具完全行為能力者二人以上在場見證，且註記於全民健康保險憑證。'],
+  ['§10', '醫療委任代理人之資格與權限；於意願人意識昏迷或無法清楚表達意願時代理表達；二人以上者均得單獨代理。'],
+  ['細則§6、§7', '以書面撤回或變更AD者，應向醫療機構為之，由醫療機構以掃描電子檔存記，並由中央主管機關更新全民健康保險憑證註記（§6）。醫療委任代理人不為代理表達，或經醫療機構確認無法聯繫時，AD不予執行；二人以上得就代理表達之權限指定順位，先順位者不為意思表示或無法聯繫時由後順位者行使，後順位者已為意思表示後，先順位者不得提出不同意思表示（§7）。'],
+  ['§12 III、IV、細則§8', 'AD與臨床醫療過程中書面明示之意思表示不一致時，應完成變更AD；撤回或變更前，醫療機構應依其書面明示之意思表示為之；但書面明示為不接受維持生命治療或人工營養及流體餵養者，程序完成前仍依原AD（適用方向見階段四情境表）。'],
+  ['§14', '五款臨床條件；二位相關專科醫師確診＋緩和醫療團隊至少二次照會確認；醫療機構或醫師依專業或意願無法執行得不施行，並應告知；依本條終止、撤除或不施行者不負刑事與行政責任，除故意或重大過失且違反AD外不負賠償責任。'],
+  ['§15', '對第一款及第五款病人，執行AD前應向有意思能力之意願人確認決定之內容及範圍。'],
+  ['§16', '終止、撤除或不施行維持生命治療或人工營養及流體餵養時應提供緩和醫療及其他適當處置；無法提供應建議轉診並協助。'],
+  ['§17', '§12 III、§14及§15所定事項應詳細記載於病歷；同意書、病人之書面意思表示及預立醫療決定應連同病歷保存。'],
+  ['細則§10–13', '第一至四款臨床條件之定義與確診醫師之專科資格（末期：與該疾病診斷或治療相關；第二、三款：神經醫學相關；第四款：神經或精神醫學相關）；第五款由中央主管機關公告（細則§14）。'],
+  ['細則§15、§16', '二次照會係於確診後協助確認病人之AD及其內容；依§14 III不施行時應建議轉診並提供協助。']
+];
+const ABBR = [
+  ['病主法', '病人自主權利法'], ['細則', '病人自主權利法施行細則'],
+  ['ACP', '預立醫療照護諮商'], ['AD', '預立醫療決定'], ['HCA', '醫療委任代理人'],
+  ['LST', '維持生命治療'], ['ANH', '人工營養及流體餵養'],
+  ['SDM', '醫病共享決策（Shared Decision Making）'], ['SIC', '重症溝通（Serious Illness Conversation）']
+];
+// 第五款公告12類（衛福部110.04.13公告附件；確診專科照錄）
+const K5 = [
+  [1, '囊狀纖維化症', '二位胸腔醫學、內科醫學或小兒醫學專科', ['胸腔', '內科', '小兒']],
+  [2, '亨丁頓氏舞蹈症', '二位神經醫學、精神醫學專科', ['神經', '精神']],
+  [3, '脊髓小腦退化性動作協調障礙', '二位神經或小兒神經醫學專科', ['神經', '小兒神經']],
+  [4, '脊髓性肌肉萎縮症', '二位神經、小兒神經、胸腔或復健醫學專科', ['神經', '小兒神經', '胸腔', '復健']],
+  [5, '肌萎縮性側索硬化症（漸凍症）', '二位神經、胸腔或復健醫學專科', ['神經', '胸腔', '復健']],
+  [6, '多發性系統萎縮症', '二位神經醫學專科', ['神經']],
+  [7, '裘馨氏肌肉失養症', '二位神經、小兒神經、心臟、胸腔或復健醫學專科', ['神經', '小兒神經', '心臟', '胸腔', '復健']],
+  [8, '肢帶型肌失養症', '二位神經、小兒神經、心臟、胸腔或復健醫學專科', ['神經', '小兒神經', '心臟', '胸腔', '復健']],
+  [9, 'Nemaline 線狀肌肉病變', '二位神經、小兒神經、胸腔或復健醫學專科', ['神經', '小兒神經', '胸腔', '復健']],
+  [10, '原發性肺動脈高壓', '二位心臟或胸腔醫學專科', ['心臟', '胸腔']],
+  [11, '遺傳性表皮分解性水泡症', '二位皮膚、整形外科或重症醫學專科', ['皮膚', '整形外科', '重症']],
+  [12, '先天性多發性關節攣縮症', '二位神經、小兒神經、胸腔或復健醫學專科', ['神經', '小兒神經', '胸腔', '復健']]
+];
+
+// ====================================================================
+// 二、學會資料（核心團隊預設；核心小組會議確認前為草案）
+//   m1／n23／n4：yes＝依法得擔任；member＝依會員個人之部定專科；gray＝待確認；no＝不擔任
+//   k5：公告確診專科關鍵字 → 狀態；roles：lead主責／co協同／ref轉介／tbd待確認
+// ====================================================================
+const ALL_LEAD = { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' };
+const SOCIETIES = [
+  { id: 'dementia', name: '台灣臨床失智症學會', domain: '失智症照護', base: '會員多為神經科或精神科專科醫師',
+    m1: 'yes', n23: 'member', n4: 'member', k5: { '神經': 'member', '精神': 'member' }, roles: ALL_LEAD },
+  { id: 'neuro', name: '台灣神經醫學會', domain: '神經醫學', base: '神經科（部定專科）',
+    m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'yes' }, roles: ALL_LEAD },
+  { id: 'neurosurg', name: '台灣神經外科醫學會', domain: '神經外科', base: '神經外科（部定專科）',
+    m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'gray' }, roles: ALL_LEAD,
+    note: '第五款公告所稱「神經醫學專科」是否包含神經外科，待確認。' },
+  { id: 'psych', name: '台灣精神醫學會', domain: '精神醫學', base: '精神科（部定專科）',
+    m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, roles: ALL_LEAD },
+  { id: 'geripsych', name: '台灣老年精神醫學會', domain: '老年精神醫學', base: '精神科（部定專科）；老年精神醫學為其次專科',
+    m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, roles: ALL_LEAD },
+  { id: 'emerg', name: '台灣急診醫學會', domain: '急診醫學', base: '急診醫學科（部定專科）',
+    m1: 'gray', m1n: '急診醫師是否屬「與該疾病診斷或治療相關」，待確認', n23: 'no', n4: 'no', k5: {},
+    roles: { 1: 'co', 2: 'co', 3: 'tbd', 4: 'lead', 5: 'lead' },
+    note: '急診常面對§7危急病人之急救義務與符合§14者之區分。' },
+  { id: 'critical', name: '中華民國重症醫學會', domain: '重症醫學', base: '重症醫學科（部定專科）',
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '重症': 'yes' },
+    roles: { 1: 'co', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' } },
+  { id: 'tcm', name: '台灣中醫家庭醫學醫學會', domain: '中醫', base: '中醫師',
+    m1: 'gray', n23: 'gray', n4: 'gray', k5: {},
+    roles: { 1: 'co', 2: 'co', 3: 'ref', 4: 'co', 5: 'tbd' },
+    note: '確診資格、病人僅於中醫就診時之轉介路徑，以及撤除後之緩和醫療由中醫提供或與西醫團隊結合，待核心小組與中醫小組確認。' },
+  { id: 'hospice', name: '台灣安寧緩和醫學學會', domain: '安寧緩和醫療', base: '安寧緩和醫學為學會專科；會員之部定專科多為家庭醫學科、內科等',
+    m1: 'gray', m1n: '依「與該疾病治療相關」有納入空間，惟無主管機關函釋；穩妥做法為二位確診醫師中至少一位與該疾病診斷直接相關', n23: 'no', n4: 'no', k5: {},
+    roles: { 1: 'co', 2: 'lead', 3: 'lead', 4: 'co', 5: 'lead' },
+    note: '本學會另提供各階段之緩和醫療共通建議；階段三之主責為緩和醫療團隊照會確認。' },
+  { id: 'nephro', name: '台灣腎臟醫學會', domain: '腎臟醫學', base: '內科（部定專科）；腎臟醫學為其次專科',
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '內科': 'yes' }, roles: ALL_LEAD },
+  { id: 'geri', name: '台灣老年學暨老年醫學會', domain: '老年醫學', base: '老年醫學為學會專科（非部定）；會員之部定專科多為內科、家庭醫學科',
+    m1: 'member', n23: 'no', n4: 'gray', k5: {},
+    roles: { 1: 'lead', 2: 'lead', 3: 'tbd', 4: 'lead', 5: 'lead' },
+    note: '老年醫學非部定專科，且與「神經或精神醫學相關」不直接對應；第四款資格依會員個人之部定專科，待確認。' },
+  { id: 'cardio', name: '中華民國心臟學會', domain: '心臟醫學', base: '內科（部定專科）；心臟醫學為其次專科',
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '心臟': 'yes', '內科': 'yes' }, roles: ALL_LEAD },
+  { id: 'pedpulm', name: '台灣兒童胸腔暨重症醫學會', domain: '兒童胸腔及重症醫學', base: '兒科（部定專科）；兒童胸腔及重症為其次專科',
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '小兒': 'yes', '胸腔': 'gray', '重症': 'gray' }, roles: ALL_LEAD,
+    note: '第五款公告所稱「胸腔醫學專科」「重症醫學專科」是否包含兒童胸腔及重症次專科，待確認。' },
+  { id: 'fammed', name: '台灣家庭醫學醫學會', domain: '家庭醫學', base: '家庭醫學科（部定專科）',
+    m1: 'gray', m1n: '依個案疾病，是否屬「與該疾病診斷或治療相關」，待確認', n23: 'no', n4: 'no', k5: {},
+    roles: { 1: 'lead', 2: 'lead', 3: 'tbd', 4: 'lead', 5: 'lead' } },
+  { id: 'pulm', name: '台灣胸腔暨重症加護醫學會', domain: '胸腔暨重症加護醫學', base: '內科（部定專科）；胸腔暨重症加護為其次專科',
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '胸腔': 'yes', '內科': 'yes', '重症': 'gray' }, roles: ALL_LEAD,
+    note: '第五款公告所稱「重症醫學專科」是否包含胸腔暨重症加護次專科，待確認（重症醫學科另為部定專科）。' },
+  { id: 'radonc', name: '台灣放射腫瘤學會', domain: '放射腫瘤', base: '放射腫瘤科（部定專科）',
+    m1: 'yes', n23: 'no', n4: 'no', k5: {},
+    roles: { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'co' } }
+];
+const ROLE_LABEL = { lead: '主責', co: '協同', ref: '轉介', tbd: '待確認' };
+const ST_LABEL = { yes: '本會專科醫師得擔任', member: '依會員個人之部定專科', gray: '待核心小組確認' };
+const RANK = { yes: 3, member: 2, gray: 1 };
+
+function profile(soc) {
+  const diag = [];
+  if (soc.roles[3] === 'ref') return { diag, roles: soc.roles };
+  if (soc.m1 && soc.m1 !== 'no') diag.push({ label: '第一款　末期病人', sub: soc.m1n || '', basis: '細則§10 II：二位與該疾病診斷或治療相關之專科醫師', st: soc.m1 });
+  if (soc.n23 && soc.n23 !== 'no') {
+    diag.push({ label: '第二款　不可逆轉之昏迷狀況', basis: '細則§11 II：二位神經醫學相關之專科醫師', st: soc.n23 });
+    diag.push({ label: '第三款　永久植物人狀態', basis: '細則§12 II：二位神經醫學相關之專科醫師', st: soc.n23 });
+  }
+  if (soc.n4 && soc.n4 !== 'no') diag.push({ label: '第四款　極重度失智', basis: '細則§13 II：二位神經或精神醫學相關之專科醫師', st: soc.n4 });
+  K5.forEach(([no, nm, spec, keys]) => {
+    let best = null;
+    keys.forEach(k => { const s = (soc.k5 || {})[k]; if (s && (!best || RANK[s] > RANK[best])) best = s; });
+    if (best) diag.push({ label: '第五款　' + nm, basis: '公告：' + spec, st: best });
+  });
+  return { diag, roles: soc.roles };
+}
+
+// ====================================================================
+// 三、填寫格（只列題目；內容與篇幅由學會自訂）
+// ====================================================================
+const FILLS = {
+  '1A': { stage: 1, label: '本專科告知病人得經ACP為預立醫療決定之時機與方式' },
+  '2A': { stage: 2, label: '本專科積極治療之方針' },
+  '2B': { stage: 2, label: '本專科啟動緩和共同照護之時機與指標' },
+  '3A': { stage: 3, label: '本專科對應款別與疾病之操作型確診指標及所需檢查', refLabel: '本專科轉介或會同確診之專科與流程' },
+  '4A': { stage: 4, label: '本專科意思能力之評估方式' },
+  '4B': { stage: 4, label: '臨床書面或口頭意思表示與AD不一致時之處理流程' },
+  '4C': { stage: 4, label: '限時嘗試之適用情況、期程與停損點' },
+  '5A': { stage: 5, label: '本專科常見執行情境之處置、協作分工與緩和醫療之專科調整' }
+};
+const CODES = Object.keys(FILLS);
+function codeOf(k) { return k[0] + '-' + k[1]; }
+function firstSentence(t) {
+  const s = (t || '').trim(); if (!s) return '';
+  const m = s.match(/^[^。！？\n]*[。！？]?/);
+  return (m ? m[0] : s).trim();
+}
+
+// ====================================================================
+// 四、狀態與儲存
+// ====================================================================
+const KEY = 'pspg-template-v2:';
+const state = { socId: '', data: null, view: 'edit' };
+function blank() {
+  const f = {}; CODES.forEach(k => { f[k] = ''; });
+  return { meta: { target: '', team: '', version: '' }, f, refs: ['', '', ''] };
+}
+function socOf(id) { return SOCIETIES.find(s => s.id === id); }
+function load(id) {
+  let d = null;
+  try { const raw = localStorage.getItem(KEY + id); if (raw) d = JSON.parse(raw); } catch (e) { d = null; }
+  const b = blank();
+  if (!d) return b;
+  d.meta = Object.assign(b.meta, d.meta || {});
+  d.f = Object.assign(b.f, d.f || {});
+  d.refs = Array.isArray(d.refs) && d.refs.length ? d.refs : b.refs;
+  return d;
+}
+let saveTimer = null;
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(KEY + state.socId, JSON.stringify(state.data));
+      localStorage.setItem(KEY + 'last', state.socId);
+      $('#st-save').textContent = '已自動儲存於本機瀏覽器 ' + new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      $('#st-save').textContent = '此瀏覽器無法自動儲存，請以「匯出草稿檔」保存';
+    }
+  }, 400);
+}
+
+// ====================================================================
+// 五、工具
+// ====================================================================
+function $(s, r) { return (r || document).querySelector(s); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function br(s) { return esc(s).replace(/\n/g, '<br>'); }
+function setPath(o, p, v) {
+  const ks = p.split('.'); let a = o;
+  ks.slice(0, -1).forEach(k => { if (a[k] == null || typeof a[k] !== 'object') a[k] = {}; a = a[k]; });
+  a[ks[ks.length - 1]] = v;
+}
+function tag(kind, sfx) {
+  if (kind === LAW) return `<span class="tag">〔法定要求〕${esc(sfx)}</span>`;
+  if (kind === CON) return `<span class="tag c">〔共識原則〕${esc(sfx)}</span>`;
+  return '';
+}
+function sitTableHTML(cls) {
+  const w = ['30%', '50%', '20%'];
+  return `<table${cls ? ` class="${cls}"` : ''}><tr>${SIT_TABLE.head.map((h, i) => `<th style="width:${w[i]}">${esc(h)}</th>`).join('')}</tr>${SIT_TABLE.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>`;
+}
+function groupsHTML(groups, inEditor) {
+  return groups.map(g => {
+    let out = g.h ? `<div class="gh">${esc(g.h)}</div>` : '';
+    let lis = [];
+    g.items.forEach(([t, k, s]) => {
+      if (k === TABLE) {
+        if (lis.length) { out += `<ul>${lis.join('')}</ul>`; lis = []; }
+        out += inEditor ? `<div class="tbl-wrap">${sitTableHTML('t')}</div>` : sitTableHTML('');
+      } else lis.push(`<li>${esc(t)}${tag(k, s)}</li>`);
+    });
+    if (lis.length) out += `<ul>${lis.join('')}</ul>`;
+    return out;
+  }).join('');
+}
+function isDone(k) { return !!(state.data.f[k] || '').trim(); }
+
+// ====================================================================
+// 六、填寫畫面
+// ====================================================================
+function rolesTable(prof) {
+  return `<div class="tbl-wrap"><table class="t"><tr><th></th>${STAGES.map(s => `<th>${ZH[s.n - 1]}　${esc(s.name)}</th>`).join('')}</tr>
+    <tr><td>本會角色</td>${[1, 2, 3, 4, 5].map(n => `<td><span class="pill ${prof.roles[n]}">${ROLE_LABEL[prof.roles[n]]}</span></td>`).join('')}</tr></table></div>`;
+}
+function diagTable(prof) {
+  if (!prof.diag.length) return '<p class="lead">本會於階段三之預設角色為轉介，請於【3-A】填寫轉介或會同確診之專科與流程。</p>';
+  return `<div class="tbl-wrap"><table class="t"><tr><th>款別／疾病</th><th>確診資格依據</th><th>本會</th></tr>
+    ${prof.diag.map(d => `<tr><td>${esc(d.label)}${d.sub ? `<br><span style="color:var(--muted)">${esc(d.sub)}</span>` : ''}</td><td>${esc(d.basis)}</td><td class="st-${d.st}">${ST_LABEL[d.st]}</td></tr>`).join('')}</table></div>`;
+}
+function fillHTML(k, prof) {
+  const F = FILLS[k];
+  const label = k === '3A' && !prof.diag.length ? F.refLabel : F.label;
+  const ref3 = k === '3A' && prof.diag.length ? `<details class="ref-dx"><summary>本會可擔任確診之款別與疾病（共 ${prof.diag.length} 項，核心團隊預設）</summary>${diagTable(prof)}</details>` : '';
+  const v = state.data.f[k] || '';
+  return `<div class="fill" id="card-${k}">
+    <label class="lab" for="f-${k}"><span class="code">${codeOf(k)}</span><span>${esc(label)}</span></label>
+    ${ref3}
+    <textarea id="f-${k}" data-k="f.${k}">${esc(v)}</textarea>
+    <div class="count" id="cnt-${k}">${v.length} 字</div>
+  </div>`;
+}
+const TILES = `<div class="tiles">
+  <div class="tile"><b><span class="sw orange"></span>填寫橘色框</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。</p></div>
+  <div class="tile"><b><span class="sw blue"></span>閱讀藍色框</b><p>共通基準由核心團隊依現行法維護，請勿修改，點開即可閱讀。</p></div>
+  <div class="tile"><b><span class="sw green"></span>角色已預設</b><p>本會於各階段之角色與可擔任確診之款別，由核心團隊依法定資格預設，本會不勾選。</p></div>
+  <div class="tile"><b><span class="sw gray"></span>記得匯出草稿</b><p>內容自動存在這台電腦的瀏覽器。換電腦或交核心團隊前，請按「匯出草稿檔」。</p></div>
+</div>`;
+function renderPicker() {
+  $('#nav').innerHTML = '';
+  $('#main').innerHTML = `<section class="card hero">
+    <div class="eyebrow">給各學會研發小組</div>
+    <h2>本模板之使用</h2>
+    <p class="lead">本網頁供各學會研發小組訂定「○○醫學會病主緩和臨床指引」。逐階段往下填寫，完成後即可預覽並列印成手冊。</p>
+    ${TILES}
+    <div class="pick">
+      <select id="soc-pick" aria-label="選擇學會"><option value="">請選擇您的學會</option>${SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select>
+    </div>
+  </section>`;
+  $('#soc-pick').addEventListener('change', e => { if (e.target.value) switchSoc(e.target.value); });
+  $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
+  ['#btn-export', '#btn-print', '#tab-book'].forEach(s => { $(s).disabled = true; });
+}
+function renderEditor() {
+  const soc = socOf(state.socId), prof = profile(soc), d = state.data;
+  ['#btn-export', '#btn-print', '#tab-book'].forEach(s => { $(s).disabled = false; });
+  $('#nav').innerHTML = [`<a href="#sec-guide"><span class="dot fixed"></span>本模板之使用</a>`, `<a href="#sec-basic"><span class="dot fixed"></span>本會資料與角色</a>`, `<div class="sep"></div>`]
+    .concat(STAGES.map(s => `<a href="#sec-s${s.n}"><span class="dot" data-stage="${s.n}"></span>階段${ZH[s.n - 1]}　${esc(s.name)}</a>`))
+    .concat([`<a href="#sec-common"><span class="dot fixed"></span>各階段通用</a>`, `<div class="sep"></div>`, `<a href="#sec-refs"><span class="dot fixed"></span>參考文獻</a>`]).join('');
+
+  const guide = `<section class="card hero" id="sec-guide">
+    <div class="eyebrow">給研發小組</div>
+    <h2>本模板之使用</h2>
+    <p class="lead">本網頁供研發小組訂定「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
+    ${TILES}
+  </section>`;
+
+  const basic = `<section class="card" id="sec-basic">
+    <div class="eyebrow">本會資料</div>
+    <h2>${esc(soc.name)}</h2>
+    <p class="lead">部定專科基礎：${esc(soc.base)}</p>
+    <div class="basic-grid">
+      <div>
+        <div class="field"><label for="m-target">適用對象（本專科病人群）</label><textarea id="m-target" data-k="meta.target">${esc(d.meta.target)}</textarea></div>
+        <div class="field"><label for="m-team">研發小組（召集人與成員）</label><textarea id="m-team" data-k="meta.team">${esc(d.meta.team)}</textarea></div>
+        <div class="field"><label for="m-version">版本與日期</label><input type="text" id="m-version" data-k="meta.version" value="${esc(d.meta.version)}"></div>
+      </div>
+      <div>
+        <h3 style="margin-top:0">本會於各階段之角色</h3>
+        ${rolesTable(prof)}
+        <h3>階段三可擔任確診之款別與疾病</h3>
+        ${diagTable(prof)}
+      </div>
+    </div>
+    ${soc.note ? `<p class="refline">${esc(soc.note)}</p>` : ''}
+    <p class="notice" style="margin-top:14px">以上角色與確診資格為核心團隊依病主法施行細則§10–13及第五款公告之預設；標示「待確認」者，將於核心小組會議討論後更新。</p>
+  </section>`;
+
+  const stages = STAGES.map(s => `<section class="card stage" id="sec-s${s.n}">
+    <div class="badge" aria-hidden="true">${ZH[s.n - 1]}</div>
+    <div class="eyebrow">階段${ZH[s.n - 1]}</div>
+    <div class="stage-head"><h2>${esc(s.name)}</h2><span class="pill ${prof.roles[s.n]}">本會：${ROLE_LABEL[prof.roles[s.n]]}</span></div>
+    <p class="steps">${esc(s.steps)}</p>
+    <p class="pos">${esc(s.pos)}</p>
+    <details class="base"><summary>共通基準（核心團隊依現行法維護，請勿修改）</summary><div class="in">${groupsHTML(s.groups, true)}${s.refs.map(r => `<p class="refline">${esc(r)}</p>`).join('')}</div></details>
+    ${s.fills.map(k => fillHTML(k, prof)).join('')}
+  </section>`).join('');
+
+  const common = `<section class="card stage common" id="sec-common">
+    <div class="badge" aria-hidden="true">※</div>
+    <div class="eyebrow">各階段通用</div>
+    <h2>醫療機構或醫師無法執行AD時之處理</h2>
+    <p class="pos">${esc(COMMON.pos)}</p>
+    <details class="base"><summary>共通基準（核心團隊依現行法維護，請勿修改）</summary><div class="in"><ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<p class="refline">${esc(r)}</p>`).join('')}</div></details>
+  </section>`;
+
+  const refs = `<section class="card" id="sec-refs">
+    <div class="eyebrow">選填</div>
+    <h2>參考文獻</h2>
+    <p class="lead">本會建議所依據之文獻，建議採APA或Vancouver格式。</p>
+    <div class="fill"><div class="refs-list" id="refs-list">${d.refs.map((r, i) => `<div class="r"><span>${i + 1}.</span><input type="text" id="ref-${i}" data-k="refs.${i}" value="${esc(r)}" aria-label="文獻 ${i + 1}"></div>`).join('')}</div>
+    <div><button class="btn" type="button" id="btn-addref">新增一筆</button></div></div>
+  </section>`;
+
+  $('#main').innerHTML = guide + basic + `<div class="stages">${stages}${common}</div>` + refs;
+  updateProgress();
+}
+function updateProgress() {
+  const done = CODES.filter(isDone).length;
+  $('#st-prog').textContent = `已填 ${done}／${CODES.length} 格`;
+  $('#st-bar').style.width = (done / CODES.length * 100) + '%';
+  STAGES.forEach(s => { const dot = document.querySelector(`.dot[data-stage="${s.n}"]`); if (dot) dot.classList.toggle('done', s.fills.every(isDone)); });
+}
+function onInput(e) {
+  const el = e.target, k = el.dataset && el.dataset.k;
+  if (!k) return;
+  setPath(state.data, k, el.value);
+  const m = k.match(/^f\.(\w+)$/);
+  if (m) { const c = $('#cnt-' + m[1]); if (c) c.textContent = el.value.length + ' 字'; }
+  updateProgress();
+  save();
+}
+
+// ====================================================================
+// 七、手冊
+// ====================================================================
+function overviewSVG(prof) {
+  const xs = [110, 245, 380, 515, 650];
+  const names = [['病情與ACP、AD', '之告知'], ['積極治療與', '及早共同照護'], ['臨床條件確診', '與照會確認'], ['意願確認', '與治療決策'], ['執行、緩和醫療', '與善終照護']];
+  const tx = ['診斷', '積極治療與病程進展', '治療調整', '照護目標轉換'];
+  let s = `<svg viewBox="0 0 740 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="五階段總覽" font-family="Times New Roman, BiauKai, 標楷體, serif">`;
+  s += `<rect x="450" y="10" width="280" height="210" fill="#6b4c9a" opacity=".07"/><text x="590" y="26" font-size="10" text-anchor="middle" fill="#6b4c9a">兩軸交會：治療決策與病人意願之整合</text>`;
+  s += `<text x="10" y="56" font-size="11" fill="#555b66">治療軸</text><text x="10" y="70" font-size="8.5" fill="#777">（專科診療）</text>`;
+  s += `<line x1="80" y1="60" x2="715" y2="60" stroke="#9aa1ab" stroke-width="2"/><polygon points="715,55 726,60 715,65" fill="#9aa1ab"/>`;
+  tx.forEach((t, i) => { s += `<text x="${xs[i]}" y="84" font-size="9.5" fill="#555b66" text-anchor="middle">${t}</text><line x1="${xs[i]}" y1="90" x2="${xs[i]}" y2="126" stroke="#c4c9d0" stroke-dasharray="3,3"/>`; });
+  s += `<text x="10" y="146" font-size="11" fill="#2b4c7e">自主軸</text><text x="10" y="160" font-size="8.5" fill="#2b4c7e">（本指引五階段）</text>`;
+  s += `<line x1="80" y1="142" x2="715" y2="142" stroke="#2b4c7e" stroke-width="2.5"/><polygon points="715,136 727,142 715,148" fill="#2b4c7e"/>`;
+  xs.forEach((x, i) => {
+    s += `<circle cx="${x}" cy="142" r="15" fill="#2b4c7e" stroke="#fff" stroke-width="2"/><text x="${x}" y="147" font-size="12" fill="#fff" text-anchor="middle">${ZH[i]}</text>`;
+    s += `<text x="${x}" y="176" font-size="9.5" fill="#1a1a1a" text-anchor="middle">${names[i][0]}</text><text x="${x}" y="189" font-size="9.5" fill="#1a1a1a" text-anchor="middle">${names[i][1]}</text>`;
+    const r = prof.roles[i + 1], solid = r === 'lead' || r === 'co';
+    s += `<rect x="${x - 6}" y="200" width="12" height="12" fill="${solid ? '#2b4c7e' : '#fff'}" stroke="#2b4c7e" ${r === 'tbd' ? 'stroke-dasharray="2,2"' : ''}/>`;
+    s += `<text x="${x}" y="226" font-size="9" fill="#555b66" text-anchor="middle">${ROLE_LABEL[r]}</text>`;
+  });
+  s += `<text x="10" y="210" font-size="9.5" fill="#2b4c7e">本會角色</text>`;
+  s += `<rect x="${xs[1] - 20}" y="246" width="${730 - xs[1] + 20}" height="6" fill="#4a8c6a" opacity=".6"/><text x="${xs[1] - 20}" y="268" font-size="9.5" fill="#2f6b4d">緩和醫療自階段二起與積極治療並行，持續至善終照護</text>`;
+  s += `<text x="10" y="292" font-size="8.5" fill="#777">本會角色：實心＝主責或協同；空心＝轉介；虛線＝待確認</text></svg>`;
+  return s;
+}
+function recBlock(k, prof) {
+  const F = FILLS[k], v = (state.data.f[k] || '').trim();
+  const label = k === '3A' && !prof.diag.length ? F.refLabel : F.label;
+  let extra = '';
+  if (k === '3A' && prof.diag.length) extra = `<table><tr><th style="width:34%">款別／疾病</th><th>確診資格依據</th></tr>${prof.diag.map(d => `<tr><td>${esc(d.label)}</td><td>${esc(d.basis)}</td></tr>`).join('')}</table>`;
+  return `<div class="rec"><div class="code">【${codeOf(k)}】${esc(label)}</div>${extra}${v ? v.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join('') : '<p class="empty">（尚未填寫）</p>'}</div>`;
+}
+function renderHandbook() {
+  const soc = socOf(state.socId); if (!soc) return;
+  const prof = profile(soc), d = state.data;
+  const cover = `<section class="sheet"><div class="cover">
+    <div class="org">${esc(soc.name)}</div>
+    <div class="ttl">病主緩和臨床指引</div>
+    <div class="sub">${esc(d.meta.version || '')}<br>依現行《病人自主權利法》及其施行細則、《安寧緩和醫療條例》<br>預立醫療決定整合型計畫</div>
+  </div></section>`;
+
+  const intro = `<section class="sheet">
+    <h1>本指引之定位</h1>
+    <p>本指引之目的，在使《病人自主權利法》所保障之病人自主，於${esc(soc.domain)}之臨床實務中得以實現。</p>
+    <p>《病人自主權利法》施行以來，預立醫療決定能否實現，繫於病人及早知悉其得為預立醫療決定，以及各專科在臨床上辨識時機、完成法定程序。本指引不就個別病人為判斷，而是提示一條分五個階段之程序，自病情告知至依預立醫療決定執行與善終照護；診斷與治療之選擇屬專科醫師之判斷，本指引處理者為治療全程中病人意願之確認與實現。此程序分兩層：共通基準以現行法為據，含法定要求與跨專科之共識原則，由預立醫療決定整合型計畫之核心團隊維護；本專科內容由本會依專業共識訂定；緩和醫療之共通建議由台灣安寧緩和醫學學會提供。</p>
+    <p>程序之終點是依病人預立醫療決定終止、撤除或不施行維持生命治療或人工營養及流體餵養。此係實現病人之意願，不以縮短生命為目的。</p>
+    <p class="muted">本指引標〔共識原則〕之各項為一般建議，臨床上得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整；標〔法定要求〕之各項為法律所定，依法辦理。標籤說明與縮寫對照表見附錄二。</p>
+    <table><tr><th style="width:22%">適用對象</th><td>${br(d.meta.target) || '<span class="empty">（尚未填寫）</span>'}</td></tr>
+    <tr><th>研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr></table>
+  </section>`;
+
+  const ov = `<section class="sheet">
+    <h2>一、總覽：五階段</h2>${overviewSVG(prof)}
+    <h2>二、五階段一覽</h2>
+    <p class="note">縮寫對照表見附錄二。</p>
+    <table><tr><th style="width:6%">階段</th><th style="width:15%">名稱</th><th style="width:31%">步驟</th><th>重點</th><th style="width:17%">主要法源</th></tr>
+    ${OVERVIEW.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>
+    <h2>三、本會於各階段之角色</h2>
+    <table><tr><th></th>${STAGES.map(s => `<th>${ZH[s.n - 1]}　${esc(s.name)}</th>`).join('')}</tr>
+    <tr><td>本會角色</td>${[1, 2, 3, 4, 5].map(n => `<td>${ROLE_LABEL[prof.roles[n]]}</td>`).join('')}</tr></table>
+    ${prof.diag.length ? `<p class="note">本會於階段三可擔任確診之款別與疾病：${prof.diag.map(x => esc(x.label.replace('　', ''))).join('、')}。</p>` : '<p class="note">本會於階段三轉介相關專科確診。</p>'}
+  </section>`;
+
+  const stageBlocks = STAGES.map(s => `<h3>階段${ZH[s.n - 1]}｜${esc(s.name)}</h3><div class="steps">步驟：${esc(s.steps)}</div><div class="pos">${esc(s.pos)}</div><div class="bh">共通基準</div>${groupsHTML(s.groups, false)}${s.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}${s.fills.map(k => recBlock(k, prof)).join('')}`).join('');
+  const commonBlock = `<div class="keep"><h3>${esc(COMMON.name)}</h3><div class="pos">${esc(COMMON.pos)}</div><div class="bh">共通基準</div><ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}</div>`;
+  const stagesSheet = `<section class="sheet"><h2>四、各階段之共通基準與本專科內容</h2>${stageBlocks}${commonBlock}</section>`;
+
+  const sumRows = CODES.map(k => { const fs = firstSentence(d.f[k]); return fs ? `<tr><td>${codeOf(k)}</td><td>${ZH[FILLS[k].stage - 1]}</td><td>${esc(fs)}</td></tr>` : ''; }).join('');
+  const rec = `<section class="sheet">
+    <h2>五、病歷記載檢核</h2>
+    <p class="muted">依§14執行預立醫療決定者，不負刑事與行政責任（§14 V）；是否依§14執行，以病歷記載為憑。§17規定確診、照會、意願確認等事項應詳細記載，相關文件連同病歷保存。本表將其拆為八項，供醫師執行後自查與院內檢核；未標★者為§17所定事項，標★者為本指引建議記載。</p>
+    <table><tr><th style="width:5%">＃</th><th style="width:20%">事項</th><th>應記載內容</th><th style="width:18%">法源</th><th style="width:6%">☐</th></tr>
+    ${RECORDS.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>☐</td></tr>`).join('')}</table>
+    <h2>六、本會建議一覽</h2>
+    <p class="muted">本會於各階段之建議一覽；共通基準不重列，各條之說明見四、各階段。</p>
+    ${sumRows ? `<table><tr><th style="width:9%">編號</th><th style="width:8%">階段</th><th>本會建議</th></tr>${sumRows}</table>` : '<p class="empty">（尚未填寫）</p>'}
+    <h2>七、參考文獻</h2>
+    ${d.refs.some(r => (r || '').trim()) ? `<ol>${d.refs.filter(r => (r || '').trim()).map(r => `<li>${esc(r)}</li>`).join('')}</ol>` : '<p class="empty">（無）</p>'}
+  </section>`;
+
+  const app = `<section class="sheet">
+    <h2>附錄一　法條速查</h2>
+    <p class="muted">各階段共通基準所引條文之重點摘要；未標示者為病主法。</p>
+    <table><tr><th style="width:20%">條文</th><th>重點</th></tr>${LAWS.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>
+    <h2>附錄二　標籤說明與縮寫對照表</h2>
+    <p class="muted">〔法定要求〕為法律明定；〔共識原則〕為跨專科共識或核心團隊之法律解釋。條號以§表示，項用羅馬數字、款用中文數字。</p>
+    <table><tr><th style="width:20%">縮寫</th><th>全稱</th></tr>${ABBR.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>
+  </section>`;
+
+  $('#handbook').innerHTML = cover + intro + ov + stagesSheet + rec + app;
+}
+
+// ====================================================================
+// 八、事件
+// ====================================================================
+function setView(v) {
+  if (v === 'book' && !state.socId) return;
+  state.view = v;
+  $('#tab-edit').setAttribute('aria-selected', v === 'edit');
+  $('#tab-book').setAttribute('aria-selected', v === 'book');
+  $('#editor').hidden = v !== 'edit';
+  $('#handbook').hidden = v !== 'book';
+  if (v === 'book') renderHandbook();
+  window.scrollTo(0, 0);
+}
+function switchSoc(id) {
+  if (!socOf(id)) { state.socId = ''; state.data = null; $('#soc').value = ''; renderPicker(); setView('edit'); return; }
+  state.socId = id;
+  state.data = load(id);
+  $('#soc').value = id;
+  $('#st-save').textContent = '尚未修改';
+  renderEditor();
+  if (state.view === 'book') renderHandbook();
+}
+function exportDraft() {
+  if (!state.socId) return;
+  const soc = socOf(state.socId);
+  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: state.data };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  const dt = new Date(), ymd = `${dt.getFullYear() - 1911}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`;
+  a.href = URL.createObjectURL(blob);
+  a.download = `${soc.name}_病主緩和臨床指引_草稿_${ymd}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function importDraft(file) {
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const p = JSON.parse(rd.result);
+      if (p.kind !== 'pspg-template-draft' || p.version !== 2 || !p.data || !socOf(p.society)) throw new Error('格式不符');
+      try { localStorage.setItem(KEY + p.society, JSON.stringify(p.data)); } catch (e) { /* 無法儲存時仍載入畫面 */ }
+      switchSoc(p.society);
+      state.data = Object.assign(blank(), p.data);
+      renderEditor();
+      $('#st-save').textContent = `已匯入草稿檔（${p.societyName}）`;
+    } catch (e) {
+      $('#st-save').textContent = '匯入失敗：檔案不是本模板匯出的草稿檔';
+    }
+  };
+  rd.readAsText(file);
+}
+function init() {
+  $('#soc').innerHTML = `<option value="">請選擇學會</option>` + SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  let start = '';
+  try { const l = localStorage.getItem(KEY + 'last'); if (l && socOf(l)) start = l; } catch (e) { /* 無法讀取時從選擇學會開始 */ }
+  const h = (location.hash || '').slice(1).split('-')[0];
+  if (socOf(h)) start = h;
+  switchSoc(start);
+  $('#soc').addEventListener('change', e => switchSoc(e.target.value));
+  $('#tab-edit').addEventListener('click', () => setView('edit'));
+  $('#tab-book').addEventListener('click', () => setView('book'));
+  $('#main').addEventListener('input', onInput);
+  $('#main').addEventListener('click', e => {
+    if (e.target.id === 'btn-addref') {
+      state.data.refs.push('');
+      const i = state.data.refs.length - 1;
+      $('#refs-list').insertAdjacentHTML('beforeend', `<div class="r"><span>${i + 1}.</span><input type="text" id="ref-${i}" data-k="refs.${i}" value="" aria-label="文獻 ${i + 1}"></div>`);
+      $('#ref-' + i).focus(); save();
+    }
+  });
+  $('#btn-export').addEventListener('click', exportDraft);
+  $('#btn-import').addEventListener('click', () => $('#file-import').click());
+  $('#file-import').addEventListener('change', e => { if (e.target.files[0]) importDraft(e.target.files[0]); e.target.value = ''; });
+  $('#btn-print').addEventListener('click', () => { if (!state.socId) return; renderHandbook(); setView('book'); setTimeout(() => window.print(), 100); });
+  window.addEventListener('beforeprint', renderHandbook);
+  if (/-book$/.test(location.hash) && state.socId) setView('book');
+}
+init();
+</script>
+</body>
+</html>
