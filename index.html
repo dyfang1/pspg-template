@@ -45,7 +45,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 17px; line-height: 1.75; -webkit-font-smoothing: antialiased; }
 button, select, input, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--primary-mid); outline-offset: 2px; }
 
@@ -53,63 +53,67 @@ button, select, input, textarea { font: inherit; color: inherit; }
 .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(255, 255, 255, .94); backdrop-filter: saturate(1.4) blur(8px); border-bottom: 1px solid var(--line); }
 .topbar::before { content: ""; display: block; height: 3px; background: linear-gradient(90deg, var(--primary) 0 72%, var(--fill) 72% 100%); }
 .topbar-in { max-width: 1240px; margin: 0 auto; padding-block: 12px; padding-inline: 16px; display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
-.brand { display: flex; align-items: center; gap: 12px; min-width: 0; margin-right: auto; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; margin-right: auto; color: inherit; text-decoration: none; }
 .brand svg { width: 38px; height: 38px; flex: none; }
 .brand div { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
-.brand b { font-size: 17px; font-weight: 700; letter-spacing: .03em; }
-.brand span { font-size: 12.5px; color: var(--muted); }
+.brand b { font-size: 19px; font-weight: 700; letter-spacing: .03em; }
+.brand span { font-size: 14px; color: var(--muted); }
 .soc { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .soc label { font-size: 13px; color: var(--muted); white-space: nowrap; }
 select { padding: 8px 34px 8px 12px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235d6a7e' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 12px center; appearance: none; cursor: pointer; }
 .soc select { max-width: 260px; }
 .tabs { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
-.tabs button { border: 0; background: transparent; padding: 6px 16px; border-radius: 999px; cursor: pointer; color: var(--muted); font-weight: 500; }
+.tabs button { border: 0; background: transparent; padding: 7px 18px; font-size: 16px; border-radius: 999px; cursor: pointer; color: var(--muted); font-weight: 500; }
 .tabs button[aria-selected="true"] { background: var(--surface); color: var(--primary-ink); box-shadow: 0 1px 3px rgba(28, 52, 92, .15); }
 .tabs button:disabled { opacity: .45; cursor: not-allowed; }
 .acts { display: flex; flex-wrap: wrap; gap: 8px; }
-.btn { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: border-color .15s, background .15s; }
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 8px 16px; font-size: 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: border-color .15s, background .15s; }
 .btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary-ink); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
 .btn.primary:hover:not(:disabled) { background: var(--primary-ink); color: #fff; }
-.status { font-size: 12.5px; color: var(--muted); width: 100%; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.status { font-size: 14.5px; color: var(--muted); width: 100%; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 .status .bar { flex: 1 1 160px; max-width: 320px; height: 8px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; }
 .status .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--fill), #e89a45); width: 0; border-radius: 999px; transition: width .35s; }
 #st-prog { color: var(--fill-ink); font-weight: 500; }
 
 /* 填寫畫面 */
 .wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 80px; padding-inline: 16px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; }
-.nav { position: sticky; top: 132px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.nav { position: sticky; top: 140px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 16px; }
 .nav a { color: var(--ink); text-decoration: none; padding: 7px 12px; border-radius: var(--r-sm); display: flex; gap: 10px; align-items: center; }
 .nav a:hover { background: var(--surface); box-shadow: var(--shadow); }
 .nav .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--fill); flex: none; background: var(--surface); }
 .nav .dot.done { background: var(--fill); }
 .nav .dot.fixed { border-color: var(--primary); }
 .nav .sep { height: 1px; background: var(--line); margin: 6px 12px; }
+.nav a.active { background: var(--surface); box-shadow: var(--shadow); color: var(--primary-ink); font-weight: 700; }
+.nav a.active .dot { box-shadow: 0 0 0 3px var(--primary-soft); }
+#st-where { flex-basis: 100%; color: var(--primary-ink); font-weight: 500; }
+#st-where:empty { display: none; }
 main { min-width: 0; display: flex; flex-direction: column; gap: 24px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px 24px; min-width: 0; box-shadow: var(--shadow); }
-.card h2 { font-size: 21px; font-weight: 700; margin: 0 0 4px; text-wrap: balance; letter-spacing: .02em; }
-.card h3 { font-size: 15px; font-weight: 700; margin: 18px 0 8px; color: var(--primary-ink); }
-.eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--primary); font-weight: 500; }
+.card h2 { font-size: 24px; font-weight: 700; margin: 0 0 4px; text-wrap: balance; letter-spacing: .02em; }
+.card h3 { font-size: 17.5px; font-weight: 700; margin: 18px 0 8px; color: var(--primary-ink); }
+.eyebrow { font-size: 13.5px; letter-spacing: .14em; color: var(--primary); font-weight: 500; }
 .lead { color: var(--muted); margin: 6px 0 0; max-width: 70ch; }
-.notice { background: var(--warn-soft); color: var(--warn); border-radius: var(--r-sm); padding: 10px 14px; font-size: 13px; }
+.notice { background: var(--warn-soft); color: var(--warn); border-radius: var(--r-sm); padding: 10px 14px; font-size: 15.5px; }
 
 .hero { background: linear-gradient(135deg, #ffffff 0%, var(--bg-tint) 100%); }
-.hero h2 { font-size: 24px; }
+.hero h2 { font-size: 27px; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 16px; }
 .tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; min-width: 0; }
-.tile b { display: flex; align-items: center; gap: 8px; font-size: 14.5px; margin-bottom: 2px; }
-.tile p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.tile b { display: flex; align-items: center; gap: 8px; font-size: 17px; margin-bottom: 2px; }
+.tile p { margin: 0; font-size: 15.5px; color: var(--muted); }
 .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 .sw.orange { background: var(--fill-soft); border: 1.5px dashed var(--fill); }
 .sw.blue { background: var(--primary-soft); border: 1.5px solid var(--primary); }
 .sw.green { background: var(--ok-soft); border: 1.5px solid var(--ok); }
 .sw.gray { background: var(--bg); border: 1.5px solid var(--muted); }
 .pick { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
-.pick select { min-width: 260px; max-width: 100%; padding-block: 11px; font-size: 16px; }
+.pick select { min-width: 260px; max-width: 100%; padding-block: 11px; font-size: 17px; }
 
 .basic-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 14px; }
-.field label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
+.field label { font-size: 15px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
 .field + .field { margin-top: 12px; }
 .field textarea, .field input[type=text] { width: 100%; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); padding: 9px 12px; resize: vertical; transition: border-color .15s, box-shadow .15s; }
 .field textarea { min-height: 70px; }
@@ -123,36 +127,36 @@ main { min-width: 0; display: flex; flex-direction: column; gap: 24px; }
 .stage.common .badge { background: var(--surface); color: var(--primary); border: 2px solid var(--primary); font-size: 15px; }
 .stage-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .stage-head h2 { margin: 0; }
-.steps { font-size: 13.5px; color: var(--primary-ink); margin: 10px 0 0; background: var(--primary-soft); border-radius: var(--r-sm); padding: 7px 12px; }
+.steps { font-size: 15.5px; color: var(--primary-ink); margin: 10px 0 0; background: var(--primary-soft); border-radius: var(--r-sm); padding: 7px 12px; }
 .pos { color: var(--muted); margin: 10px 0 0; max-width: 72ch; }
 details.base { margin-top: 14px; border: 1px solid var(--primary-mid); border-radius: var(--r-sm); background: var(--primary-soft); }
-details.base summary { cursor: pointer; padding: 10px 14px; color: var(--primary-ink); font-size: 14px; font-weight: 500; list-style: none; display: flex; align-items: center; gap: 8px; }
+details.base summary { cursor: pointer; padding: 11px 14px; color: var(--primary-ink); font-size: 16px; font-weight: 500; list-style: none; display: flex; align-items: center; gap: 8px; }
 details.base summary::-webkit-details-marker { display: none; }
 details.base summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
 details.base[open] summary::before { transform: rotate(45deg); }
 details.base .in { padding: 0 16px 12px; }
 .base ul { margin: 6px 0; padding-left: 1.2em; }
-.base li { margin-bottom: 7px; font-size: 14px; }
-.base .gh { font-size: 13.5px; color: var(--primary-ink); margin: 12px 0 2px; font-weight: 700; }
-.tag { font-size: 12px; color: var(--primary); white-space: nowrap; }
+.base li { margin-bottom: 8px; font-size: 16.5px; }
+.base .gh { font-size: 16px; color: var(--primary-ink); margin: 12px 0 2px; font-weight: 700; }
+.tag { font-size: 14px; color: var(--primary); white-space: nowrap; }
 .tag.c { color: var(--muted); }
-.refline { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+.refline { font-size: 15px; color: var(--muted); margin: 8px 0 0; }
 
 .fill { margin-top: 16px; border: 1.5px dashed var(--fill-line); background: var(--fill-soft); border-radius: var(--r-sm); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.fill .lab { color: var(--fill-ink); font-weight: 700; font-size: 15px; display: flex; gap: 8px; align-items: baseline; }
-.fill .lab .code { background: var(--fill); color: #fff; border-radius: 6px; padding: 0 7px; font-size: 12.5px; font-weight: 700; letter-spacing: .02em; flex: none; }
+.fill .lab { color: var(--fill-ink); font-weight: 700; font-size: 17.5px; display: flex; gap: 8px; align-items: baseline; }
+.fill .lab .code { background: var(--fill); color: #fff; border-radius: 6px; padding: 0 8px; font-size: 14.5px; font-weight: 700; letter-spacing: .02em; flex: none; }
 .fill textarea { width: 100%; min-height: 150px; border: 1px solid var(--fill-line); border-radius: var(--r-sm); background: var(--surface); padding: 11px 13px; resize: vertical; line-height: 1.75; transition: border-color .15s, box-shadow .15s; }
 .fill textarea:focus { border-color: var(--fill); box-shadow: 0 0 0 3px #fde4c8; outline: none; }
-.count { font-size: 12px; color: var(--muted); text-align: right; margin-top: -4px; }
-.ref-dx summary { cursor: pointer; font-size: 13px; color: var(--fill-ink); }
+.count { font-size: 13.5px; color: var(--muted); text-align: right; margin-top: -4px; }
+.ref-dx summary { cursor: pointer; font-size: 15px; color: var(--fill-ink); }
 
 .tbl-wrap { overflow-x: auto; margin-top: 8px; }
-table.t { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; background: var(--surface); }
+table.t { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 15px; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; background: var(--surface); }
 table.t th, table.t td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
 table.t tr:last-child td { border-bottom: 0; }
 table.t th { background: var(--primary-soft); color: var(--primary-ink); font-weight: 700; }
 .base table.t { margin: 6px 0 10px; }
-.pill { display: inline-block; font-size: 12px; font-weight: 500; padding: 1px 10px; border-radius: 999px; white-space: nowrap; }
+.pill { display: inline-block; font-size: 14px; font-weight: 500; padding: 1px 10px; border-radius: 999px; white-space: nowrap; }
 .pill.lead { background: var(--primary-soft); color: var(--primary-ink); }
 .pill.co { background: var(--ok-soft); color: var(--ok); }
 .pill.ref { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
@@ -167,33 +171,33 @@ table.t th { background: var(--primary-soft); color: var(--primary-ink); font-we
 
 
 /* 雲端協作 */
-.mode-tag { font-size: 13px; font-weight: 500; color: var(--ok); background: var(--ok-soft); border-radius: 999px; padding: 4px 12px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.mode-tag { font-size: 15px; font-weight: 500; color: var(--ok); background: var(--ok-soft); border-radius: 999px; padding: 4px 12px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .mode-tag.admin { color: var(--primary-ink); background: var(--primary-soft); }
 .entry { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
 .entry .card { display: flex; flex-direction: column; gap: 4px; }
-.entry .eh { margin: 0; font-size: 18px; color: var(--ink); }
+.entry .eh { margin: 0; font-size: 21px; color: var(--ink); }
 .inrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 12px; }
 .inrow input[type=text] { flex: 1 1 160px; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; }
 .inrow select { flex: 1 1 200px; min-width: 0; }
-.whobar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 13.5px; }
+.whobar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 15.5px; }
 .whobar label { color: var(--muted); }
 .whobar input { flex: 1 1 160px; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 6px 10px; }
-.btn.sm { padding: 4px 12px; font-size: 13px; }
-.linkbtn { border: 0; background: none; color: var(--primary); cursor: pointer; font-size: 12.5px; padding: 0 4px; text-decoration: underline; text-underline-offset: 2px; }
+.btn.sm { padding: 5px 13px; font-size: 14.5px; }
+.linkbtn { border: 0; background: none; color: var(--primary); cursor: pointer; font-size: 14px; padding: 0 4px; text-decoration: underline; text-underline-offset: 2px; }
 .frow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: -4px; }
 .frow .count { margin: 0 0 0 auto; }
-.fm { font-size: 12px; color: var(--muted); }
+.fm { font-size: 13.5px; color: var(--muted); }
 .fm.warn { color: var(--warn); font-weight: 500; }
 .hist { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; }
 .hrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 .hrow:last-child { border-bottom: 0; padding-bottom: 0; }
-.hmeta { font-size: 12px; color: var(--muted); grid-column: 1; }
-.htext { font-size: 13px; grid-column: 1; }
+.hmeta { font-size: 13.5px; color: var(--muted); grid-column: 1; }
+.htext { font-size: 15px; grid-column: 1; }
 .hrow .btn { grid-column: 2; grid-row: 1 / span 2; }
 .cbox { background: var(--primary-soft); border: 1px solid var(--primary-mid); border-radius: var(--r-sm); padding: 10px 12px; }
-.cm-h { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 700; color: var(--primary-ink); margin-bottom: 4px; }
-.cm-h span { font-weight: 400; color: var(--muted); font-size: 12px; }
-.cm-t { font-size: 14px; }
+.cm-h { display: flex; justify-content: space-between; gap: 8px; font-size: 15px; font-weight: 700; color: var(--primary-ink); margin-bottom: 4px; }
+.cm-h span { font-weight: 400; color: var(--muted); font-size: 13.5px; }
+.cm-t { font-size: 16px; }
 .cbox textarea { width: 100%; min-height: 70px; border: 1px solid var(--primary-mid); border-radius: var(--r-sm); background: var(--surface); padding: 8px 10px; resize: vertical; }
 table.t.admin td { vertical-align: middle; }
 table.t.admin tr.testrow td { background: #fffbf3; }
@@ -204,7 +208,7 @@ table.t.admin tr.testrow td { background: #fffbf3; }
 .prog { display: inline-block; width: 70px; height: 7px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; vertical-align: middle; }
 .prog i { display: block; height: 100%; background: var(--fill); }
 code.tok { font-size: 11.5px; color: var(--muted); margin-right: 6px; }
-.muted { color: var(--muted); font-size: 12.5px; }
+.muted { color: var(--muted); font-size: 14px; }
 
 /* 手冊預覽 */
 #handbook { padding-block: 28px 60px; padding-inline: 16px; background: #e9edf3; }
@@ -242,7 +246,8 @@ code.tok { font-size: 11.5px; color: var(--muted); margin-right: 6px; }
 @media (max-width: 900px) {
   .topbar { position: static; }
   .wrap { grid-template-columns: minmax(0, 1fr); padding-block: 18px 60px; }
-  .nav { position: static; flex-direction: row; overflow-x: auto; gap: 6px; padding-bottom: 4px; }
+  .nav { position: sticky; top: 0; z-index: 15; flex-direction: row; overflow-x: auto; gap: 6px; padding-block: 8px; margin-inline: -16px; padding-inline: 16px; background: rgba(244, 247, 251, .96); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+  .nav a.active { background: var(--primary); color: #fff; border-color: var(--primary); }
   .nav a { white-space: nowrap; background: var(--surface); border: 1px solid var(--line); }
   .nav .sep { display: none; }
   .basic-grid { grid-template-columns: minmax(0, 1fr); }
@@ -272,26 +277,23 @@ code.tok { font-size: 11.5px; color: var(--muted); margin-right: 6px; }
 
 <header class="topbar">
   <div class="topbar-in">
-    <div class="brand">
+    <a class="brand" href="#" id="go-home" title="回首頁">
       <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#2a6fbe"/><path d="M8 15h24" stroke="#b9d2f0" stroke-width="2.5" stroke-linecap="round"/><path d="M8 25h24" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="25" r="3.2" fill="#fff"/><circle cx="26" cy="25" r="3.2" fill="#cf7419"/></svg>
       <div><b>病主緩和臨床指引模板</b><span>研發小組線上填寫・依現行法</span></div>
-    </div>
+    </a>
     <span class="mode-tag" id="mode-tag" hidden></span>
-    <div class="soc" id="soc-wrap">
-      <label for="soc">學會</label>
-      <select id="soc"></select>
-    </div>
     <div class="tabs" role="tablist">
       <button id="tab-edit" role="tab" aria-selected="true">填寫</button>
       <button id="tab-book" role="tab" aria-selected="false">手冊預覽</button>
     </div>
     <div class="acts">
+      <button class="btn" id="btn-home" type="button">回首頁</button>
       <button class="btn" id="btn-export" type="button">匯出草稿檔</button>
       <button class="btn" id="btn-import" type="button">匯入草稿檔</button>
       <input type="file" id="file-import" accept=".json,application/json" hidden>
       <button class="btn primary" id="btn-print" type="button">列印／存成 PDF</button>
     </div>
-    <div class="status"><span id="st-prog"></span><span class="bar"><i id="st-bar"></i></span><span id="st-save">請先選擇學會</span></div>
+    <div class="status"><span id="st-prog"></span><span class="bar"><i id="st-bar"></i></span><span id="st-save"></span><span id="st-where"></span></div>
   </div>
 </header>
 
@@ -652,8 +654,7 @@ async function openCloud(token, asAdmin) {
     if (unsub) unsub();
     pending.clear(); remoteWaiting.clear();
     state.mode = 'cloud'; state.admin = !!asAdmin; state.token = token; state.socId = d.soc; state.label = d.label || ''; state.data = normalize(d);
-    if (!asAdmin) lsSet(KEY + 'token', token);
-    $('#soc').value = d.soc;
+    if (!asAdmin) { lsSet(KEY + 'token', token); lsSet(KEY + 'tokenName', socOf(d.soc).name + (d.label ? '（' + d.label + '）' : '')); }
     renderEditor();
     setStatus('已連線雲端' + (d.updatedAt ? '；最後更新 ' + when(d.updatedAt) + '（' + (d.updatedBy || '') + '）' : ''));
     unsub = fs.onSnapshot(ref, s => { if (s.exists()) applyRemote(s.data()); }, () => setStatus('與雲端的連線中斷，請重新整理頁面'));
@@ -677,7 +678,7 @@ function applyRemote(d) {
     }
     showFm(k); renderComment(k);
   });
-  ['target', 'team', 'version'].forEach(m => {
+  ['team', 'version'].forEach(m => {
     if (pending.has('meta.' + m)) return;
     const el = $('#m-' + m), remote = nd.meta[m] || '';
     state.data.meta[m] = remote;
@@ -908,11 +909,42 @@ function renderRefs() {
 function setToolbar() {
   const has = !!state.socId && (state.mode === 'local' || state.mode === 'cloud');
   ['#btn-export', '#btn-print', '#tab-book', '#btn-import'].forEach(s => { $(s).disabled = !has; });
-  $('#soc-wrap').hidden = state.mode === 'cloud' || state.mode === 'admin-list';
+  $('#btn-home').hidden = !state.mode;
   const tag = $('#mode-tag');
-  tag.hidden = !(state.mode === 'cloud' || state.mode === 'admin-list');
-  tag.textContent = state.mode === 'admin-list' ? '核心團隊總覽' : (state.admin ? '核心團隊檢閱：' : '雲端協作：') + ((socOf(state.socId) || {}).name || '') + (state.label ? '（' + state.label + '）' : '');
+  tag.hidden = !state.mode;
+  tag.textContent = state.mode === 'admin-list' ? '核心團隊總覽' : (state.mode === 'local' ? '本機試填：' : state.admin ? '核心團隊檢閱：' : '雲端協作：') + ((socOf(state.socId) || {}).name || '') + (state.label ? '（' + state.label + '）' : '');
   tag.className = 'mode-tag' + (state.admin || state.mode === 'admin-list' ? ' admin' : '');
+}
+function flushAll() { Array.from(pending.keys()).forEach(flushCloud); }
+function goHome() {
+  if (state.mode === 'cloud') flushAll();
+  setView('edit');
+  renderLanding();
+  setStatus('');
+  window.scrollTo(0, 0);
+}
+// ---------- 目前位置 ----------
+let whereRaf = 0, whereField = '';
+const SEC_LABEL = id => id === 'sec-guide' ? '本模板之使用' : id === 'sec-basic' ? '本會資料與角色' : id === 'sec-common' ? '各階段通用' : id === 'sec-refs' ? '參考文獻'
+  : (m => m ? `階段${ZH[+m[1] - 1]}｜${STAGES[+m[1] - 1].name}` : '')(id.match(/^sec-s(\d)$/));
+function updateWhere() {
+  whereRaf = 0;
+  const el = $('#st-where'); if (!el) return;
+  if (!state.data || state.view !== 'edit') { el.textContent = ''; return; }
+  const secs = Array.from(document.querySelectorAll('#main section[id^="sec-"]'));
+  const line = window.innerWidth > 900 ? 170 : 90;
+  let cur = secs[0];
+  secs.forEach(s => { if (s.getBoundingClientRect().top <= line) cur = s; });
+  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = secs[secs.length - 1];
+  if (whereField) { const card = $('#card-' + whereField); const sec = card && card.closest('section[id^="sec-"]'); if (sec) cur = sec; }
+  if (!cur) return;
+  document.querySelectorAll('#nav a').forEach(a => {
+    const on = a.getAttribute('href') === '#' + cur.id;
+    if (on && !a.classList.contains('active') && window.innerWidth <= 900) { const nav = $('#nav'); nav.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' }); }
+    a.classList.toggle('active', on);
+  });
+  const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${FILLS[whereField].label}` : '';
+  el.textContent = '目前位置：' + SEC_LABEL(cur.id) + f;
 }
 function renderLanding() {
   state.mode = ''; state.socId = ''; state.data = null; state.admin = false;
@@ -920,6 +952,9 @@ function renderLanding() {
   setToolbar();
   $('#nav').innerHTML = '';
   $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
+  const savedTok = lsGet(KEY + 'token'), savedName = lsGet(KEY + 'tokenName');
+  const signedIn = !!(FB && FB.auth && FB.auth.currentUser);
+  whereField = ''; updateWhere();
   $('#main').innerHTML = `<section class="card hero">
     <div class="eyebrow">給各學會研發小組</div>
     <h2>本模板之使用</h2>
@@ -931,7 +966,8 @@ function renderLanding() {
       <div class="eyebrow">研發小組</div>
       <h3 class="eh">以邀請碼進入</h3>
       <p class="lead">輸入核心團隊提供之邀請碼或邀請連結。內容即時存到雲端，同一學會之成員共同編輯同一份。</p>
-      <form id="form-code" class="inrow"><input type="text" id="in-code" placeholder="邀請碼或邀請連結" autocomplete="off" aria-label="邀請碼"><button class="btn primary" type="submit">進入</button></form>
+      ${savedTok ? `<div class="inrow"><button class="btn primary" type="button" id="btn-resume">繼續編輯${savedName ? '：' + esc(savedName) : '上次的學會'}</button></div>` : ''}
+      <form id="form-code" class="inrow"><input type="text" id="in-code" placeholder="邀請碼或邀請連結" autocomplete="off" aria-label="邀請碼"><button class="btn${savedTok ? '' : ' primary'}" type="submit">進入</button></form>
     </section>
     <section class="card">
       <div class="eyebrow">試用</div>
@@ -943,7 +979,7 @@ function renderLanding() {
       <div class="eyebrow">核心團隊</div>
       <h3 class="eh">總覽與檢閱</h3>
       <p class="lead">以列入核心團隊名單之 Google 帳號登入，可查看各學會進度、建立邀請碼並填寫意見。</p>
-      <div class="inrow"><button class="btn" type="button" id="btn-admin">以 Google 帳號登入</button></div>
+      <div class="inrow"><button class="btn" type="button" id="btn-admin">${signedIn ? '進入總覽' : '以 Google 帳號登入'}</button></div>
     </section>
   </div>`;
   $('#form-code').addEventListener('submit', e => {
@@ -954,11 +990,11 @@ function renderLanding() {
   });
   $('#soc-pick').addEventListener('change', e => { if (e.target.value) openLocal(e.target.value); });
   $('#btn-admin').addEventListener('click', adminSignIn);
+  if (savedTok) $('#btn-resume').addEventListener('click', () => openCloud(savedTok, false));
 }
 function openLocal(id) {
   if (unsub) { unsub(); unsub = null; }
   state.mode = 'local'; state.admin = false; state.token = ''; state.socId = id; state.data = loadLocal(id);
-  $('#soc').value = id;
   renderEditor();
   setStatus('本機試填（內容只存在這台電腦）');
 }
@@ -988,7 +1024,6 @@ function renderEditor() {
     <p class="lead">部定專科基礎：${esc(soc.base)}</p>
     <div class="basic-grid">
       <div>
-        <div class="field"><label for="m-target">適用對象（本專科病人群）</label><textarea id="m-target" data-k="meta.target">${esc(d.meta.target)}</textarea></div>
         <div class="field"><label for="m-team">研發小組（召集人與成員）</label><textarea id="m-team" data-k="meta.team">${esc(d.meta.team)}</textarea></div>
         <div class="field"><label for="m-version">版本與日期</label><input type="text" id="m-version" data-k="meta.version" value="${esc(d.meta.version)}"></div>
       </div>
@@ -1033,6 +1068,7 @@ function renderEditor() {
   renderRefs();
   CODES.forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
+  whereField = ''; requestAnimationFrame(updateWhere);
 }
 async function renderAdmin() {
   setStatus('讀取各學會資料…');
@@ -1161,8 +1197,7 @@ function renderHandbook() {
     <p>《病人自主權利法》施行以來，預立醫療決定能否實現，繫於病人及早知悉其得為預立醫療決定，以及各專科在臨床上辨識時機、完成法定程序。本指引不就個別病人為判斷，而是提示一條分五個階段之程序，自病情告知至依預立醫療決定執行與善終照護；診斷與治療之選擇屬專科醫師之判斷，本指引處理者為治療全程中病人意願之確認與實現。此程序分兩層：共通基準以現行法為據，含法定要求與跨專科之共識原則，由預立醫療決定整合型計畫之核心團隊維護；本專科內容由本會依專業共識訂定；緩和醫療之共通建議由台灣安寧緩和醫學學會提供。</p>
     <p>程序之終點是依病人預立醫療決定終止、撤除或不施行維持生命治療或人工營養及流體餵養。此係實現病人之意願，不以縮短生命為目的。</p>
     <p class="muted">本指引標〔共識原則〕之各項為一般建議，臨床上得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整；標〔法定要求〕之各項為法律所定，依法辦理。標籤說明與縮寫對照表見附錄二。</p>
-    <table><tr><th style="width:22%">適用對象</th><td>${br(d.meta.target) || '<span class="empty">（尚未填寫）</span>'}</td></tr>
-    <tr><th>研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr></table>
+    <table><tr><th style="width:22%">研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr></table>
   </section>`;
 
   const ov = `<section class="sheet">
@@ -1220,6 +1255,7 @@ function setView(v) {
   $('#handbook').hidden = v !== 'book';
   if (v === 'book') renderHandbook();
   window.scrollTo(0, 0);
+  updateWhere();
 }
 function exportDraft() {
   if (!state.data) return;
@@ -1267,8 +1303,11 @@ async function copyText(t) {
   catch (e) { window.prompt('請複製以下邀請連結', t); }
 }
 function init() {
-  $('#soc').innerHTML = `<option value="">請選擇學會</option>` + SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
-  $('#soc').addEventListener('change', e => { if (e.target.value) openLocal(e.target.value); else renderLanding(); });
+  $('#go-home').addEventListener('click', e => { e.preventDefault(); goHome(); });
+  $('#btn-home').addEventListener('click', goHome);
+  window.addEventListener('scroll', () => { if (!whereRaf) whereRaf = requestAnimationFrame(updateWhere); }, { passive: true });
+  $('#main').addEventListener('focusout', () => setTimeout(() => { const a = document.activeElement; if (!(a && a.id && /^f-\w+$/.test(a.id))) { whereField = ''; updateWhere(); } }, 0));
+  $('#main').addEventListener('focusin', e => { const t = e.target; whereField = t && t.id && /^f-\w+$/.test(t.id) ? t.id.slice(2) : ''; updateWhere(); });
   $('#tab-edit').addEventListener('click', () => setView('edit'));
   $('#tab-book').addEventListener('click', () => setView('book'));
   const main = $('#main');
@@ -1280,7 +1319,7 @@ function init() {
       state.data.refs.push(''); renderRefs();
       const i = state.data.refs.length - 1; $('#ref-' + i).focus();
       if (state.mode === 'cloud') queueCloud('refs', state.data.refs.slice()); else saveLocal();
-    } else if (t.id === 'btn-leave') { lsDel(KEY + 'token'); history.replaceState(null, '', location.pathname); renderLanding(); setStatus('已離開'); }
+    } else if (t.id === 'btn-leave') { flushAll(); lsDel(KEY + 'token'); lsDel(KEY + 'tokenName'); history.replaceState(null, '', location.pathname); renderLanding(); setStatus('已離開'); }
     else if (t.id === 'btn-back-admin' || t.id === 'btn-refresh') renderAdmin();
     else if (t.id === 'btn-signout') adminSignOut();
     else if (t.dataset.hist) { const box = $('#hist-' + t.dataset.hist); if (box && !box.hidden) box.hidden = true; else loadHistory(t.dataset.hist); }
