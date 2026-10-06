@@ -60,7 +60,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------- 頂端 ---------- */
 .app-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--paper); border-bottom: 1px solid var(--line); }
-.app-top .in { max-width: 1240px; margin: 0 auto; padding-block: 12px; padding-inline: 24px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; }
+.app-top .in { max-width: 1240px; margin: 0 auto; padding-block: 12px; padding-inline: 24px; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 16px 20px; }
 .who-is { display: flex; align-items: center; gap: 12px; min-width: 0; color: inherit; text-decoration: none; }
 .who-is div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
 .who-is b { font-family: var(--serif); font-size: 19px; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -70,10 +70,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 4px; }
 .seg button { border: 0; background: transparent; padding: 7px 22px; border-radius: 999px; cursor: pointer; color: var(--muted); font-size: 16px; font-weight: 500; }
 .seg button[aria-selected="true"] { background: var(--paper); color: var(--coral-ink); box-shadow: 0 1px 4px rgba(60, 40, 35, .15); }
-.right { display: flex; justify-content: flex-end; gap: 10px; position: relative; }
-.more-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 40; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(60, 40, 35, .16); padding: 6px; min-width: 190px; }
-.more-menu button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 16px; }
-.more-menu button:hover { background: var(--bg); }
+.right { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.right .btn { padding: 8px 14px; font-size: 15.5px; }
 .statusbar { background: #fdf3ef; border-top: 1px solid #f6ddd4; }
 .statusbar .in { max-width: 1240px; margin: 0 auto; padding: 7px 24px; display: flex; align-items: center; gap: 8px 18px; font-size: 15px; flex-wrap: wrap; }
 #st-where { color: var(--ink-2); font-weight: 500; min-width: 0; flex: 1 1 320px; }
@@ -262,7 +260,7 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 @media (max-width: 960px) {
   .app-top { position: static; }
   .app-top .in { grid-template-columns: minmax(0, 1fr) auto; padding-inline: 16px; }
-  .app-top .seg { grid-column: 1 / -1; justify-self: start; order: 3; }
+  .app-top .right { grid-column: 1 / -1; justify-content: flex-start; }
   .statusbar .in { padding-inline: 16px; }
   .prog-wrap .bar { width: 90px; }
   .hero { padding-block: 56px 120px; padding-inline: 20px; }
@@ -286,8 +284,8 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 @media (max-width: 560px) {
   .app-top .mark { display: none; }
   .who-is b { font-size: 17px; white-space: normal; }
-  .right .btn.primary { padding: 9px 12px; font-size: 15px; }
-  #btn-print .pdf { display: none; }
+  .right .btn { padding: 7px 12px; font-size: 15px; }
+  #btn-print .pdf, .right .long { display: none; }
   #st-where { flex-basis: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -318,13 +316,10 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
       <button id="tab-book" role="tab" aria-selected="false" type="button">手冊預覽</button>
     </div>
     <div class="right" id="top-right">
+      <button class="btn" id="btn-home" type="button">回首頁</button>
+      <button class="btn" id="btn-export" type="button">匯出<span class="long">草稿檔</span></button>
+      <button class="btn" id="btn-import" type="button">匯入<span class="long">草稿檔</span></button>
       <button class="btn primary" id="btn-print" type="button">列印<span class="pdf">／存成 PDF</span></button>
-      <button class="btn" id="btn-more" type="button" aria-haspopup="true" aria-expanded="false" title="更多">⋯</button>
-      <div class="more-menu" id="more-menu" hidden>
-        <button id="btn-home" type="button">回首頁</button>
-        <button id="btn-export" type="button">匯出草稿檔</button>
-        <button id="btn-import" type="button">匯入草稿檔</button>
-      </div>
       <input type="file" id="file-import" accept=".json,application/json" hidden>
     </div>
   </div>
@@ -948,15 +943,13 @@ function renderRefs() {
 function setToolbar() {
   const has = !!state.socId && (state.mode === 'local' || state.mode === 'cloud');
   ['#seg', '#btn-print', '#btn-export', '#btn-import'].forEach(s => { $(s).hidden = !has; });
-  ['#btn-more', '#btn-home'].forEach(s => { $(s).hidden = !state.mode; });
-  closeMore();
+  $('#btn-home').hidden = !state.mode;
   $('#top-title').textContent = has ? socOf(state.socId).name : '病主緩和臨床指引';
   const tag = $('#mode-tag');
   tag.hidden = !state.mode;
   tag.textContent = (state.mode === 'admin-list' ? '核心團隊總覽' : state.mode === 'local' ? '本機試填' : state.admin ? '核心團隊檢閱中' : state.mode ? '● 雲端協作中' : '') + (has && state.label ? '｜' + state.label : '');
   tag.className = 'mode-tag' + (state.mode === 'local' ? ' local' : state.admin || state.mode === 'admin-list' ? ' admin' : '');
 }
-function closeMore() { $('#more-menu').hidden = true; $('#btn-more').setAttribute('aria-expanded', 'false'); }
 function showPane(p) {
   $('#landing').hidden = p !== 'landing';
   $('#editor').hidden = p !== 'editor';
@@ -1032,7 +1025,7 @@ function renderLanding() {
       <div class="who">試用</div>
       <h2>本機試填</h2>
       <p>不需邀請碼，內容只存在這台電腦之瀏覽器，不與他人共享，適合先熟悉介面。</p>
-      <div class="act"><select id="soc-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select><button class="btn block" type="button" id="btn-local">開始試填</button></div>
+      <div class="act"><select id="soc-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select><button class="btn block" type="button" id="btn-local">開始試填</button><button class="linkbtn" type="button" id="btn-import-home">或匯入先前匯出之草稿檔</button></div>
     </section>
     <section class="entry">
       <div class="who">核心團隊</div>
@@ -1057,6 +1050,7 @@ function renderLanding() {
   $('#soc-pick').addEventListener('change', e => { if (e.target.value) openLocal(e.target.value); });
   $('#btn-local').addEventListener('click', () => { const v = $('#soc-pick').value; if (v) openLocal(v); else setStatus('請先選擇學會'); });
   $('#btn-admin').addEventListener('click', adminSignIn);
+  $('#btn-import-home').addEventListener('click', () => $('#file-import').click());
   if (savedTok) $('#btn-resume').addEventListener('click', () => openCloud(savedTok, false));
 }
 function openLocal(id) {
@@ -1356,6 +1350,9 @@ function importDraft(file) {
         renderEditor();
         setStatus('已匯入草稿檔並同步至雲端');
       } else {
+        const cur = loadLocal(p.society);
+        const hasCur = CODES.some(k => (cur.f[k] || '').trim()) || (cur.meta.team || '').trim() || (cur.meta.version || '').trim() || cur.refs.some(r => (r || '').trim());
+        if (hasCur && !window.confirm('匯入會以草稿檔內容取代這台電腦上「' + p.societyName + '」之試填內容，確定嗎？')) return;
         lsSet(KEY + p.society, JSON.stringify(p.data));
         openLocal(p.society);
         setStatus(`已匯入草稿檔（${p.societyName}），本機試填`);
@@ -1372,11 +1369,7 @@ async function copyText(t) {
 }
 function init() {
   $('#go-home').addEventListener('click', e => { e.preventDefault(); goHome(); });
-  $('#btn-home').addEventListener('click', () => { closeMore(); goHome(); });
-  $('#btn-more').addEventListener('click', e => { e.stopPropagation(); const m = $('#more-menu'); m.hidden = !m.hidden; $('#btn-more').setAttribute('aria-expanded', String(!m.hidden)); });
-  $('#more-menu').addEventListener('click', () => closeMore());
-  document.addEventListener('click', e => { if (!e.target.closest('#more-menu') && !e.target.closest('#btn-more')) closeMore(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMore(); });
+  $('#btn-home').addEventListener('click', goHome);
   window.addEventListener('scroll', () => { if (!whereRaf) whereRaf = requestAnimationFrame(updateWhere); }, { passive: true });
   $('#main').addEventListener('focusout', () => setTimeout(() => { const a = document.activeElement; if (!(a && a.id && /^f-\w+$/.test(a.id))) { whereField = ''; updateWhere(); } }, 0));
   $('#main').addEventListener('focusin', e => { const t = e.target; whereField = t && t.id && /^f-\w+$/.test(t.id) ? t.id.slice(2) : ''; updateWhere(); });
