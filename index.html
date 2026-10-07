@@ -506,59 +506,59 @@ const K5 = [
 // ====================================================================
 // 二、學會資料（核心團隊預設；核心小組會議確認前為草案）
 //   m1／n23／n4：yes＝依法得擔任；member＝依會員個人之部定專科；gray＝待確認；no＝不擔任
-//   k5：公告確診專科關鍵字 → 狀態；roles：lead主責／co協同／ref轉介／tbd待確認
+//   k5：公告確診專科關鍵字 → 狀態；r3：階段三角色 lead主責／co協同／ref轉介／tbd待確認
+//   階段一、二、四、五之角色尚無定義與依據，待核心小組討論後填入，目前一律顯示「待確認」（1151007）
 // ====================================================================
-const ALL_LEAD = { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' };
 const SOCIETIES = [
   { id: 'test', name: '【測試用】工作坊練習', domain: '〔本專科〕', base: '工作坊練習用；角色與確診資格僅為示範，不代表任何學會',
-    test: true, m1: 'yes', m1n: '示範', n23: 'yes', n4: 'yes', k5: { '神經': 'yes', '心臟': 'yes' }, roles: { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' },
+    test: true, m1: 'yes', m1n: '示範', n23: 'yes', n4: 'yes', k5: { '神經': 'yes', '心臟': 'yes' }, r3: 'lead',
     note: '此為工作坊練習用之示範設定，各學會實際之角色與確診資格以核心團隊之預設為準。' },
   { id: 'dementia', name: '台灣臨床失智症學會', domain: '失智症照護', base: '會員多為神經科或精神科專科醫師',
-    m1: 'yes', n23: 'member', n4: 'member', k5: { '神經': 'member', '精神': 'member' }, roles: ALL_LEAD },
+    m1: 'yes', n23: 'member', n4: 'member', k5: { '神經': 'member', '精神': 'member' }, r3: 'lead' },
   { id: 'neuro', name: '台灣神經醫學會', domain: '神經醫學', base: '神經科（部定專科）',
-    m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'yes' }, roles: ALL_LEAD },
+    m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'yes' }, r3: 'lead' },
   { id: 'neurosurg', name: '台灣神經外科醫學會', domain: '神經外科', base: '神經外科（部定專科）',
-    m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'gray' }, roles: ALL_LEAD,
+    m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'gray' }, r3: 'lead',
     note: '第五款公告所稱「神經醫學專科」是否包含神經外科，待確認。' },
   { id: 'psych', name: '台灣精神醫學會', domain: '精神醫學', base: '精神科（部定專科）',
-    m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, roles: ALL_LEAD },
+    m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, r3: 'lead' },
   { id: 'geripsych', name: '台灣老年精神醫學會', domain: '老年精神醫學', base: '精神科（部定專科）；老年精神醫學為其次專科',
-    m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, roles: ALL_LEAD },
+    m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, r3: 'lead' },
   { id: 'emerg', name: '台灣急診醫學會', domain: '急診醫學', base: '急診醫學科（部定專科）',
     m1: 'gray', m1n: '急診醫師是否屬「與該疾病診斷或治療相關」，待確認', n23: 'no', n4: 'no', k5: {},
-    roles: { 1: 'co', 2: 'co', 3: 'tbd', 4: 'lead', 5: 'lead' },
+    r3: 'tbd',
     note: '急診常面對§7危急病人之急救義務與符合§14者之區分。' },
   { id: 'critical', name: '中華民國重症醫學會', domain: '重症醫學', base: '重症醫學科（部定專科）',
     m1: 'yes', n23: 'no', n4: 'no', k5: { '重症': 'yes' },
-    roles: { 1: 'co', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'lead' } },
+    r3: 'lead' },
   { id: 'tcm', name: '台灣中醫家庭醫學醫學會', domain: '中醫', base: '中醫師',
     m1: 'gray', n23: 'gray', n4: 'gray', k5: {},
-    roles: { 1: 'co', 2: 'co', 3: 'ref', 4: 'co', 5: 'tbd' },
+    r3: 'ref',
     note: '確診資格、病人僅於中醫就診時之轉介路徑，以及撤除後之緩和醫療由中醫提供或與西醫團隊結合，待核心小組與中醫小組確認。' },
   { id: 'hospice', name: '台灣安寧緩和醫學學會', domain: '安寧緩和醫療', base: '安寧緩和醫學為學會專科；會員之部定專科多為家庭醫學科、內科等',
     m1: 'gray', m1n: '依「與該疾病治療相關」有納入空間，惟無主管機關函釋；穩妥做法為二位確診醫師中至少一位與該疾病診斷直接相關', n23: 'no', n4: 'no', k5: {},
-    roles: { 1: 'co', 2: 'lead', 3: 'lead', 4: 'co', 5: 'lead' },
+    r3: 'lead',
     note: '本學會另提供各階段之緩和醫療共通建議；階段三之主責為緩和醫療團隊照會確認。' },
   { id: 'nephro', name: '台灣腎臟醫學會', domain: '腎臟醫學', base: '內科（部定專科）；腎臟醫學為其次專科',
-    m1: 'yes', n23: 'no', n4: 'no', k5: { '內科': 'yes' }, roles: ALL_LEAD },
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '內科': 'yes' }, r3: 'lead' },
   { id: 'geri', name: '台灣老年學暨老年醫學會', domain: '老年醫學', base: '老年醫學為學會專科（非部定）；會員之部定專科多為內科、家庭醫學科',
     m1: 'member', n23: 'no', n4: 'gray', k5: {},
-    roles: { 1: 'lead', 2: 'lead', 3: 'tbd', 4: 'lead', 5: 'lead' },
+    r3: 'tbd',
     note: '老年醫學非部定專科，且與「神經或精神醫學相關」不直接對應；第四款資格依會員個人之部定專科，待確認。' },
   { id: 'cardio', name: '中華民國心臟學會', domain: '心臟醫學', base: '內科（部定專科）；心臟醫學為其次專科',
-    m1: 'yes', n23: 'no', n4: 'no', k5: { '心臟': 'yes', '內科': 'yes' }, roles: ALL_LEAD },
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '心臟': 'yes', '內科': 'yes' }, r3: 'lead' },
   { id: 'pedpulm', name: '台灣兒童胸腔暨重症醫學會', domain: '兒童胸腔及重症醫學', base: '兒科（部定專科）；兒童胸腔及重症為其次專科',
-    m1: 'yes', n23: 'no', n4: 'no', k5: { '小兒': 'yes', '胸腔': 'gray', '重症': 'gray' }, roles: ALL_LEAD,
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '小兒': 'yes', '胸腔': 'gray', '重症': 'gray' }, r3: 'lead',
     note: '第五款公告所稱「胸腔醫學專科」「重症醫學專科」是否包含兒童胸腔及重症次專科，待確認。' },
   { id: 'fammed', name: '台灣家庭醫學醫學會', domain: '家庭醫學', base: '家庭醫學科（部定專科）',
     m1: 'gray', m1n: '依個案疾病，是否屬「與該疾病診斷或治療相關」，待確認', n23: 'no', n4: 'no', k5: {},
-    roles: { 1: 'lead', 2: 'lead', 3: 'tbd', 4: 'lead', 5: 'lead' } },
+    r3: 'tbd' },
   { id: 'pulm', name: '台灣胸腔暨重症加護醫學會', domain: '胸腔暨重症加護醫學', base: '內科（部定專科）；胸腔暨重症加護為其次專科',
-    m1: 'yes', n23: 'no', n4: 'no', k5: { '胸腔': 'yes', '內科': 'yes', '重症': 'gray' }, roles: ALL_LEAD,
+    m1: 'yes', n23: 'no', n4: 'no', k5: { '胸腔': 'yes', '內科': 'yes', '重症': 'gray' }, r3: 'lead',
     note: '第五款公告所稱「重症醫學專科」是否包含胸腔暨重症加護次專科，待確認（重症醫學科另為部定專科）。' },
   { id: 'radonc', name: '台灣放射腫瘤學會', domain: '放射腫瘤', base: '放射腫瘤科（部定專科）',
     m1: 'yes', n23: 'no', n4: 'no', k5: {},
-    roles: { 1: 'lead', 2: 'lead', 3: 'lead', 4: 'lead', 5: 'co' } }
+    r3: 'lead' }
 ];
 const ROLE_LABEL = { lead: '主責', co: '協同', ref: '轉介', tbd: '待確認' };
 const ST_LABEL = { yes: '本會專科醫師得擔任', member: '依會員個人之部定專科', gray: '待核心小組確認' };
@@ -566,7 +566,8 @@ const RANK = { yes: 3, member: 2, gray: 1 };
 
 function profile(soc) {
   const diag = [];
-  if (soc.roles[3] === 'ref') return { diag, roles: soc.roles };
+  const roles = { 1: 'tbd', 2: 'tbd', 3: soc.r3, 4: 'tbd', 5: 'tbd' };
+  if (roles[3] === 'ref') return { diag, roles };
   if (soc.m1 && soc.m1 !== 'no') diag.push({ label: '第一款　末期病人', sub: soc.m1n || '', basis: '細則§10 II：二位與該疾病診斷或治療相關之專科醫師', st: soc.m1 });
   if (soc.n23 && soc.n23 !== 'no') {
     diag.push({ label: '第二款　不可逆轉之昏迷狀況', basis: '細則§11 II：二位神經醫學相關之專科醫師', st: soc.n23 });
@@ -578,7 +579,7 @@ function profile(soc) {
     keys.forEach(k => { const s = (soc.k5 || {})[k]; if (s && (!best || RANK[s] > RANK[best])) best = s; });
     if (best) diag.push({ label: '第五款　' + nm, basis: '公告：' + spec, st: best });
   });
-  return { diag, roles: soc.roles };
+  return { diag, roles };
 }
 
 // ====================================================================
@@ -894,7 +895,7 @@ function diagTable(prof) {
 const TILES = `<div class="tiles">
   <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。</p></div>
   <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段之共通基準依現行法訂定，點開即可閱讀。</p></div>
-  <div class="tile"><b><span class="sw ok"></span>角色已預設</b><p>本會於各階段之角色與可擔任確診之款別，由核心團隊依法定資格預設，本會不勾選。</p></div>
+  <div class="tile"><b><span class="sw ok"></span>角色由核心團隊填入</b><p>階段三可擔任確診之款別，由核心團隊依法定資格預設；各階段之角色，由核心小組討論後填入。本會均不勾選。</p></div>
   <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入者，內容即時存到雲端，同一學會之成員看到同一份；每格保留歷史版本。</p></div>
 </div>`;
 function updateCount(k) { const c = $('#cnt-' + k); if (c) c.textContent = (($('#f-' + k) || {}).value || '').length + ' 字'; }
@@ -1095,13 +1096,13 @@ function renderEditor() {
     <h3>階段三可擔任確診之款別與疾病</h3>
     ${diagTable(prof)}
     ${soc.note ? `<p class="refline">${esc(soc.note)}</p>` : ''}
-    <p class="notice">以上角色與確診資格為核心團隊依病主法施行細則§10–13及第五款公告之預設；標示「待確認」者，將於核心小組會議討論後更新。</p>
+    <p class="notice">階段三可擔任確診之款別與疾病，為核心團隊依病主法施行細則§10–13及第五款公告之預設；本會於各階段之角色，由核心小組討論後填入。標示「待確認」者，將於討論後更新。</p>
   </section>`;
 
   const stages = STAGES.map(s => `<section class="chapter" id="sec-s${s.n}">
     <div class="chapter-no"><span class="t stage">階段${ZH[s.n - 1]}</span></div>
     <h2>${esc(s.name)}</h2>
-    <span class="role pill ${prof.roles[s.n]}">本會角色：${ROLE_LABEL[prof.roles[s.n]]}</span>
+    ${prof.roles[s.n] === 'tbd' ? '' : `<span class="role pill ${prof.roles[s.n]}">本會角色：${ROLE_LABEL[prof.roles[s.n]]}</span>`}
     <p class="lead">${esc(s.pos)}</p>
     <hr>
     <div class="flow">${s.steps.split('→').map(x => `<span>${esc(x.trim())}</span>`).join('<i>→</i>')}</div>
