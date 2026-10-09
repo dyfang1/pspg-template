@@ -183,6 +183,22 @@ table.t.admin tr.testrow td { background: #fffaf6; }
 .cm-h span { font-weight: 400; color: var(--faint); font-size: 13.5px; }
 .cbox textarea { width: 100%; min-height: 70px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); padding: 8px 10px; resize: vertical; }
 
+.case .ttl { flex: 1; min-width: 0; border: 0; border-bottom: 1px dashed var(--coral-line); background: transparent; font-family: var(--serif); font-size: 18.5px; padding: 0 2px; }
+.case .ttl:focus { outline: none; border-bottom-color: var(--coral); }
+.case .hint { padding: 10px 22px 0; font-size: 14.5px; color: var(--muted); line-height: 1.7; }
+.case .hint b { color: var(--coral-ink); font-weight: 500; }
+.case .res { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 22px 14px; font-size: 15px; color: var(--muted); }
+.case .res label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); cursor: pointer; color: var(--ink-2); }
+.case .res input { accent-color: var(--coral); margin: 0; }
+.case .res label:has(input[value="ok"]:checked) { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); }
+.case .res label:has(input[value="hard"]:checked) { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); }
+.case .res small { color: var(--faint); font-size: 13.5px; }
+.case .fb { margin: 0 22px 16px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.case .fb label { font-size: 14.5px; color: var(--muted); display: block; margin-bottom: 4px; }
+.case .fb textarea { min-height: 64px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 15.5px; }
+.sheet .case-b { margin: 0 0 14pt; }
+.sheet .case-b p { margin: 0 0 4pt 11pt; }
+.sheet .case-b + .case-b { border-top: 0.75pt dashed var(--sheet-line); padding-top: 10pt; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; }
 .tile { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
 .tile b { display: flex; align-items: center; gap: 8px; font-size: 17px; margin-bottom: 2px; }
@@ -347,6 +363,8 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 // ====================================================================
 const LAW = 'law', CON = 'con', NOTE = 'note', TABLE = 'table';
 const ZH = ['一', '二', '三', '四', '五'];
+const DIG = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+function zh(n) { return n < 10 ? DIG[n] : n < 20 ? '十' + DIG[n % 10] : DIG[Math.floor(n / 10)] + '十' + DIG[n % 10]; }
 const SIT_TABLE = {
   head: ['情境', '處理', '依據'],
   rows: [
@@ -623,13 +641,24 @@ function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e
 function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { /* 無法刪除時略過 */ } }
 function blank() {
   const f = {}; CODES.forEach(k => { f[k] = ''; });
-  return { meta: { target: '', team: '', version: '' }, f, fm: {}, c: {}, refs: ['', '', ''] };
+  return { meta: { target: '', team: '', version: '' }, f, fm: {}, c: {}, refs: ['', '', ''], x: blankCases() };
 }
+// 案例：x.K1…K5（可再新增）；t 標題、b 內容、r 套用結果（ok／hard）、fb 對本指引之回饋。r 與 fb 不列入手冊。
+const CASE_MIN = 5;
+function blankCase() { return { t: '', b: '', r: '', fb: '' }; }
+function blankCases() { const x = {}; for (let i = 1; i <= CASE_MIN; i++) x['K' + i] = blankCase(); return x; }
+function normCases(x) {
+  const out = blankCases();
+  Object.keys(x || {}).forEach(k => { if (/^K\d+$/.test(k)) out[k] = Object.assign(blankCase(), x[k] || {}); });
+  return out;
+}
+function caseKeys() { return Object.keys((state.data || {}).x || {}).filter(k => /^K\d+$/.test(k)).sort((a, b) => a.slice(1) - b.slice(1)); }
+function caseFilled(k) { const c = state.data.x[k] || {}; return !!((c.t || '').trim() || (c.b || '').trim()); }
 function normalize(d) {
   const b = blank(); d = d || {};
   return {
     meta: Object.assign(b.meta, d.meta || {}), f: Object.assign(b.f, d.f || {}), fm: d.fm || {}, c: d.c || {},
-    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs,
+    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x),
     soc: d.soc, updatedAt: d.updatedAt, updatedBy: d.updatedBy
   };
 }
@@ -644,7 +673,7 @@ let saveTimer = null;
 function saveLocal() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs }));
+    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x }));
     lsSet(KEY + 'last', state.socId);
     setStatus(ok ? '已存於本機瀏覽器 ' + hhmm() : '此瀏覽器無法自動儲存，請以「匯出草稿檔」保存');
   }, 400);
@@ -719,10 +748,28 @@ function applyRemote(d) {
     state.data.meta[m] = remote;
     if (el && el.value !== remote && document.activeElement !== el) el.value = remote;
   });
+  applyRemoteCases(nd);
   if (!pending.has('refs') && !(document.activeElement && document.activeElement.id && document.activeElement.id.startsWith('ref-'))) {
     if (JSON.stringify(nd.refs) !== JSON.stringify(state.data.refs)) { state.data.refs = nd.refs; renderRefs(); }
   }
   updateProgress();
+}
+function applyRemoteCases(nd) {
+  const rx = nd.x, before = caseKeys().join();
+  Object.keys(rx).forEach(k => {
+    state.data.fm[k] = nd.fm[k]; state.data.c[k] = nd.c[k];
+    const loc = state.data.x[k] || (state.data.x[k] = blankCase());
+    ['t', 'b', 'fb'].forEach(sub => {
+      const path = `x.${k}.${sub}`; if (pending.has(path)) return;
+      const el = $(`[data-k="${path}"]`), remote = rx[k][sub] || '';
+      if (el && el.value !== remote && document.activeElement === el) { if (sub === 'b') remoteWaiting.add(k); return; }
+      loc[sub] = remote;
+      if (el && el.value !== remote) { el.value = remote; if (sub === 'b') updateCount(k); }
+    });
+    if (!pending.has(`x.${k}.r`)) { loc.r = rx[k].r || ''; document.querySelectorAll(`[data-k="x.${k}.r"]`).forEach(el => { el.checked = el.value === loc.r; }); }
+    showFm(k); renderComment(k);
+  });
+  if (caseKeys().join() !== before && !(document.activeElement && document.activeElement.closest && document.activeElement.closest('#cases-list'))) renderCases();
 }
 function queueCloud(path, value) {
   clearTimeout(pending.get(path));
@@ -733,19 +780,19 @@ function queueCloud(path, value) {
 function flushCloud(path) {
   if (!pending.has(path)) return;
   clearTimeout(pending.get(path));
-  const val = path === 'refs' ? state.data.refs : getPath(state.data, path);
+  const val = path === 'refs' ? state.data.refs : JSON.parse(JSON.stringify(getPath(state.data, path) ?? ''));
   pushCloud(path, val, pending.get(path));
 }
 async function pushCloud(path, value, t) {
   try {
     const { fs, db } = await fb();
     const upd = { [path]: value, updatedAt: fs.serverTimestamp(), updatedBy: editorName() };
-    const m = path.match(/^f\.(\w+)$/);
+    const m = path.match(/^f\.(\w+)$/) || path.match(/^x\.(K\d+)\.(?:t|b|r|fb)$/);
     if (m) upd['fm.' + m[1]] = { by: editorName(), at: fs.serverTimestamp() };
     await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
     if (pending.get(path) === t) pending.delete(path);
     setStatus('已同步至雲端 ' + hhmm());
-    if (m) maybeHistory(m[1], value, false);
+    if (m && /^(f\.\w+|x\.K\d+\.b)$/.test(path)) maybeHistory(m[1], value, false);
   } catch (e) {
     setStatus('儲存失敗：' + errText(e) + '。內容仍在畫面上，請稍後再試或匯出草稿檔');
   }
@@ -777,8 +824,8 @@ function restoreHistory(code, i) {
   const h = (histCache[code] || [])[i]; if (!h) return;
   const el = $('#f-' + code); if (!el) return;
   maybeHistory(code, el.value, true);
-  el.value = h.text || ''; state.data.f[code] = el.value; updateCount(code);
-  queueCloud('f.' + code, el.value); flushCloud('f.' + code);
+  el.value = h.text || ''; setPath(state.data, el.dataset.k, el.value); updateCount(code);
+  queueCloud(el.dataset.k, el.value); flushCloud(el.dataset.k);
   $('#hist-' + code).hidden = true;
 }
 async function pushComment(code, text) {
@@ -838,7 +885,7 @@ async function createInvite(socId) {
     const { fs, db } = await fb();
     const token = randToken();
     const b = blank();
-    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, label, meta: b.meta, f: b.f, fm: {}, c: {}, refs: b.refs, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
+    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, label, meta: b.meta, f: b.f, fm: {}, c: {}, refs: b.refs, x: b.x, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
     await renderAdmin();
   } catch (e) { setStatus('建立失敗：' + errText(e)); }
 }
@@ -893,7 +940,7 @@ function diagTable(prof) {
     ${prof.diag.map(d => `<tr><td>${esc(d.label)}${d.sub ? `<br><span style="color:var(--muted)">${esc(d.sub)}</span>` : ''}</td><td>${esc(d.basis)}</td><td class="st-${d.st}">${ST_LABEL[d.st]}</td></tr>`).join('')}</table></div>`;
 }
 const TILES = `<div class="tiles">
-  <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。</p></div>
+  <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。另於「案例」章提供本會之案例。</p></div>
   <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段之共通基準依現行法訂定，點開即可閱讀。</p></div>
   <div class="tile"><b><span class="sw ok"></span>角色由核心團隊填入</b><p>階段三可擔任確診之款別，由核心團隊依法定資格預設；各階段之角色，由核心小組討論後填入。本會均不勾選。</p></div>
   <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入者，內容即時存到雲端，同一學會之成員看到同一份；每格保留歷史版本。</p></div>
@@ -937,6 +984,30 @@ function fillHTML(k, prof) {
     ${cm}
   </div>`;
 }
+const CASE_HINT = '請依序寫出：<b>①</b> 案例經過與病程發展　<b>②</b> 關鍵之決策點在哪個階段；如有困境，卡在哪裡、為什麼　<b>③</b> 依本指引如何處理，與過去作法有何不同';
+function caseHTML(k, i) {
+  const c = state.data.x[k], n = '案例' + zh(i + 1), cloud = state.mode === 'cloud';
+  const cm = !cloud ? '' : state.admin
+    ? `<div class="cbox admin" id="cm-${k}"><label class="cm-h" for="cmt-${k}">核心團隊意見<span id="cmm-${k}"></span></label><textarea id="cmt-${k}" data-c="${k}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[k] || {}).text || '')}</textarea></div>`
+    : `<div class="cbox" id="cm-${k}" hidden></div>`;
+  const radio = (v, t) => `<label><input type="radio" name="r-${k}" data-k="x.${k}.r" value="${v}"${c.r === v ? ' checked' : ''}>${t}</label>`;
+  return `<div class="fill case" id="card-${k}">
+    <div class="hd"><span class="code">${n}</span><input class="ttl" type="text" id="t-${k}" data-k="x.${k}.t" value="${esc(c.t)}" placeholder="案例標題（由本會自訂）" aria-label="${n}標題"></div>
+    <div class="hint">${CASE_HINT}</div>
+    <textarea id="f-${k}" data-k="x.${k}.b" aria-label="${n}內容">${esc(c.b)}</textarea>
+    <div class="res"><span>本案套用本指引：</span>${radio('ok', '可順利處理')}${radio('hard', '仍有困難')}<small>（本項與下方回饋供修訂指引之用，不列入手冊）</small></div>
+    <div class="fb"><label for="fb-${k}">對本指引之回饋：本案例顯示指引不足或需細化之處（勾選「仍有困難」者請填）</label><textarea id="fb-${k}" data-k="x.${k}.fb" placeholder="勾選「可順利處理」者，得免填">${esc(c.fb)}</textarea></div>
+    <div class="ft"><span class="fm" id="fm-${k}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${k}">歷史版本</button>` : ''}<span class="count" id="cnt-${k}">${(c.b || '').length} 字</span></div>
+    ${cloud ? `<div class="hist" id="hist-${k}" hidden></div>` : ''}
+    ${cm}
+  </div>`;
+}
+function renderCases() {
+  const box = $('#cases-list'); if (!box) return;
+  const ks = caseKeys();
+  box.innerHTML = ks.map(caseHTML).join('');
+  ks.forEach(k => { showFm(k); renderComment(k); });
+}
 function renderRefs() {
   const box = $('#refs-list'); if (!box) return;
   box.innerHTML = state.data.refs.map((r, i) => `<div class="r"><span>${i + 1}.</span><input type="text" id="ref-${i}" data-k="refs.${i}" value="${esc(r)}" aria-label="文獻 ${i + 1}"></div>`).join('');
@@ -968,7 +1039,7 @@ function goHome() {
 }
 // ---------- 目前位置 ----------
 let whereRaf = 0, whereField = '';
-const SEC_LABEL = id => id === 'sec-guide' ? '本模板之使用' : id === 'sec-basic' ? '本會資料與角色' : id === 'sec-common' ? '各階段通用' : id === 'sec-refs' ? '參考文獻'
+const SEC_LABEL = id => id === 'sec-guide' ? '本模板之使用' : id === 'sec-basic' ? '本會資料與角色' : id === 'sec-common' ? '各階段通用' : id === 'sec-cases' ? '案例' : id === 'sec-refs' ? '參考文獻'
   : (m => m ? `階段${ZH[+m[1] - 1]}｜${STAGES[+m[1] - 1].name}` : '')(id.match(/^sec-s(\d)$/));
 function updateWhere() {
   whereRaf = 0;
@@ -986,7 +1057,9 @@ function updateWhere() {
     if (on && !a.classList.contains('active') && window.innerWidth <= 960) { const nav = $('#nav'); nav.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' }); }
     a.classList.toggle('active', on);
   });
-  const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${FILLS[whereField].label}` : '';
+  const ck = whereField && /^K\d+$/.test(whereField) ? caseKeys().indexOf(whereField) : -1;
+  const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${FILLS[whereField].label}`
+    : ck >= 0 ? `　【案例${zh(ck + 1)}】${(state.data.x[whereField].t || '').trim()}` : '';
   el.textContent = '目前位置：' + SEC_LABEL(cur.id) + f;
 }
 function renderLanding() {
@@ -1067,7 +1140,7 @@ function renderEditor() {
   $('#landing').innerHTML = '';
   $('#nav').innerHTML = [`<a href="#sec-guide"><span class="dot"></span>本模板之使用</a>`, `<a href="#sec-basic"><span class="dot"></span>本會資料與角色</a>`, `<div class="sep"></div>`]
     .concat(STAGES.map(s => `<a href="#sec-s${s.n}"><span class="dot" data-stage="${s.n}"></span>階段${ZH[s.n - 1]}　${esc(s.name)}</a>`))
-    .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`]).join('');
+    .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, `<a href="#sec-cases"><span class="dot" id="dot-cases"></span>案例</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`]).join('');
 
   const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
   const adminBar = state.admin ? `<div class="whobar"><span>您正以核心團隊身分檢閱；修改內容與研發小組相同即時生效。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>` : '';
@@ -1117,6 +1190,15 @@ function renderEditor() {
     ${base(`<ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<p class="refline">${esc(r)}</p>`).join('')}`)}
   </section>`;
 
+  const cases = `<section class="chapter" id="sec-cases">
+    <div class="chapter-no"><span class="t stage">案例</span></div>
+    <h2>本會案例</h2>
+    <p class="lead">請提供本專科具代表性之案例，先以五則為原則，尤以臨床上較感困擾者為宜。將案例套用本指引走一遍，看出病程之發展與介入之時點，並比較依本指引處理與過去作法之差異；依本指引仍難以處理之處，即是指引需要補充或細化之處。</p>
+    <p class="notice"><b>請先去識別化。</b>不寫病人姓名、病歷號、確切日期、就醫院所，以及可辨識個人之罕見特徵；年齡以年齡層表示（如「80餘歲」）。</p>
+    <div id="cases-list"></div>
+    <div style="margin-top:16px"><button class="btn sm" type="button" id="btn-addcase">新增一則案例</button></div>
+  </section>`;
+
   const refs = `<section class="chapter" id="sec-refs">
     <div class="chapter-no"><span class="t">選填</span></div>
     <h2>參考文獻</h2>
@@ -1125,8 +1207,8 @@ function renderEditor() {
     <div class="refs-act"><button class="btn sm" type="button" id="btn-addref">新增一筆</button></div></div>
   </section>`;
 
-  $('#main').innerHTML = guide + basic + stages + common + refs;
-  renderRefs();
+  $('#main').innerHTML = guide + basic + stages + common + cases + refs;
+  renderRefs(); renderCases();
   CODES.forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
   if (state.view === 'book') { showPane('book'); renderHandbook(); } else showPane('editor');
@@ -1179,7 +1261,9 @@ async function renderAdmin() {
 function updateProgress() {
   if (!state.data) return;
   const done = CODES.filter(isDone).length;
-  $('#st-prog').textContent = `已填 ${done}／${CODES.length} 格`;
+  const ks = caseKeys(), nc = ks.filter(caseFilled).length;
+  $('#st-prog').textContent = `已填 ${done}／${CODES.length} 格｜案例 ${nc}／${ks.length} 則`;
+  const dc = $('#dot-cases'); if (dc) dc.classList.toggle('done', nc >= CASE_MIN);
   $('#st-bar').style.width = (done / CODES.length * 100) + '%';
   STAGES.forEach(s => { const dot = document.querySelector(`.dot[data-stage="${s.n}"]`); if (dot) dot.classList.toggle('done', s.fills.every(isDone)); });
 }
@@ -1190,8 +1274,9 @@ function onInput(e) {
   const k = el.dataset && el.dataset.k;
   if (!k) return;
   setPath(state.data, k, el.value);
-  const m = k.match(/^f\.(\w+)$/);
+  const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/);
   if (m) updateCount(m[1]);
+  if (/^x\.K\d+\.t$/.test(k)) updateWhere();
   updateProgress();
   if (state.mode === 'cloud') {
     if (k.startsWith('refs.')) queueCloud('refs', state.data.refs.slice());
@@ -1205,7 +1290,7 @@ function onBlur(e) {
   if (k) {
     const path = k.startsWith('refs.') ? 'refs' : k;
     flushCloud(path);
-    const m = k.match(/^f\.(\w+)$/);
+    const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/);
     if (m && remoteWaiting.has(m[1]) && !pending.has(path)) {
       remoteWaiting.delete(m[1]);
       setTimeout(() => { if (FB) FB.fs.getDoc(FB.fs.doc(FB.db, 'drafts', state.token)).then(s => s.exists() && applyRemote(s.data())); }, 1500);
@@ -1291,7 +1376,15 @@ function renderHandbook() {
     <p class="muted">依§14執行預立醫療決定者，不負刑事與行政責任（§14 V）；是否依§14執行，以病歷記載為憑。§17規定確診、照會、意願確認等事項應詳細記載，相關文件連同病歷保存。本表將其拆為八項，供醫師執行後自查與院內檢核；未標★者為§17所定事項，標★者為本指引建議記載。</p>
     <table><tr><th style="width:5%">＃</th><th style="width:20%">事項</th><th>應記載內容</th><th style="width:18%">法源</th><th style="width:6%">☐</th></tr>
     ${RECORDS.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>☐</td></tr>`).join('')}</table>
-    <h2>七、參考文獻</h2>
+  </section>`;
+
+  const filled = caseKeys().filter(caseFilled);
+  const caseSheet = `<section class="sheet">
+    <h2>七、案例</h2>
+    ${filled.length ? `<p class="muted">以下為本會具代表性之案例，含臨床上較感困擾之情境，說明套用本指引之處理。案例均已去識別化。</p>
+    ${filled.map((k, i) => { const c = d.x[k]; return `<div class="case-b"><h3>案例${zh(i + 1)}｜${esc((c.t || '').trim() || '（未命名）')}</h3>${(c.b || '').split(/\n+/).filter(x => x.trim()).map(x => `<p>${esc(x)}</p>`).join('') || '<p class="empty">（尚未填寫內容）</p>'}</div>`; }).join('')}`
+    : '<p class="empty">（尚未提供案例）</p>'}
+    <h2>八、參考文獻</h2>
     ${d.refs.some(r => (r || '').trim()) ? `<ol>${d.refs.filter(r => (r || '').trim()).map(r => `<li>${esc(r)}</li>`).join('')}</ol>` : '<p class="empty">（無）</p>'}
   </section>`;
 
@@ -1304,7 +1397,7 @@ function renderHandbook() {
     <table><tr><th style="width:20%">縮寫</th><th>全稱</th></tr>${ABBR.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>
   </section>`;
 
-  $('#handbook').innerHTML = cover + intro + ov + summarySheet + stagesSheet + rec + app;
+  $('#handbook').innerHTML = cover + intro + ov + summarySheet + stagesSheet + rec + caseSheet + app;
 }
 
 // ====================================================================
@@ -1323,7 +1416,7 @@ function setView(v) {
 function exportDraft() {
   if (!state.data) return;
   const soc = socOf(state.socId);
-  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs } };
+  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   const dt = new Date(), ymd = `${dt.getFullYear() - 1911}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`;
@@ -1344,15 +1437,15 @@ function importDraft(file) {
         const nd = normalize(p.data);
         CODES.forEach(k => maybeHistory(k, state.data.f[k] || '', true));
         const { fs, db } = await fb();
-        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
+        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
         CODES.forEach(k => { upd['fm.' + k] = { by: editorName() + '（匯入）', at: fs.serverTimestamp() }; });
         await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
-        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs });
+        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x });
         renderEditor();
         setStatus('已匯入草稿檔並同步至雲端');
       } else {
         const cur = loadLocal(p.society);
-        const hasCur = CODES.some(k => (cur.f[k] || '').trim()) || (cur.meta.team || '').trim() || (cur.meta.version || '').trim() || cur.refs.some(r => (r || '').trim());
+        const hasCur = CODES.some(k => (cur.f[k] || '').trim()) || Object.values(cur.x).some(c => (c.t || '').trim() || (c.b || '').trim()) || (cur.meta.team || '').trim() || (cur.meta.version || '').trim() || cur.refs.some(r => (r || '').trim());
         if (hasCur && !window.confirm('匯入會以草稿檔內容取代這台電腦上「' + p.societyName + '」之試填內容，確定嗎？')) return;
         lsSet(KEY + p.society, JSON.stringify(p.data));
         openLocal(p.society);
@@ -1372,8 +1465,9 @@ function init() {
   $('#go-home').addEventListener('click', e => { e.preventDefault(); goHome(); });
   $('#btn-home').addEventListener('click', goHome);
   window.addEventListener('scroll', () => { if (!whereRaf) whereRaf = requestAnimationFrame(updateWhere); }, { passive: true });
-  $('#main').addEventListener('focusout', () => setTimeout(() => { const a = document.activeElement; if (!(a && a.id && /^f-\w+$/.test(a.id))) { whereField = ''; updateWhere(); } }, 0));
-  $('#main').addEventListener('focusin', e => { const t = e.target; whereField = t && t.id && /^f-\w+$/.test(t.id) ? t.id.slice(2) : ''; updateWhere(); });
+  const fieldOf = t => { const m = t && t.id && (t.id.match(/^(?:t|fb)-(K\d+)$/) || t.id.match(/^f-(\w+)$/)); return m ? m[1] : (t && t.name && /^r-K\d+$/.test(t.name) ? t.name.slice(2) : ''); };
+  $('#main').addEventListener('focusout', () => setTimeout(() => { if (!fieldOf(document.activeElement)) { whereField = ''; updateWhere(); } }, 0));
+  $('#main').addEventListener('focusin', e => { whereField = fieldOf(e.target); updateWhere(); });
   $('#tab-edit').addEventListener('click', () => setView('edit'));
   $('#tab-book').addEventListener('click', () => setView('book'));
   const main = $('#main');
@@ -1385,6 +1479,11 @@ function init() {
       state.data.refs.push(''); renderRefs();
       const i = state.data.refs.length - 1; $('#ref-' + i).focus();
       if (state.mode === 'cloud') queueCloud('refs', state.data.refs.slice()); else saveLocal();
+    } else if (t.id === 'btn-addcase') {
+      const ks = caseKeys(), k = 'K' + (Math.max(0, ...ks.map(x => +x.slice(1))) + 1);
+      state.data.x[k] = blankCase(); renderCases(); updateProgress();
+      if (state.mode === 'cloud') { queueCloud('x.' + k, blankCase()); flushCloud('x.' + k); } else saveLocal();
+      $('#t-' + k).focus();
     } else if (t.id === 'btn-leave') { flushAll(); lsDel(KEY + 'token'); lsDel(KEY + 'tokenName'); history.replaceState(null, '', location.pathname); renderLanding(); setStatus('已離開'); }
     else if (t.id === 'btn-back-admin' || t.id === 'btn-refresh') renderAdmin();
     else if (t.id === 'btn-signout') adminSignOut();
