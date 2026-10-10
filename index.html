@@ -149,8 +149,25 @@ details.base summary small { font-family: var(--sans); font-size: 14px; color: v
 .base .gh { font-family: var(--serif); font-size: 17px; color: var(--ink-2); margin: 18px 0 6px; }
 .base ul { margin: 0; padding-left: 1.2em; }
 .base li { margin-bottom: 10px; font-size: 16.5px; line-height: 1.85; }
-.tag { font-size: 13.5px; color: var(--muted); white-space: nowrap; margin-left: 4px; }
+.tag { font-size: 13.5px; color: var(--muted); white-space: normal; margin-left: 4px; }
 .tag.c { color: var(--faint); }
+.tag.i { color: #7a5a1e; }
+.tcap { font-family: var(--serif); font-size: 16px; color: var(--ink-2); margin: 14px 0 4px; }
+.subt { font-family: var(--serif); font-size: 20px; color: var(--ink-2); margin: 8px 0 0; }
+.hero .basis { margin-top: 16px; font-size: 14.5px; color: rgba(255, 255, 255, .88); line-height: 1.7; }
+.case .del { margin-left: auto; }
+.case .stg { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 12px 22px 10px; font-size: 15px; color: var(--muted); }
+.case .stg label { display: inline-flex; align-items: center; gap: 4px; color: var(--ink-2); }
+.case .stg input { accent-color: var(--coral); }
+.case .stg small, .case .lf small { color: var(--faint); font-size: 13.5px; }
+.case .lf { margin: 0 22px 12px; padding: 10px 14px; background: var(--soft); border-radius: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px 14px; }
+.case .lf-h { grid-column: 1 / -1; font-size: 14.5px; color: var(--ink-2); font-weight: 500; }
+.case .lf label { display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; color: var(--muted); min-width: 0; }
+.case .lf select, .case .lf input { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 6px 30px 6px 10px; font-size: 15px; background-color: var(--paper); }
+.case .lf input { padding-right: 10px; }
+.case .lf .lf-w { grid-column: 1 / -1; }
+.case .deid { display: inline-flex; align-items: center; gap: 6px; margin: 0 22px 12px; font-size: 15px; color: var(--ink-2); }
+.case .deid input { accent-color: var(--coral); }
 .refline { font-size: 15px; color: var(--muted); margin: 10px 0 0; }
 .tbl-wrap { overflow-x: auto; margin: 8px 0 14px; }
 table.t { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--paper); }
@@ -185,8 +202,8 @@ table.t.admin tr.testrow td { background: #fffaf6; }
 
 .case .ttl { flex: 1; min-width: 0; border: 0; border-bottom: 1px dashed var(--coral-line); background: transparent; font-family: var(--serif); font-size: 18.5px; padding: 0 2px; }
 .case .ttl:focus { outline: none; border-bottom-color: var(--coral); }
-.case .hint { padding: 10px 22px 0; font-size: 14.5px; color: var(--muted); line-height: 1.7; }
-.case .hint b { color: var(--coral-ink); font-weight: 500; }
+.fill .hint { padding: 10px 22px 0; font-size: 14.5px; color: var(--muted); line-height: 1.7; }
+.fill .hint b { color: var(--coral-ink); font-weight: 500; }
 .case .res { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 22px 14px; font-size: 15px; color: var(--muted); }
 .case .res label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); cursor: pointer; color: var(--ink-2); }
 .case .res input { accent-color: var(--coral); margin: 0; }
@@ -199,6 +216,41 @@ table.t.admin tr.testrow td { background: #fffaf6; }
 .sheet .case-b { margin: 0 0 14pt; }
 .sheet .case-b p { margin: 0 0 4pt 11pt; }
 .sheet .case-b + .case-b { border-top: 0.75pt dashed var(--sheet-line); padding-top: 10pt; }
+.gq { margin: 12px 22px 0; padding: 10px 14px; background: var(--soft); border-radius: 10px; font-size: 15px; color: var(--muted); }
+.gq-h { font-size: 14px; color: var(--faint); }
+.gq ol { margin: 4px 0 0; padding-left: 1.4em; }
+.gq li { margin-bottom: 2px; }
+.first { margin: 10px 22px 0; padding-left: 10px; border-left: 3px solid var(--coral); font-size: 14.5px; color: var(--coral-ink); }
+.dl { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--paper); }
+.dl-head, .dl-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 170px; gap: 10px; align-items: center; padding: 9px 16px; border-bottom: 1px solid var(--line); font-size: 15.5px; }
+.dl-head { background: var(--soft); font-size: 13.5px; color: var(--muted); font-weight: 500; }
+.dl-row:last-child { border-bottom: 0; }
+.dl-row .k { color: var(--muted); font-size: 14px; min-width: 0; }
+.dl-row .act { text-align: right; min-width: 0; }
+.dl-row select, .dl-row input[type=text] { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 5px 30px 5px 8px; font-size: 14.5px; background-color: var(--paper); }
+.dl-row input[type=text] { padding-right: 8px; min-width: 0; width: 60%; }
+.dl-row.grp { background: #fffaf6; }
+.dl-row.merged { color: var(--faint); }
+.dl-row .mem { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+.dl-row.add { color: var(--coral-ink); }
+.dl-row.hintrow { color: var(--warn); background: var(--warn-soft); font-size: 14.5px; }
+.tagp { font-size: 12.5px; padding: 0 8px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); margin-left: 6px; white-space: nowrap; }
+.tagp.self { background: var(--coral-soft); color: var(--coral-ink); }
+.dz .hd { flex-wrap: wrap; }
+.dz .src-l { margin-left: auto; font-size: 13.5px; color: var(--muted); font-family: var(--sans); }
+.dfield + .dfield { border-top: 1px solid var(--line); }
+.sub-h { display: block; margin: 16px 22px 0; font-family: var(--serif); font-size: 17px; color: var(--ink-2); }
+.sub-h small { display: block; font-family: var(--sans); font-size: 13.5px; color: var(--faint); margin-top: 2px; }
+.dfield textarea { border-top: 1px dashed var(--line); margin-top: 10px; }
+details.lg { margin: 12px 22px 0; border: 1px solid var(--line); border-left: 3px solid var(--ink-2); border-radius: 0 10px 10px 0; background: #fbfbfa; }
+details.lg summary { cursor: pointer; padding: 8px 14px; font-family: var(--serif); font-size: 15.5px; color: var(--ink-2); }
+.lg-in { padding: 0 16px 10px; font-size: 14.5px; line-height: 1.8; }
+.lg-in p { margin: 0 0 4px; }
+.lg-src { color: var(--faint); font-size: 13px; margin-top: 8px !important; }
+.sheet .dh { font-size: 11.5pt; color: var(--sheet-navy); margin: 12pt 0 2pt 11pt; }
+.sheet .lgp { margin: 2pt 0 4pt 11pt; font-size: 9pt; color: var(--sheet-muted); line-height: 1.55; }
+.sheet .lgp b { font-weight: normal; color: var(--sheet-navy); }
+@media (max-width: 760px) { .dl-head, .dl-row { grid-template-columns: minmax(0, 1fr); } .dl-row .act { text-align: left; } .dl-row input[type=text] { width: 100%; } }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; }
 .tile { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
 .tile b { display: flex; align-items: center; gap: 8px; font-size: 17px; margin-bottom: 2px; }
@@ -257,6 +309,11 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 .sheet li { margin-bottom: 2pt; text-align: justify; }
 .sheet .tag { color: var(--sheet-navy); font-size: 9.5pt; white-space: normal; margin-left: 0; }
 .sheet .tag.c { color: var(--sheet-muted); }
+.sheet .tag.i { color: #7a5a1e; }
+.sheet .tcap { font-family: var(--font-doc); font-size: 10.5pt; color: var(--sheet-navy); margin: 8pt 0 2pt 11pt; }
+.sheet thead { display: table-header-group; }
+.sheet .sitwrap { break-inside: avoid; }
+.wm { display: none; }
 .sheet .ref { color: var(--sheet-muted); font-size: 9.5pt; margin: 2pt 0 0 11pt; }
 .sheet .rec { margin: 8pt 0 4pt 11pt; padding: 6pt 10pt; border-left: 3pt solid var(--sheet-fill); }
 .sheet .rec .code { color: var(--sheet-fill); font-size: 10.5pt; font-family: var(--font-doc); font-weight: normal; }
@@ -308,6 +365,7 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 
 @page { size: A4; margin: 18mm 18mm 20mm; @bottom-center { content: counter(page) " / " counter(pages); font-size: 9pt; color: #777; } }
 @media print {
+  .wm.on { display: block; position: fixed; top: 42%; left: 0; right: 0; text-align: center; font-family: var(--font-doc); font-size: 120pt; color: rgba(0, 0, 0, .06); transform: rotate(-30deg); z-index: 0; pointer-events: none; }
   body, #handbook { background: #fff; }
   .app-top, #editor, #landing { display: none !important; }
   #handbook { display: block !important; padding: 0; }
@@ -361,17 +419,22 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 // ====================================================================
 // 一、固定內容（共通基準，依現行法；核心團隊維護；與學會版模板 v0.38 同源）
 // ====================================================================
-const LAW = 'law', CON = 'con', NOTE = 'note', TABLE = 'table';
+const LAW = 'law', INT = 'int', REC = 'rec', NOTE = 'note', TABLE = 'table';
+// 標籤（孫教授1151009定案）：LAW〔法定要求〕條文本身明定；INT〔法律解釋〕條文未逐字規定之解讀；REC〔倫理與臨床建議〕得依個別病人調整。
+// 每條共通基準第4欄為其依附之法條（修法三讀後據以一次找出須更新之處；不顯示）。法規基準：病主法110.01.20、細則107.10.03、第五款公告110.04.13。
 const ZH = ['一', '二', '三', '四', '五'];
 const DIG = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
 function zh(n) { return n < 10 ? DIG[n] : n < 20 ? '十' + DIG[n % 10] : DIG[Math.floor(n / 10)] + '十' + DIG[n % 10]; }
 const SIT_TABLE = {
+  title: '表4-1　病人臨床意思表示與預立醫療決定不一致時之處理',
+  dep: ['§3', '§8', '§10', '§12', '§14', '§15', '細則§6', '細則§8'],
   head: ['情境', '處理', '依據'],
   rows: [
-    ['AD載明拒絕；病人現時表示接受LST／ANH，且明確表示變更AD', '給予治療，並協助其以書面完成變更；其後意識昏迷者，依變更之意思持續治療。', '§4 I、§8 I；細則§6'],
-    ['AD載明拒絕；病人現時表示接受LST／ANH，無變更AD之意（無明確表示者推定為此）', '依現時意思給予治療，AD不因此失效；日後意識昏迷或無法清楚表達意願且符合臨床條件時，得依AD執行。', '§4 I、§14 I；細則§8'],
-    ['AD未載明拒絕；病人現時以書面表示不接受', '協助病人完成變更AD；變更程序完成前，仍依原AD為之。', '§12 III、IV；細則§8'],
-    ['AD未載明拒絕；病人現時以口頭表示不接受', '依AD終止、撤除或不施行之拒絕，不得以口頭表示為之。請病人以書面為之並完成變更AD，程序完成前依原AD。', '§8 I、§14 I；細則§6']
+    ['AD載明拒絕；病人現時表示接受LST／ANH，且明確表示變更AD', '給予治療，並協助其以書面完成變更；其後意識昏迷者，依變更之意思持續治療。', '§8 I；細則§6'],
+    ['AD載明拒絕；病人現時表示接受LST／ANH，無變更AD之意（無明確表示者推定為此）', '依現時意思給予治療，AD不因此失效；日後意識昏迷或無法清楚表達意願且符合臨床條件時，得依AD執行。', '§14 I、§15'],
+    ['AD載明接受LST或ANH；病人現時以書面表示不接受', '協助病人完成變更AD；變更程序完成前，仍依原AD為之。', '§12 III、IV；細則§8'],
+    ['AD載明接受LST或ANH；病人現時以口頭表示不接受', '依AD終止、撤除或不施行之拒絕，不得以口頭表示為之。請病人以書面為之並完成變更AD，程序完成前依原AD。', '§8 I、§14 I；細則§6'],
+    ['預立醫療決定書勾選由醫療委任代理人代為決定（選項三）；病人意識清楚，現時表示不接受LST或ANH', '醫療委任代理人之代理權尚未啟動，其表示不生代理效力；該項AD無可執行之內容，依常規醫療繼續治療。病人欲貫徹其拒絕，須以書面完成變更AD（口頭表示者，請其以書面為之）；變更完成前繼續治療。其間病人意識昏迷或無法清楚表達意願者，由醫療委任代理人依原AD代為決定；依制度精神，不應違背其所知悉之病人意願。', '§3第五款、§10 III、§12 III、§14 I、§15；細則§8']
   ]
 };
 const STAGES = [
@@ -379,22 +442,22 @@ const STAGES = [
     steps: '病情告知 → 告知得經ACP為預立醫療決定 → 重症溝通（SIC）',
     pos: '病人自主的起點是知情。診斷與病程進展是讓病人知道自己有權預先規劃的關鍵時機。',
     groups: [{ items: [
-      ['病人對於病情、醫療選項及各選項之可能成效與風險預後，有知情之權利；對於醫師提供之醫療選項，有選擇與決定之權利。', LAW, '§4 I'],
-      ['具完全行為能力之人，得經預立醫療照護諮商為預立醫療決定。', LAW, '§8、§9'],
-      ['病人就診時，醫療機構或醫師應以其所判斷之適當時機及方式，將病情、治療方針、處置、用藥、預後情形及可能之不良反應等告知本人；病人為無行為能力人、限制行為能力人、受輔助宣告之人或不能為意思表示或受意思表示時，醫療機構或醫師應以適當方式告知本人及其關係人。', LAW, '§5 I、II'],
-      ['醫療團隊宜於病人確診嚴重疾病或病程進展之適當時機，主動告知其得經ACP為預立醫療決定。', CON, ''],
-      ['病情告知與得為預立醫療決定之權利告知，均宜循序漸進、兼顧病人之心理準備度；並運用SIC了解病人之病情理解、價值觀與照護目標。', CON, '']
+      ['病人對於病情、醫療選項及各選項之可能成效與風險預後，有知情之權利；對於醫師提供之醫療選項，有選擇與決定之權利。', LAW, '§4 I', ['§4']],
+      ['具完全行為能力之人，得經預立醫療照護諮商為預立醫療決定。', LAW, '§8、§9', ['§8', '§9']],
+      ['病人就診時，醫療機構或醫師應以其所判斷之適當時機及方式，將病人之病情、治療方針、處置、用藥、預後情形及可能之不良反應等相關事項告知本人。病人未明示反對時，亦得告知其關係人。病人為無行為能力人、限制行為能力人、受輔助宣告之人或不能為意思表示或受意思表示時，醫療機構或醫師應以適當方式告知本人及其關係人。', LAW, '§5 I、II', ['§5']],
+      ['醫療團隊宜於病人確診嚴重疾病或病程進展之適當時機，主動告知其得經ACP為預立醫療決定。', REC, '', ['§8', '§9']],
+      ['病情告知與得為預立醫療決定之權利告知，均宜循序漸進、兼顧病人之心理準備度；並運用SIC了解病人之病情理解、價值觀與照護目標。', REC, '', ['§5']]
     ]}],
     refs: [], fills: ['1A'] },
   { n: 2, name: '積極治療與及早共同照護',
     steps: '積極治療 → 嚴重度／預後評估 → 徵得同意後啟動緩和共同照護 → 積極治療與緩和醫療並行',
     pos: '嚴重度與預後之客觀評估，使醫病雙方對何時討論緩和醫療有共同依據；緩和醫療與積極治療並行，不是治療的終點。',
     groups: [{ items: [
-      ['對符合重症或病程進展條件之病人，宜及早啟動緩和共同照護，不宜延遲至末期；共同照護自此同時提供積極治療與緩和醫療，並持續至後續各階段。', CON, ''],
-      ['啟動共同照護之時機，以台灣安寧緩和醫學學會提供之各大類疾病共通原則為基礎，並尊重各專科依疾病特性之判斷。', CON, ''],
-      ['病程進展常為再次溝通之契機；宜以SIC重新確認病人對病情、預後之理解與照護目標。', CON, ''],
-      ['是否及何時啟動緩和共同照護，宜以SDM與病人共同形成，並於啟動前徵得病人同意進行緩和共同照護評估；病人無法表達意願時，徵得關係人同意。', CON, ''],
-      ['本階段非§14之法定步驟；法定之照會確認見階段三。', NOTE, '']
+      ['對符合重症或病程進展條件之病人，宜及早啟動緩和共同照護，不宜延遲至末期；共同照護自此同時提供積極治療與緩和醫療，並持續至後續各階段。', REC, '', []],
+      ['啟動共同照護之時機，以台灣安寧緩和醫學學會提供之各大類疾病共通原則為基礎，並由本會依本專科疾病特性訂定（見【2-B】）。', REC, '', []],
+      ['病程進展常為再次溝通之契機；宜以SIC重新確認病人對病情、預後之理解與照護目標。', REC, '', []],
+      ['是否及何時啟動緩和共同照護，宜以SDM與病人共同形成，並於啟動前徵得病人同意進行緩和共同照護評估；病人無法表達意願時，徵得關係人同意。', REC, '', ['§4']],
+      ['本階段非§14之法定步驟；法定之照會確認見階段三。', NOTE, '', ['§14']]
     ]}],
     refs: [], fills: ['2A', '2B'] },
   { n: 3, name: '臨床條件確診與照會確認',
@@ -402,18 +465,18 @@ const STAGES = [
     pos: '確診在此指的是確認病人是否已符合得依其預立醫療決定終止、撤除或不施行LST／ANH之臨床條件；照會確認則確保病人的預立醫療決定及其內容被正確理解。',
     groups: [
       { h: '（一）啟動', items: [
-        ['病人之主治醫師宜於其判斷之適當時機徵詢病人意願，並啟動確診及照會確認程序。', CON, '']
+        ['病人之主治醫師宜於其判斷之適當時機徵詢病人意願，並啟動確診及照會確認程序。', REC, '', ['§14']]
       ]},
       { h: '（二）確診', items: [
-        ['病主法§14 I列五款臨床條件（末期病人／不可逆轉之昏迷狀況／永久植物人狀態／極重度失智／其他經中央主管機關公告之病人疾病狀況或痛苦難以忍受、疾病無法治癒且依當時醫療水準無其他合適解決方法之情形）；病人符合其一且有AD者，醫療機構或醫師得依其AD終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部。', LAW, '§14 I'],
-        ['各款應由二位具相關專科醫師資格之醫師確診；第一款依《安寧緩和醫療條例》§3第二款認定（細則§10 I），第二至四款之定義見細則§11–13，第五款依衛福部公告（細則§14）。', LAW, '§14 II、細則§10–14'],
-        ['第一至四款確診醫師之專科資格，依款別分別規定於細則§10–13 II；第五款各疾病之確診專科，依衛福部公告附件逐疾病指定。', LAW, '細則§10–13 II'],
-        ['所稱專科醫師，指領有專科醫師證書者（醫師法§7-1）。', CON, ''],
-        ['向病人或其關係人說明「已符合臨床條件」時，宜以SIC審慎傳達，兼顧資訊揭露與情緒支持。', CON, '']
+        ['病主法§14 I列五款臨床條件（末期病人／不可逆轉之昏迷狀況／永久植物人狀態／極重度失智／其他經中央主管機關公告之病人疾病狀況或痛苦難以忍受、疾病無法治癒且依當時醫療水準無其他合適解決方法之情形）；病人符合其一且有AD者，醫療機構或醫師得依其AD終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部。', LAW, '§14 I', ['§14']],
+        ['各款應由二位具相關專科醫師資格之醫師確診；第一款依《安寧緩和醫療條例》§3第二款認定（細則§10 I），第二至四款之定義見細則§11–13，第五款依衛福部公告（細則§14）。', LAW, '§14 II、細則§10–14', ['§14', '細則§10', '細則§11', '細則§12', '細則§13', '細則§14', '安寧條例§3']],
+        ['第一至四款確診醫師之專科資格，依款別分別規定於細則§10–13 II；第五款各疾病之確診專科，依衛福部公告附件逐疾病指定。', LAW, '細則§10–13 II', ['細則§10', '細則§11', '細則§12', '細則§13', '第五款公告']],
+        ['所稱專科醫師，指領有專科醫師證書者（醫師法§7-1、§7-2 II）。', INT, '', ['§14', '醫師法§7-1', '醫師法§7-2']],
+        ['向病人或其關係人說明「已符合臨床條件」時，宜以SIC審慎傳達，兼顧資訊揭露與情緒支持。', REC, '', []]
       ]},
       { h: '（三）照會確認', items: [
-        ['確診後，應經緩和醫療團隊至少二次照會，確認病人之AD及其內容。', LAW, '§14 II、細則§15'],
-        ['確診與照會確認事項應詳細記載於病歷。', LAW, '§17']
+        ['確診後，應經緩和醫療團隊至少二次照會，確認病人之AD及其內容。', LAW, '§14 II、細則§15', ['§14', '細則§15']],
+        ['確診與照會確認事項應詳細記載於病歷。', LAW, '§17', ['§17']]
       ]}
     ],
     refs: ['照會之評估要點、二次照會之間隔與內容、緩和醫療團隊之組成，由台灣安寧緩和醫學學會提供共通建議；照會之啟動流程與聯絡窗口，由各醫院依院內流程訂定。'], fills: ['3A'] },
@@ -422,23 +485,24 @@ const STAGES = [
     pos: '尊重病人的決定是各階段的核心；確認意願的目的是實現它，不是重新審查它。限時嘗試則使是否繼續治療有明確之評估時點與停損點。',
     groups: [
       { h: '（一）病人有意思能力', items: [
-        ['意思能力之判斷，以病人能理解並表達其對該決定之意思為已足，不宜採過度嚴苛之標準。', CON, ''],
-        ['醫療機構或醫師對第一款（末期病人）及第五款病人，於開始執行AD前，應向有意思能力之意願人確認該決定之內容及範圍。', LAW, '§15'],
-        ['病人於臨床醫療過程中之意思表示與其AD不一致時，依下表處理。', LAW, '§8 I、§12 III、IV；細則§6、§8'],
-        [SIT_TABLE, TABLE, '']
+        ['醫療機構或醫師對第一款（末期病人）及第五款病人，於開始執行AD前，應向有意思能力之意願人確認該決定之內容及範圍。', LAW, '§15', ['§15']],
+        ['意思能力之判斷，應採最大協助原則，盡可能了解病人當下之意思表示；並以病人能理解並表達其對該決定之意思為已足，不宜採過度嚴苛之標準。', INT, '', ['§15']],
+        ['病人於臨床醫療過程中之意思表示與其AD不一致時，依下表處理。', LAW, '§3第五款、§8 I、§10 III、§12 III、IV、§14 I、§15；細則§6、§8', ['§3', '§8', '§10', '§12', '§14', '§15', '細則§6', '細則§8']],
+        [SIT_TABLE, TABLE, '', SIT_TABLE.dep]
       ]},
       { h: '（二）病人意識昏迷或無法清楚表達意願', items: [
-        ['由醫療委任代理人依其AD內容代理表達；有二人以上者均得單獨代理；有指定順位者依順位行使，先順位者不為意思表示或無法聯繫時由後順位者行使，後順位者已為意思表示後，先順位者不得提出不同意思表示。', LAW, '§10、細則§7 II'],
-        ['醫療委任代理人不為§10 III第三款之代理表達，或經醫療機構確認無法聯繫時，意願人之預立醫療決定不予執行。', LAW, '細則§7 I'],
-        ['前點之不予執行，僅及於須由醫療委任代理人代理表達之部分（衛部醫字第1081660131號函）：預立醫療決定書選項三（由醫療委任代理人代為決定）者，該項無從執行；選項二（限時嘗試）者，僅期間內提前停止之權落空，仍於期滿後停止；選項一、四不受影響。', CON, '']
+        ['由醫療委任代理人依其AD內容代理表達；有二人以上者均得單獨代理；有指定順位者依順位行使，先順位者不為意思表示或無法聯繫時由後順位者行使，後順位者已為意思表示後，先順位者不得提出不同意思表示。', LAW, '§10 III第三款、IV；細則§7 II', ['§10', '細則§7']],
+        ['醫療委任代理人不為§10 III第三款之代理表達，或經醫療機構確認無法聯繫時，意願人之預立醫療決定不予執行。', LAW, '細則§7 I', ['§10', '細則§7']],
+        ['前點之不予執行，僅及於須由醫療委任代理人代理表達之部分：預立醫療決定書選項三（由醫療委任代理人代為決定）者，該項無從執行；選項二（限時嘗試）者，僅期間內提前停止之權落空，仍於期滿後停止；選項一、四不受影響。此係依細則§7 I及衛部醫字第1081660131號函結語文義所為之解釋。', INT, '', ['§10', '細則§7', '衛部醫字第1081660131號函']]
       ]},
       { h: '（三）限時嘗試', items: [
-        ['病人之預立醫療決定已載明限時嘗試（衛福部公告之預立醫療決定書選項二：於一段時間內接受嘗試，之後停止）者，得依其所載之期間與條件執行；期間內得隨時表達停止之意願者，第一、五款為意識清楚之本人或醫療委任代理人，第二至四款為醫療委任代理人。', LAW, '§8 III及預立醫療決定書格式'],
-        ['AD未涵蓋或療效不確定之治療，宜以SDM與病人共同約定限時嘗試之期程、評估指標與停損點；屆期未達預期療效者，轉銜為以緩和醫療為主之照護。', CON, '']
+        ['病人之預立醫療決定已載明限時嘗試（衛福部公告之預立醫療決定書選項二：於一段時間內接受嘗試，之後停止）者，得依其所載之期間與條件執行；期間內得隨時表達停止之意願者，第一、五款為本人或醫療委任代理人，第二至四款為醫療委任代理人。', LAW, '§8 III及預立醫療決定書格式', ['§8', '預立醫療決定書格式']],
+        ['預立醫療決定書選項二所載之嘗試期間，屬醫師提供之醫療選項（§4 I後段之延伸解釋），應由主治醫師或與該治療相關之臨床試驗計畫指出。簽署預立醫療決定時尚無主治醫師者，不宜選擇限時嘗試，此點應於預立醫療照護諮商時說明。選項二應記載具體期間，不得以「依主治醫師所定之期程」代之。', INT, '', ['§4', '§9', '預立醫療決定書格式']],
+        ['AD未涵蓋或療效不確定之治療，宜以SDM與病人共同約定限時嘗試之期程、評估指標與停損點；屆期未達預期療效者，轉銜為以緩和醫療為主之照護。', REC, '', []]
       ]},
       { h: '（四）各情形共通', items: [
-        ['病人之關係人不得妨礙醫療機構或醫師依病人就醫療選項決定之作為。', LAW, '§4 II'],
-        ['宜於各階段使病人之關係人知悉其AD及決定；以SDM整合臨床選項與病人之價值觀，以SIC釐清照護目標與不可接受之底線。', CON, '']
+        ['病人之關係人不得妨礙醫療機構或醫師依病人就醫療選項決定之作為。', LAW, '§4 II', ['§4']],
+        ['宜於各階段使病人之關係人知悉其AD及決定；以SDM整合臨床選項與病人之價值觀，以SIC釐清照護目標與不可接受之底線。', REC, '', []]
       ]}
     ],
     refs: [], fills: ['4A', '4B', '4C'] },
@@ -446,22 +510,23 @@ const STAGES = [
     steps: '依AD終止、撤除或不施行 → 持續緩和醫療 → 病歷記載 → 全人照護',
     pos: '執行病人的決定，是尊重病人自主的最後一步；法律所定者為門檻，持續的緩和醫療與其後的全人照護才是照護的實質。',
     groups: [{ items: [
-      ['醫療機構或醫師依AD終止、撤除或不施行維持生命治療或人工營養及流體餵養時，應提供病人緩和醫療及其他適當處置；醫療機構依其人員、設備及專長能力無法提供時，應建議轉診並提供協助。', LAW, '§16'],
-      ['醫療機構或醫師遇危急病人，除符合§14 I、II及《安寧緩和醫療條例》相關規定者外，仍應先予適當急救或採取必要措施，不得無故拖延。', LAW, '§7'],
-      ['所執行事項應詳細記載於病歷。', LAW, '§17'],
-      ['依§14終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部者，不負刑事與行政責任；因此所生之損害，除有故意或重大過失且違反病人預立醫療決定者外，不負賠償責任。', LAW, '§14 V'],
-      ['撤除維持生命治療（如撤除呼吸器）或終止人工營養及流體餵養時，宜有標準化之症狀控制與舒適照護流程；其共通標準由台灣安寧緩和醫學學會提供，並由各專科予以客製化。', CON, ''],
-      ['執行後宜持續提供身、心、社會、靈性之全人照護，由多專業團隊（社工師、心理師、靈性關懷人員／宗教師、藝術治療師等）協力；宜以SIC持續討論照護目標並與關係人溝通，提供預期性哀傷支持。', CON, '']
+      ['醫療機構或醫師依AD終止、撤除或不施行維持生命治療或人工營養及流體餵養時，應提供病人緩和醫療及其他適當處置；醫療機構依其人員、設備及專長能力無法提供時，應建議轉診並提供協助。', LAW, '§16', ['§16']],
+      ['醫療機構或醫師遇有危急病人，除符合第十四條第一項、第二項及安寧緩和醫療條例相關規定者外，應先予適當急救或採取必要措施，不得無故拖延。', LAW, '§7', ['§7', '§14', '安寧條例']],
+      ['所執行事項應詳細記載於病歷。', LAW, '§17', ['§17']],
+      ['依§14終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部者，不負刑事與行政責任；因此所生之損害，除有故意或重大過失且違反病人預立醫療決定者外，不負賠償責任。', LAW, '§14 V', ['§14']],
+      ['撤除維持生命治療（如撤除呼吸器）或終止人工營養及流體餵養時，宜有標準化之症狀控制與舒適照護流程；其共通標準由台灣安寧緩和醫學學會提供，並由本會依本專科疾病特性予以客製化（見【5-A】）。', REC, '', []],
+      ['執行後宜持續提供身、心、社會、靈性之全人照護，由多專業團隊（社工師、心理師、靈性關懷人員／宗教師、藝術治療師等）協力；宜以SIC持續討論照護目標並與關係人溝通，提供預期性哀傷支持。', REC, '', []]
     ]}],
     refs: ['法源另見§3第七款（緩和醫療之定義）。全人照護內容與團隊角色由台灣安寧緩和醫學學會提供。'], fills: ['5A'] }
 ];
 const COMMON = {
   name: '各階段通用｜醫療機構或醫師無法執行AD時之處理',
+  sub: '醫療機構或醫師無法執行AD時之處理',
   pos: '醫療機構或醫師得不執行病人之AD，但AD不因此失效——以告知與轉診接力，確保病人意願仍有實現之途徑。',
   items: [
-    ['醫療機構或醫師依其專業或意願無法執行病人AD時，得不施行；惟應將其情形告知病人或關係人。', LAW, '§14 III、IV'],
-    ['醫療機構或醫師不施行時，應建議病人轉診並提供協助。', LAW, '細則§16'],
-    ['醫師於任一階段（含受請求確診／照會之初）表明不執行時，均適用上開處理。', CON, '']
+    ['醫療機構或醫師依其專業或意願無法執行病人AD時，得不施行；惟應將其情形告知病人或關係人。', LAW, '§14 III、IV', ['§14']],
+    ['醫療機構或醫師不施行時，應建議病人轉診並提供協助。', LAW, '細則§16', ['§14', '細則§16']],
+    ['醫師於任一階段（含受請求確診／照會之初）表明不執行時，均適用上開處理。', INT, '', ['§14']]
   ],
   refs: ['轉診銜接之在地流程，由各醫院依院內流程訂定。']
 };
@@ -469,14 +534,14 @@ const OVERVIEW = [
   ['一', '病情與ACP、AD之告知', '病情告知→告知得經ACP為預立醫療決定→重症溝通（SIC）', '把握診斷之溝通契機，讓病人知道自己有權預先規劃', '§4、§5、§8、§9'],
   ['二', '積極治療與及早共同照護', '積極治療→嚴重度／預後評估→徵得同意後啟動緩和共同照護→積極治療與緩和醫療並行', '以專科指標客觀判定進展，及早啟動共同照護，不待末期', '—（臨床建議）'],
   ['三', '臨床條件確診與照會確認', '主治醫師徵詢意願並啟動程序→二位相關專科醫師確診→緩和醫療團隊至少二次照會確認→病歷記載', '§14 II之法定程序：二位相關專科醫師確診臨床條件，緩和醫療團隊確認病人之AD及其內容', '§14 I、II；細則§10–14、§15；§17'],
-  ['四', '意願確認與治療決策', '意思能力評估→有意思能力：§15確認、臨床意思表示與AD不一致之處理／意識昏迷或無法清楚表達意願：HCA依AD代理表達→限時嘗試之決策', '尊重病人之AD；以SDM整合選項與病人之價值觀', '§15、§10、§4 II、§8、§12 III、IV；細則§6、§7、§8；預立醫療決定書格式'],
+  ['四', '意願確認與治療決策', '意思能力評估→有意思能力：§15確認、臨床意思表示與AD不一致之處理／意識昏迷或無法清楚表達意願：HCA依AD代理表達→限時嘗試之決策', '尊重病人之AD；以SDM整合選項與病人之價值觀', '§3第五款、§4 II、§8、§10、§12 III、IV、§14 I、§15；細則§6、§7、§8；預立醫療決定書格式'],
   ['五', '執行、緩和醫療與善終照護', '依AD終止、撤除或不施行→持續緩和醫療→病歷記載→全人照護', '法律所定者為門檻，持續緩和醫療與全人照護為實質', '§16、§7、§17、§14 V、§3第七款'],
   ['※', '各階段通用', '醫療機構或醫師無法執行AD時：告知→建議轉診→提供協助', '得不施行，惟AD不因此失效', '§14 III、IV；細則§16']
 ];
 const RECORDS = [
   ['臨床條件確診', '二位相關專科醫師之姓名、專科別、確診日期；所符合之款別與依據之檢查', '§14 II；細則§10–14'],
   ['緩和醫療團隊照會確認', '照會日期（至少二次）、團隊成員、確認之AD內容', '§14 II；細則§15'],
-  ['意願確認', '意思能力評估方式與結果★；§15確認之對象、日期與確認之內容範圍；或HCA身分證明與代理表達內容★', '§15；§10（★）'],
+  ['意願確認', '意思能力評估方式與結果★；§15確認之對象、日期與確認之內容範圍；或HCA身分證明與代理表達內容★', '§15；§10 V（★）'],
   ['意思表示與AD之關係', '病人臨床書面明示之意思表示（如有）及其與AD之一致性處理', '§12 III、IV；細則§8'],
   ['執行', '終止、撤除或不施行之項目、時間、執行醫師；限時嘗試之約定與屆期評估★', '§14 I'],
   ['緩和醫療★', '持續提供之緩和醫療及其他適當處置；無法提供時之轉診建議與協助', '§16（★建議記載）'],
@@ -487,8 +552,8 @@ const LAWS = [
   ['§3', '用語定義：維持生命治療、人工營養及流體餵養、預立醫療決定、意願人、醫療委任代理人、預立醫療照護諮商、緩和醫療。'],
   ['§4', '病人之知情、選擇與決定權；病人之法定代理人、配偶、親屬、醫療委任代理人或與病人有特別密切關係之人（統稱關係人）不得妨礙醫療機構或醫師依病人就醫療選項決定之作為。'],
   ['§5', '病情告知：醫療機構或醫師應以其所判斷之適當時機及方式，將病情、治療方針、處置、用藥、預後情形及可能之不良反應等告知本人；病人未明示反對時，亦得告知其關係人（I）。病人為無行為能力人、限制行為能力人、受輔助宣告之人或不能為意思表示或受意思表示時，應以適當方式告知本人及其關係人（II）。'],
-  ['§7', '醫療機構或醫師遇危急病人，除符合§14 I、II及《安寧緩和醫療條例》相關規定者外，仍應先予適當急救或採取必要措施，不得無故拖延。'],
-  ['§8、§9', '具完全行為能力之人得經預立醫療照護諮商為預立醫療決定，並得隨時以書面撤回或變更之；其內容、範圍及格式由中央主管機關定之；應經醫療機構核章，並經公證人公證或具完全行為能力者二人以上在場見證，且註記於全民健康保險憑證。'],
+  ['§7', '醫療機構或醫師遇有危急病人，除符合第十四條第一項、第二項及安寧緩和醫療條例相關規定者外，應先予適當急救或採取必要措施，不得無故拖延。'],
+  ['§8、§9', '具完全行為能力之人得經預立醫療照護諮商為預立醫療決定，並得隨時以書面撤回或變更之；其內容、範圍及格式由中央主管機關定之；應經醫療機構核章，並經公證人公證或具完全行為能力者二人以上在場見證，且註記於全民健康保險憑證。意願人、二親等內之親屬至少一人及醫療委任代理人應參與預立醫療照護諮商（§9 II）；醫療委任代理人、主責照護醫療團隊成員及§10 II各款之人不得為見證人（§9 IV）。'],
   ['§10', '醫療委任代理人之資格與權限；於意願人意識昏迷或無法清楚表達意願時代理表達；二人以上者均得單獨代理。'],
   ['細則§6、§7', '以書面撤回或變更AD者，應向醫療機構為之，由醫療機構以掃描電子檔存記，並由中央主管機關更新全民健康保險憑證註記（§6）。醫療委任代理人不為代理表達，或經醫療機構確認無法聯繫時，AD不予執行；二人以上得就代理表達之權限指定順位，先順位者不為意思表示或無法聯繫時由後順位者行使，後順位者已為意思表示後，先順位者不得提出不同意思表示（§7）。'],
   ['§12 III、IV、細則§8', 'AD與臨床醫療過程中書面明示之意思表示不一致時，應完成變更AD；撤回或變更前，醫療機構應依其書面明示之意思表示為之；但書面明示為不接受維持生命治療或人工營養及流體餵養者，程序完成前仍依原AD（適用方向見階段四情境表）。'],
@@ -505,44 +570,45 @@ const ABBR = [
   ['LST', '維持生命治療'], ['ANH', '人工營養及流體餵養'],
   ['SDM', '醫病共享決策（Shared Decision Making）'], ['SIC', '重症溝通（Serious Illness Conversation）']
 ];
-// 第五款公告12類（衛福部110.04.13公告附件；確診專科照錄）
+// 第五款公告12類（衛福部110.04.13修正公告附件；確診專科逐字照錄公告「應由二位……相關之專科醫師為之」）
 const K5 = [
-  [1, '囊狀纖維化症', '二位胸腔醫學、內科醫學或小兒醫學專科', ['胸腔', '內科', '小兒']],
-  [2, '亨丁頓氏舞蹈症', '二位神經醫學、精神醫學專科', ['神經', '精神']],
-  [3, '脊髓小腦退化性動作協調障礙', '二位神經或小兒神經醫學專科', ['神經', '小兒神經']],
-  [4, '脊髓性肌肉萎縮症', '二位神經、小兒神經、胸腔或復健醫學專科', ['神經', '小兒神經', '胸腔', '復健']],
-  [5, '肌萎縮性側索硬化症（漸凍症）', '二位神經、胸腔或復健醫學專科', ['神經', '胸腔', '復健']],
-  [6, '多發性系統萎縮症', '二位神經醫學專科', ['神經']],
-  [7, '裘馨氏肌肉失養症', '二位神經、小兒神經、心臟、胸腔或復健醫學專科', ['神經', '小兒神經', '心臟', '胸腔', '復健']],
-  [8, '肢帶型肌失養症', '二位神經、小兒神經、心臟、胸腔或復健醫學專科', ['神經', '小兒神經', '心臟', '胸腔', '復健']],
-  [9, 'Nemaline 線狀肌肉病變', '二位神經、小兒神經、胸腔或復健醫學專科', ['神經', '小兒神經', '胸腔', '復健']],
-  [10, '原發性肺動脈高壓', '二位心臟或胸腔醫學專科', ['心臟', '胸腔']],
-  [11, '遺傳性表皮分解性水泡症', '二位皮膚、整形外科或重症醫學專科', ['皮膚', '整形外科', '重症']],
-  [12, '先天性多發性關節攣縮症', '二位神經、小兒神經、胸腔或復健醫學專科', ['神經', '小兒神經', '胸腔', '復健']]
+  [1, '囊狀纖維化症', '二位胸腔醫學、內科醫學或小兒醫學相關之專科醫師', ['胸腔', '內科', '小兒']],
+  [2, '亨丁頓氏舞蹈症', '二位神經醫學、精神醫學相關之專科醫師', ['神經', '精神']],
+  [3, '脊髓小腦退化性動作協調障礙', '二位神經或小兒神經醫學相關之專科醫師', ['神經', '小兒神經']],
+  [4, '脊髓性肌肉萎縮症', '二位神經醫學、小兒神經醫學、胸腔醫學或復健醫學相關之專科醫師', ['神經', '小兒神經', '胸腔', '復健']],
+  [5, '肌萎縮性側索硬化症（俗稱漸凍症）', '二位神經醫學、胸腔醫學或復健醫學相關之專科醫師', ['神經', '胸腔', '復健']],
+  [6, '多發性系統萎縮症', '二位神經醫學相關之專科醫師', ['神經']],
+  [7, '裘馨氏肌肉失養症', '二位神經醫學、小兒神經醫學、心臟醫學、胸腔醫學或復健醫學相關之專科醫師', ['神經', '小兒神經', '心臟', '胸腔', '復健']],
+  [8, '肢帶型肌失養症', '二位神經醫學、小兒神經醫學、心臟醫學、胸腔醫學或復健醫學相關之專科醫師', ['神經', '小兒神經', '心臟', '胸腔', '復健']],
+  [9, 'Nemaline 線狀肌肉病變', '二位神經醫學、小兒神經醫學、胸腔醫學或復健醫學相關之專科醫師', ['神經', '小兒神經', '胸腔', '復健']],
+  [10, '原發性肺動脈高壓', '二位心臟醫學或胸腔醫學相關之專科醫師', ['心臟', '胸腔']],
+  [11, '遺傳性表皮分解性水泡症', '二位皮膚醫學、整形外科醫學或重症醫學相關之專科醫師', ['皮膚', '整形外科', '重症']],
+  [12, '先天性多發性關節攣縮症', '二位神經醫學、小兒神經醫學、胸腔醫學或復健醫學相關之專科醫師', ['神經', '小兒神經', '胸腔', '復健']]
 ];
 
 // ====================================================================
 // 二、學會資料（核心團隊預設；核心小組會議確認前為草案）
 //   m1／n23／n4：yes＝依法得擔任；member＝依會員個人之部定專科；gray＝待確認；no＝不擔任
+//   full：章程第一條定名與簡稱不同者（手冊封面用；1151009 依各會官網章程查證）
 //   k5：公告確診專科關鍵字 → 狀態；r3：階段三角色 lead主責／co協同／ref轉介／tbd待確認
 //   階段一、二、四、五之角色尚無定義與依據，待核心小組討論後填入，目前一律顯示「待確認」（1151007）
 // ====================================================================
 const SOCIETIES = [
   { id: 'test', name: '【測試用】工作坊練習', domain: '〔本專科〕', base: '工作坊練習用；角色與確診資格僅為示範，不代表任何學會',
     test: true, m1: 'yes', m1n: '示範', n23: 'yes', n4: 'yes', k5: { '神經': 'yes', '心臟': 'yes' }, r3: 'lead',
-    note: '此為工作坊練習用之示範設定，各學會實際之角色與確診資格以核心團隊之預設為準。' },
+    note: '此為工作坊練習用之示範設定，各學會實際之角色與確診資格以本模板之預設為準。' },
   { id: 'dementia', name: '台灣臨床失智症學會', domain: '失智症照護', base: '會員多為神經科或精神科專科醫師',
     m1: 'yes', n23: 'member', n4: 'member', k5: { '神經': 'member', '精神': 'member' }, r3: 'lead' },
-  { id: 'neuro', name: '台灣神經醫學會', domain: '神經醫學', base: '神經科（部定專科）',
+  { id: 'neuro', name: '台灣神經學學會', domain: '神經醫學', base: '神經科（部定專科）',
     m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'yes' }, r3: 'lead' },
   { id: 'neurosurg', name: '台灣神經外科醫學會', domain: '神經外科', base: '神經外科（部定專科）',
     m1: 'yes', n23: 'yes', n4: 'yes', k5: { '神經': 'gray' }, r3: 'lead',
     note: '第五款公告所稱「神經醫學專科」是否包含神經外科，待確認。' },
   { id: 'psych', name: '台灣精神醫學會', domain: '精神醫學', base: '精神科（部定專科）',
     m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, r3: 'lead' },
-  { id: 'geripsych', name: '台灣老年精神醫學會', domain: '老年精神醫學', base: '精神科（部定專科）；老年精神醫學為其次專科',
+  { id: 'geripsych', name: '台灣老年精神醫學會', full: '社團法人台灣老年精神醫學會', domain: '老年精神醫學', base: '精神科（部定專科）；老年精神醫學為其次專科',
     m1: 'yes', n23: 'no', n4: 'yes', k5: { '精神': 'yes' }, r3: 'lead' },
-  { id: 'emerg', name: '台灣急診醫學會', domain: '急診醫學', base: '急診醫學科（部定專科）',
+  { id: 'emerg', name: '台灣急診醫學會', full: '社團法人台灣急診醫學會', domain: '急診醫學', base: '急診醫學科（部定專科）',
     m1: 'gray', m1n: '急診醫師是否屬「與該疾病診斷或治療相關」，待確認', n23: 'no', n4: 'no', k5: {},
     r3: 'tbd',
     note: '急診常面對§7危急病人之急救義務與符合§14者之區分。' },
@@ -550,20 +616,20 @@ const SOCIETIES = [
     m1: 'yes', n23: 'no', n4: 'no', k5: { '重症': 'yes' },
     r3: 'lead' },
   { id: 'tcm', name: '台灣中醫家庭醫學醫學會', domain: '中醫', base: '中醫師',
-    m1: 'gray', n23: 'gray', n4: 'gray', k5: {},
+    m1: 'no', n23: 'no', n4: 'no', k5: {},
     r3: 'ref',
-    note: '確診資格、病人僅於中醫就診時之轉介路徑，以及撤除後之緩和醫療由中醫提供或與西醫團隊結合，待核心小組與中醫小組確認。' },
+    note: '本會會員不具確診資格（中醫專科醫師制度尚未法制化，無部定專科醫師證書）；病人僅於中醫就診時之轉介路徑，以及撤除後之緩和醫療由中醫提供或與西醫團隊結合，仍待核心小組與中醫小組確認。' },
   { id: 'hospice', name: '台灣安寧緩和醫學學會', domain: '安寧緩和醫療', base: '安寧緩和醫學為學會專科；會員之部定專科多為家庭醫學科、內科等',
-    m1: 'gray', m1n: '依「與該疾病治療相關」有納入空間，惟無主管機關函釋；穩妥做法為二位確診醫師中至少一位與該疾病診斷直接相關', n23: 'no', n4: 'no', k5: {},
+    m1: 'gray', m1n: '安寧緩和醫學為學會專科，非部定專科。二位確診醫師均須具部定專科醫師資格，且與該疾病之診斷或治療相關（細則§10 II）。具部定專科醫師證書並經本會認定之安寧緩和專科醫師，得解為與末期病人之診斷或治療相關而擔任確診醫師之一；此一解釋尚待核心小組討論，並將請衛生福利部函釋。', n23: 'no', n4: 'no', k5: {},
     r3: 'lead',
     note: '本學會另提供各階段之緩和醫療共通建議；階段三之主責為緩和醫療團隊照會確認。' },
-  { id: 'nephro', name: '台灣腎臟醫學會', domain: '腎臟醫學', base: '內科（部定專科）；腎臟醫學為其次專科',
+  { id: 'nephro', name: '台灣腎臟醫學會', full: '社團法人台灣腎臟醫學會', domain: '腎臟醫學', base: '內科（部定專科）；腎臟醫學為其次專科',
     m1: 'yes', n23: 'no', n4: 'no', k5: { '內科': 'yes' }, r3: 'lead' },
   { id: 'geri', name: '台灣老年學暨老年醫學會', domain: '老年醫學', base: '老年醫學為學會專科（非部定）；會員之部定專科多為內科、家庭醫學科',
     m1: 'member', n23: 'no', n4: 'gray', k5: {},
     r3: 'tbd',
     note: '老年醫學非部定專科，且與「神經或精神醫學相關」不直接對應；第四款資格依會員個人之部定專科，待確認。' },
-  { id: 'cardio', name: '中華民國心臟學會', domain: '心臟醫學', base: '內科（部定專科）；心臟醫學為其次專科',
+  { id: 'cardio', name: '中華民國心臟學會', full: '社團法人中華民國心臟學會', domain: '心臟醫學', base: '內科（部定專科）；心臟醫學為其次專科',
     m1: 'yes', n23: 'no', n4: 'no', k5: { '心臟': 'yes', '內科': 'yes' }, r3: 'lead' },
   { id: 'pedpulm', name: '台灣兒童胸腔暨重症醫學會', domain: '兒童胸腔及重症醫學', base: '兒科（部定專科）；兒童胸腔及重症為其次專科',
     m1: 'yes', n23: 'no', n4: 'no', k5: { '小兒': 'yes', '胸腔': 'gray', '重症': 'gray' }, r3: 'lead',
@@ -579,7 +645,7 @@ const SOCIETIES = [
     r3: 'lead' }
 ];
 const ROLE_LABEL = { lead: '主責', co: '協同', ref: '轉介', tbd: '待確認' };
-const ST_LABEL = { yes: '本會專科醫師得擔任', member: '依會員個人之部定專科', gray: '待核心小組確認' };
+const ST_LABEL = { yes: '本會專科醫師得擔任', member: '依會員個人之部定專科', gray: '待確認' };
 const RANK = { yes: 3, member: 2, gray: 1 };
 
 function profile(soc) {
@@ -595,7 +661,7 @@ function profile(soc) {
   K5.forEach(([no, nm, spec, keys]) => {
     let best = null;
     keys.forEach(k => { const s = (soc.k5 || {})[k]; if (s && (!best || RANK[s] > RANK[best])) best = s; });
-    if (best) diag.push({ label: '第五款　' + nm, basis: '公告：' + spec, st: best });
+    if (best) diag.push({ label: '第五款　' + nm, basis: '公告：' + spec, st: best, k5: no });
   });
   return { diag, roles };
 }
@@ -605,14 +671,17 @@ function profile(soc) {
 // ====================================================================
 const FILLS = {
   '1A': { stage: 1, label: '本專科告知病人得經ACP為預立醫療決定之時機與方式' },
-  '2A': { stage: 2, label: '本專科積極治療之方針' },
-  '2B': { stage: 2, label: '本專科啟動緩和共同照護之時機與指標' },
-  '3A': { stage: 3, label: '本專科對應款別與疾病之操作型確診指標及所需檢查', refLabel: '本專科轉介或會同確診之專科與流程' },
+  '2A': { stage: 2, label: '積極治療之方針' },
+  '2B': { stage: 2, label: '啟動緩和共同照護之時機與指標' },
+  '3A': { stage: 3, label: '操作型確診指標及所需檢查', refLabel: '本專科轉介或會同確診之專科與流程' },
   '4A': { stage: 4, label: '本專科意思能力之評估方式' },
   '4B': { stage: 4, label: '臨床書面或口頭意思表示與AD不一致時之處理流程' },
-  '4C': { stage: 4, label: '限時嘗試之適用情況、期程與停損點' },
+  '4C': { stage: 4, label: '限時嘗試之適用情況、期程與停損點', note: '本格所寫即本專科醫師提供給病人之嘗試期程選項；亦供主治醫師於病人進行預立醫療照護諮商前，說明限時嘗試時使用。' },
   '5A': { stage: 5, label: '本專科常見執行情境之處置、協作分工與緩和醫療之專科調整' }
 };
+// 引導問題（孫教授1151009意見七-4，採A＋B：僅供參考，不列入手冊）
+const GQ = {"1A": ["本專科病人在病程中哪些時點（如確診、分期改變、首次住院）適合告知？", "由誰告知、在什麼場合（門診、住院、個案管理）？", "如何轉介或安排預立醫療照護諮商？"], "2A": ["本會各疾病共通之積極治療原則為何？", "共通之重新評估治療目標之時點為何？"], "2B": ["本會各疾病共通之啟動緩和共同照護原則為何？", "由誰提出、如何徵得病人同意？"], "3A": ["本會各疾病共通之確診作業流程為何？", "判定有疑義時，如何會同其他專科？"], "4A": ["本專科病人常見哪些影響意思能力之因素（如意識波動、認知障礙、溝通障礙）？", "採用何種評估方式或工具，由誰評估？", "如何依最大協助原則協助病人表達（如溝通輔具、選擇評估時機）？"], "4B": ["本專科常見病人改變意思之情境為何？", "依表4-1處理時，由誰確認、如何記載？", "需協助病人以書面變更預立醫療決定時，流程為何？"], "4C": ["本專科哪些治療適合限時嘗試？", "各治療合理之嘗試期程與評估時點為何？", "停損點之判斷指標為何？屆期後如何轉銜緩和醫療？"], "5A": ["本專科常見之執行情境為何（如撤除呼吸器）？", "執行時團隊如何分工（主治醫師、緩和醫療團隊、護理）？", "本專科病人之症狀控制與舒適照護，需做哪些調整？"]};
+const GQ_3A_REF = ["病人符合哪些情形時，應轉介確診？", "轉介或會同哪些專科、透過什麼流程？", "轉介期間，本會之照護角色為何？"];
 const CODES = Object.keys(FILLS);
 function codeOf(k) { return k[0] + '-' + k[1]; }
 function firstSentence(t) {
@@ -641,24 +710,27 @@ function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e
 function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { /* 無法刪除時略過 */ } }
 function blank() {
   const f = {}; CODES.forEach(k => { f[k] = ''; });
-  return { meta: { target: '', team: '', version: '' }, f, fm: {}, c: {}, refs: ['', '', ''], x: blankCases() };
+  return { meta: { target: '', team: '', version: '', approval: '' }, f, fm: {}, c: {}, refs: ['', '', ''], x: blankCases() };
 }
 // 案例：x.K1…K5（可再新增）；t 標題、b 內容、r 套用結果（ok／hard）、fb 對本指引之回饋。r 與 fb 不列入手冊。
 const CASE_MIN = 5;
-function blankCase() { return { t: '', b: '', r: '', fb: '' }; }
+function blankCase() { return { t: '', b: '', r: '', fb: '', d: '', st: '', lc: '', lad: '', lopt: '', lhca: '', lcap: '' }; }
 function blankCases() { const x = {}; for (let i = 1; i <= CASE_MIN; i++) x['K' + i] = blankCase(); return x; }
 function normCases(x) {
-  const out = blankCases();
-  Object.keys(x || {}).forEach(k => { if (/^K\d+$/.test(k)) out[k] = Object.assign(blankCase(), x[k] || {}); });
+  const ks = Object.keys(x || {}).filter(k => /^K\d+$/.test(k));
+  if (!ks.length) return blankCases();
+  const out = {}; ks.forEach(k => { out[k] = Object.assign(blankCase(), x[k] || {}); });
   return out;
 }
 function caseKeys() { return Object.keys((state.data || {}).x || {}).filter(k => /^K\d+$/.test(k)).sort((a, b) => a.slice(1) - b.slice(1)); }
+function caseBlank(k) { const c = state.data.x[k] || {}; return !Object.keys(blankCase()).some(f => (c[f] || '').trim()); }
+function casePrinted(k) { return caseFilled(k) && (state.data.x[k] || {}).d === 'y'; }
 function caseFilled(k) { const c = state.data.x[k] || {}; return !!((c.t || '').trim() || (c.b || '').trim()); }
 function normalize(d) {
   const b = blank(); d = d || {};
   return {
     meta: Object.assign(b.meta, d.meta || {}), f: Object.assign(b.f, d.f || {}), fm: d.fm || {}, c: d.c || {},
-    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x),
+    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x), dz: d.dz && typeof d.dz === 'object' ? JSON.parse(JSON.stringify(d.dz)) : {},
     soc: d.soc, updatedAt: d.updatedAt, updatedBy: d.updatedBy
   };
 }
@@ -673,7 +745,7 @@ let saveTimer = null;
 function saveLocal() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x }));
+    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x, dz: state.data.dz }));
     lsSet(KEY + 'last', state.socId);
     setStatus(ok ? '已存於本機瀏覽器 ' + hhmm() : '此瀏覽器無法自動儲存，請以「匯出草稿檔」保存');
   }, 400);
@@ -749,6 +821,7 @@ function applyRemote(d) {
     if (el && el.value !== remote && document.activeElement !== el) el.value = remote;
   });
   applyRemoteCases(nd);
+  applyRemoteDz(nd);
   if (!pending.has('refs') && !(document.activeElement && document.activeElement.id && document.activeElement.id.startsWith('ref-'))) {
     if (JSON.stringify(nd.refs) !== JSON.stringify(state.data.refs)) { state.data.refs = nd.refs; renderRefs(); }
   }
@@ -759,7 +832,7 @@ function applyRemoteCases(nd) {
   Object.keys(rx).forEach(k => {
     state.data.fm[k] = nd.fm[k]; state.data.c[k] = nd.c[k];
     const loc = state.data.x[k] || (state.data.x[k] = blankCase());
-    ['t', 'b', 'fb'].forEach(sub => {
+    ['t', 'b', 'fb', 'lc', 'lad', 'lopt', 'lhca', 'lcap'].forEach(sub => {
       const path = `x.${k}.${sub}`; if (pending.has(path)) return;
       const el = $(`[data-k="${path}"]`), remote = rx[k][sub] || '';
       if (el && el.value !== remote && document.activeElement === el) { if (sub === 'b') remoteWaiting.add(k); return; }
@@ -767,8 +840,11 @@ function applyRemoteCases(nd) {
       if (el && el.value !== remote) { el.value = remote; if (sub === 'b') updateCount(k); }
     });
     if (!pending.has(`x.${k}.r`)) { loc.r = rx[k].r || ''; document.querySelectorAll(`[data-k="x.${k}.r"]`).forEach(el => { el.checked = el.value === loc.r; }); }
+    if (!pending.has(`x.${k}.d`)) { loc.d = rx[k].d || ''; const cb = $(`[data-k="x.${k}.d"]`); if (cb) cb.checked = loc.d === 'y'; }
+    if (!pending.has(`x.${k}.st`)) { loc.st = rx[k].st || ''; document.querySelectorAll(`[data-k="x.${k}.st"]`).forEach(el => { el.checked = loc.st.includes(el.dataset.stage); }); }
     showFm(k); renderComment(k);
   });
+  caseKeys().forEach(k => { if (!rx[k] && !Array.from(pending.keys()).some(p => p.startsWith(`x.${k}`))) delete state.data.x[k]; });
   if (caseKeys().join() !== before && !(document.activeElement && document.activeElement.closest && document.activeElement.closest('#cases-list'))) renderCases();
 }
 function queueCloud(path, value) {
@@ -787,12 +863,13 @@ async function pushCloud(path, value, t) {
   try {
     const { fs, db } = await fb();
     const upd = { [path]: value, updatedAt: fs.serverTimestamp(), updatedBy: editorName() };
-    const m = path.match(/^f\.(\w+)$/) || path.match(/^x\.(K\d+)\.(?:t|b|r|fb)$/);
+    const md = path.match(/^dz\.(\w+)\.([abc])$/);
+    const m = path.match(/^f\.(\w+)$/) || path.match(/^x\.(K\d+)\.(?:t|b|r|fb|d|st|lc|lad|lopt|lhca|lcap)$/) || (md ? [path, md[1] + '_' + md[2]] : null);
     if (m) upd['fm.' + m[1]] = { by: editorName(), at: fs.serverTimestamp() };
     await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
     if (pending.get(path) === t) pending.delete(path);
     setStatus('已同步至雲端 ' + hhmm());
-    if (m && /^(f\.\w+|x\.K\d+\.b)$/.test(path)) maybeHistory(m[1], value, false);
+    if (m && /^(f\.\w+|x\.K\d+\.b|dz\.\w+\.[abc])$/.test(path)) maybeHistory(m[1], value, false);
   } catch (e) {
     setStatus('儲存失敗：' + errText(e) + '。內容仍在畫面上，請稍後再試或匯出草稿檔');
   }
@@ -904,12 +981,13 @@ function setPath(o, p, v) {
 }
 function tag(kind, sfx) {
   if (kind === LAW) return `<span class="tag">〔法定要求〕${esc(sfx)}</span>`;
-  if (kind === CON) return `<span class="tag c">〔共識原則〕${esc(sfx)}</span>`;
+  if (kind === INT) return `<span class="tag i">〔法律解釋〕${esc(sfx)}</span>`;
+  if (kind === REC) return `<span class="tag c">〔倫理與臨床建議〕${esc(sfx)}</span>`;
   return '';
 }
 function sitTableHTML(cls) {
   const w = ['30%', '50%', '20%'];
-  return `<table${cls ? ` class="${cls}"` : ''}><tr>${SIT_TABLE.head.map((h, i) => `<th style="width:${w[i]}">${esc(h)}</th>`).join('')}</tr>${SIT_TABLE.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>`;
+  return `<div class="tcap">${esc(SIT_TABLE.title)}${tag(INT, '')}</div><table class="sit${cls ? ' ' + cls : ''}"><thead><tr>${SIT_TABLE.head.map((h, i) => `<th style="width:${w[i]}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${SIT_TABLE.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 function groupsHTML(groups, inEditor) {
   return groups.map(g => {
@@ -918,7 +996,7 @@ function groupsHTML(groups, inEditor) {
     g.items.forEach(([t, k, s]) => {
       if (k === TABLE) {
         if (lis.length) { out += `<ul>${lis.join('')}</ul>`; lis = []; }
-        out += inEditor ? `<div class="tbl-wrap">${sitTableHTML('t')}</div>` : sitTableHTML('');
+        out += inEditor ? `<div class="tbl-wrap">${sitTableHTML('t')}</div>` : `<div class="sitwrap">${sitTableHTML('')}</div>`;
       } else lis.push(`<li>${esc(t)}${tag(k, s)}</li>`);
     });
     if (lis.length) out += `<ul>${lis.join('')}</ul>`;
@@ -926,6 +1004,238 @@ function groupsHTML(groups, inEditor) {
   }).join('');
 }
 function isDone(k) { return !!(state.data.f[k] || '').trim(); }
+// ====================================================================
+// 疾病別（1151011）：階段二、三依「本會病主相關疾病」逐項撰寫
+//   dz.<id>：A23／A4／A5_n＝本模板預設（依確診資格表）；G n＝研發小組合併之群組；S n＝研發小組新增（第一款或情境）
+//   欄位：m 併入之群組、n 名稱、k 對應臨床條件、a 2-A、b 2-B、c 3-A
+// ====================================================================
+const LEGAL = {
+  k1: { src: '施行細則§10；安寧緩和醫療條例§3第二款', lines: ['本法第十四條第一項第一款所定末期病人，依安寧緩和醫療條例第三條第二款規定。', '前項末期病人之確診，應由二位與該疾病診斷或治療相關之專科醫師為之。', '（安寧緩和醫療條例§3第二款）末期病人：指罹患嚴重傷病，經醫師診斷認為不可治癒，且有醫學上之證據，近期內病程進行至死亡已不可避免者。'] },
+  k23: { src: '施行細則§11、§12', lines: ['（§11）本法第十四條第一項第二款所稱不可逆轉之昏迷狀況，指因腦部病變，經檢查顯示符合下列情形之一之持續性重度昏迷：', '一、因外傷所致，經診察其意識超過六個月無恢復跡象。', '二、非因外傷所致，經診察其意識超過三個月無恢復跡象。', '三、有明確醫學證據確診腦部受嚴重傷害，極難恢復意識。', '前項診察及確診，應由二位神經醫學相關之專科醫師為之。', '（§12）本法第十四條第一項第三款所稱永久植物人狀態，指因腦部病變，經檢查顯示符合下列情形之一之植物人狀態：', '一、因外傷所致，其植物人狀態超過六個月無改善跡象。', '二、非因外傷所致，其植物人狀態超過三個月無改善跡象。', '前項確診，應由二位神經醫學相關之專科醫師為之。'] },
+  k4: { src: '施行細則§13', lines: ['本法第十四條第一項第四款所稱極重度失智，指確診失智程度嚴重，持續有意識障礙，導致無法進行生活自理、學習或工作，並符合下列情形之一者：', '一、臨床失智評估量表（Clinical Dementia Rating）達三分以上。', '二、功能性評估量表（Functional Assessment Staging Test）達七分以上。', '前項確診，應由二位神經或精神醫學相關之專科醫師為之。'] }
+};
+// 第五款各類之臨床條件（衛福部110.04.13修正公告附件，逐字照錄；確診專科見K5）
+const K5COND = {"1": ["經相關專科醫師確診為囊狀纖維化症，且達肺移植適應症標準並符合下列情形之一者：", "1. 第一秒最大呼氣量低於百分之四十預測值。", "2. 血中二氧化碳分壓（PaCO2）升高。", "3. 經藥物治療無效或仍逐漸惡化。"], "2": ["經相關專科醫師確診為亨丁頓氏舞蹈症，且符合下列情形之一者:", "1. 因亨丁頓氏舞蹈症造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 臨床失智評估量表(Clinical Dementia Rating)達二分以上。"], "3": ["經相關專科醫師確診為脊髓小腦退化性動作協調障礙，且符合下列情形之一者:", "1. 因脊髓小腦退化性動作協調障礙造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 軀體平衡障礙導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。"], "4": ["經相關專科醫師確診為脊髓性肌肉萎縮症，且符合下列情形之一者：", "1. 因脊髓性肌肉萎縮症造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 呼吸肌無力導致呼吸功能受損，非侵襲性呼吸器已無法維持呼吸功能或需長期仰賴侵襲性呼吸器維持呼吸功能。", "3. 四肢無力導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。"], "5": ["經相關專科醫師確診為肌萎縮性側索硬化症，且符合下列情形之一者：", "1. 因肌萎縮性側索硬化症造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 呼吸肌無力導致呼吸功能受損，非侵襲性呼吸器已無法維持呼吸功能或病人需長期仰賴侵襲性呼吸器維持呼吸功能。", "3. 四肢無力導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。"], "6": ["經相關專科醫師確診為多發性系統萎縮症，且符合下列情形之一者:", "1. 因多發性系統萎縮症造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 巴金森症狀已達 Modified Hoehn-Yahr分級表第四級。", "3. 軀體平衡障礙導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。"], "7": ["經相關專科醫師確診為裘馨氏肌肉失養症，且符合下列情形之一者：", "1. 因裘馨氏肌肉失養症造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 呼吸肌無力導致呼吸功能受損，非侵襲性呼吸器已無法維持呼吸功能或需長期仰賴侵襲性呼吸器維持呼吸功能。", "3. 四肢無力導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。", "4. 心臟衰竭，且達下列情形之一：", "（1）紐約心臟協會（NYHA）功能分級第四度。", "（2）左心室射出分率低於百分之二十，且經六個月以上藥物治療仍無法改善。", "（3）嚴重心臟衰竭（紐約心臟協會（NYHA）功能分級第三度以上），經常需要住院接受強心劑等藥物治療，且無明顯改善者。", "（4）已使用心臟輔助器（如 ECMO、VAD等）且無法斷離。", "（5）復發心室性不整脈且有明顯症狀，無有效之治療方法。", "（6）具其他器質性心臟疾病造成嚴重心臟衰竭 (紐約心臟協會(NYHA)功能分級第三度以上)，無法以手術或其他介入性治療方式明顯改善。"], "8": ["經相關專科醫師確診為肢帶型肌失養症，且符合下列情形之一者：", "1. 因肢帶型肌失養症造成身體機能障礙，符合中度或以上身心障礙標準。", "2. 呼吸肌無力導致呼吸功能受損，非侵襲性呼吸器已無法維持呼吸功能或需長期仰賴侵襲性呼吸器維持呼吸功能。", "3. 四肢無力導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。", "4. 心臟衰竭，且達下列情形之一：", "（1）紐約心臟協會（NYHA）功能分級第四度。", "（2）左心室射出分率低於百分之二十，且經六個月以上藥物治療仍無法改善。", "（3）嚴重心臟衰竭（紐約心臟協會（NYHA）功能分級第三度以上），經常需要住院接受強心劑等藥物治療，且無明顯改善者。", "（4）已使用心臟輔助器（如 ECMO、VAD等）且無法斷離。", "（5）復發心室性不整脈，且有明顯症狀，無有效之治療方法。", "（6）具其他器質性心臟疾病造成嚴重心臟衰竭 (紐約心臟協會(NYHA)功能分級第三度以上)，無法以手術或其他介入性治療方式明顯改善。"], "9": ["經相關專科醫師確診為 Nemaline 線狀肌肉病變，且符合下列情形之一者：", "1. 因 Nemaline 線狀肌肉病變造成身體的機能障礙，符合中度或以上身心障礙標準。", "2. 呼吸肌無力導致呼吸功能受損，非侵襲性呼吸器已無法維持呼吸功能或需長期仰賴侵襲性呼吸器維持呼吸功能。", "3. 四肢無力導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。"], "10": ["經相關專科醫師確診為原發性肺動脈高壓，且符合下列情形之一者:", "1. 伴隨右心衰竭之臨床徵象，須長期住院接受強心劑等藥物治療。", "2. 臨床症狀快速惡化，對治療反應不佳。", "3. 於進行輕微或規律性體能活動時，發生反覆昏厥。", "4. 世界衛生組織(WHO)活動功能分級第四級。"], "11": ["經相關專科醫師確診為遺傳性表皮分解性水泡症，且符合下列情形之一者：", "1. 發生導因於遺傳性表皮分解性水泡症且危及生命之重大傷病者，如敗血症、呼吸衰竭、腸胃道阻塞等。", "2. 傷口面積大於或等於百分之二十五體表面積一年以上或極度影響生活品質(皮膚學生活品質指數Dermatology life quality index, DLQI 達二十一分以上)。"], "12": ["經相關專科醫師確診為先天性多發性關節攣縮症，雖經適當治療，但病情無法改善，且符合下列情形之一者：", "1. 因身體機能障礙，符合中度或以上身心障礙標準。", "2. 呼吸肌無力導致呼吸功能受損，非侵襲性呼吸器已無法維持呼吸功能或需長期仰賴侵襲性呼吸器維持呼吸功能。", "3. 四肢無力導致失去行走能力，需依靠他人操作輪椅行動或終日臥床。"]};
+const GQ_DZ = {
+  a: ['積極治療之目標為何？', '在什麼情況下需要重新評估治療目標（如療效不佳、併發症反覆）？', '本會有哪些既有之診療指引可供引用？'],
+  b: ['以哪些客觀指標判斷病程進展（如分期、功能量表、住院次數）？', '達到什麼程度時，主治醫師應提出緩和共同照護評估？', '由誰提出、如何徵得病人同意？'],
+  c: ['法定或公告條件中之各項，本會以哪些評估方式或檢查判定？', '由誰評估、結果如何記載於病歷？', '判定有疑義時，如何會同其他專科？']
+};
+const DZ_FIELD = { a: ['2-A', '積極治療之方針', '寫治療目標與重新評估治療目標之時點；治療細節得引用本會既有之診療指引'], b: ['2-B', '啟動緩和共同照護之時機與指標', ''], c: ['3-A', '操作型確診指標及所需檢查', ''] };
+const DZ_TAG = { auto: ['本模板預設', ''], group: ['研發小組合併', 'self'], self: ['研發小組新增', 'self'] };
+const SELF_KINDS = ['第一款　末期病人', '情境（不對應特定款別）'];
+const byNum = (a, b) => (+a.replace(/\D/g, '')) - (+b.replace(/\D/g, ''));
+function dzAuto(prof) {
+  const out = [], has = l => prof.diag.some(d => d.label.startsWith(l));
+  if (has('第二款') || has('第三款')) out.push({ id: 'A23', n: '致不可逆轉之昏迷狀況或永久植物人狀態之腦部病變', k: '第二款、第三款', lg: ['k23'] });
+  if (has('第四款')) out.push({ id: 'A4', n: '失智症', k: '第四款　極重度失智', lg: ['k4'] });
+  prof.diag.forEach(d => { if (d.k5) out.push({ id: 'A5_' + d.k5, n: d.label.replace('第五款　', ''), k: '第五款', lg: ['k5_' + d.k5] }); });
+  return out;
+}
+function dzEntries() {
+  const prof = profile(socOf(state.socId)), dz = state.data.dz, auto = dzAuto(prof), cards = [];
+  auto.forEach(a => { if (!(dz[a.id] || {}).m) cards.push(Object.assign({ t: 'auto' }, a)); });
+  Object.keys(dz).filter(id => /^G\d+$/.test(id)).sort(byNum).forEach(id => {
+    const mem = auto.filter(a => (dz[a.id] || {}).m === id);
+    if (mem.length) cards.push({ id, t: 'group', n: dz[id].n || '（未命名群組）', k: [...new Set(mem.map(a => a.k))].join('、'), lg: mem.map(a => a.lg).flat(), mem });
+  });
+  Object.keys(dz).filter(id => /^S\d+$/.test(id)).sort(byNum).forEach(id => {
+    const e = dz[id], k = e.k || SELF_KINDS[0];
+    cards.push({ id, t: 'self', n: e.n || '', k: k === SELF_KINDS[1] ? '情境' : k, lg: k === SELF_KINDS[0] ? ['k1'] : [] });
+  });
+  return { auto, cards, prof };
+}
+function dzVal(id, f) { return ((state.data.dz[id] || {})[f]) || ''; }
+function dzDone(id, f) { return !!dzVal(id, f).trim(); }
+function dzName(e) { return (e.n || '').trim() || '（未命名）'; }
+function isRefSoc() { return profile(socOf(state.socId)).roles[3] === 'ref'; }
+function legalLines(e) {
+  const out = [];
+  e.lg.forEach(g => {
+    if (LEGAL[g]) out.push({ src: LEGAL[g].src, lines: LEGAL[g].lines });
+    else { const no = +g.slice(3), row = K5.find(r => r[0] === no); out.push({ src: '第五款公告：' + row[1].replace(/（俗稱[^）]*）/, '') + '（確診：' + row[2] + '）', lines: K5COND[no] }); }
+  });
+  return out;
+}
+function legalHTML(e) {
+  const ls = legalLines(e); if (!ls.length) return '';
+  const lab = e.lg.some(g => g.startsWith('k5_')) ? '公告條件' : '法定條件';
+  return `<details class="lg"><summary>${lab}${tag(LAW, '')}</summary><div class="lg-in">${ls.map(x => `<p class="lg-src">${esc(x.src)}</p>${x.lines.map(l => `<p>${esc(l)}</p>`).join('')}`).join('')}</div></details>`;
+}
+function dfieldHTML(id, f) {
+  const key = id + '_' + f, v = dzVal(id, f), cloud = state.mode === 'cloud', [code, label, desc] = DZ_FIELD[f];
+  const cm = !cloud ? '' : state.admin
+    ? `<div class="cbox admin" id="cm-${key}"><label class="cm-h" for="cmt-${key}">核心團隊意見<span id="cmm-${key}"></span></label><textarea id="cmt-${key}" data-c="${key}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[key] || {}).text || '')}</textarea></div>`
+    : `<div class="cbox" id="cm-${key}" hidden></div>`;
+  return `<div class="dfield" id="card-${key}">
+    <label class="sub-h" for="f-${key}">【${code}】${esc(label)}${desc ? `<small>${esc(desc)}</small>` : ''}</label>
+    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${GQ_DZ[f].map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
+    <div class="first">第一句請寫成完整建議句（例：「本會建議……」），將自動列入手冊之「本會建議一覽」；其後為說明。</div>
+    <textarea id="f-${key}" data-k="dz.${id}.${f}">${esc(v)}</textarea>
+    <div class="ft"><span class="fm" id="fm-${key}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${key}">歷史版本</button>` : ''}<span class="count" id="cnt-${key}">${v.length} 字</span></div>
+    ${cloud ? `<div class="hist" id="hist-${key}" hidden></div>` : ''}
+    ${cm}
+  </div>`;
+}
+function dzCardHTML(e, stage) {
+  const title = stage === 2 ? esc(dzName(e)) : `${esc(dzName(e))}　→　${esc(e.k)}`;
+  const src = stage === 2 ? '對應臨床條件：' + esc(e.k) : DZ_TAG[e.t][0];
+  const mem = e.mem ? `<div class="hint">本組包括：${e.mem.map(m => esc(m.n)).join('、')}</div>` : '';
+  const body = stage === 2 ? dfieldHTML(e.id, 'a') + dfieldHTML(e.id, 'b') : legalHTML(e) + dfieldHTML(e.id, 'c');
+  return `<div class="fill dz" id="dzc-${stage}-${e.id}"><div class="hd"><span class="q">${title}</span><span class="src-l">${src}</span></div>${mem}${body}</div>`;
+}
+function commonCardHTML(keys, prof, note) {
+  return `<div class="fill dz"><div class="hd"><span class="q">各疾病共通</span><span class="src-l">無共通原則者免填</span></div>${note || ''}${keys.map(k => cfieldHTML(k)).join('')}</div>`;
+}
+function cfieldHTML(k) {
+  const F = FILLS[k], v = state.data.f[k] || '', cloud = state.mode === 'cloud';
+  const cm = !cloud ? '' : state.admin
+    ? `<div class="cbox admin" id="cm-${k}"><label class="cm-h" for="cmt-${k}">核心團隊意見<span id="cmm-${k}"></span></label><textarea id="cmt-${k}" data-c="${k}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[k] || {}).text || '')}</textarea></div>`
+    : `<div class="cbox" id="cm-${k}" hidden></div>`;
+  return `<div class="dfield" id="card-${k}">
+    <label class="sub-h" for="f-${k}">【${codeOf(k)}】${esc(F.label)}</label>
+    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${(GQ[k] || []).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
+    <div class="first">第一句請寫成完整建議句（例：「本會建議……」），將自動列入手冊之「本會建議一覽」；其後為說明。</div>
+    <textarea id="f-${k}" data-k="f.${k}">${esc(v)}</textarea>
+    <div class="ft"><span class="fm" id="fm-${k}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${k}">歷史版本</button>` : ''}<span class="count" id="cnt-${k}">${v.length} 字</span></div>
+    ${cloud ? `<div class="hist" id="hist-${k}" hidden></div>` : ''}
+    ${cm}
+  </div>`;
+}
+function dzStageHTML(n, prof) {
+  const { cards } = dzEntries();
+  if (n === 2) {
+    if (!cards.length) return fillHTML('2A', prof) + fillHTML('2B', prof);
+    return commonCardHTML(['2A', '2B'], prof) + cards.map(e => dzCardHTML(e, 2)).join('');
+  }
+  if (isRefSoc() || !cards.length) return fillHTML('3A', prof);
+  const ref3 = `<details class="ref-dx"><summary>本會於階段三可擔任確診之款別與疾病（共 ${prof.diag.length} 項，本模板預設）</summary>${diagTable(prof)}</details>`;
+  return `<p class="lead" style="font-size:16px">以下各卡上方之法定或公告條件由本模板預設，點開可閱讀；研發小組填寫本會對各疾病之操作方式。</p>${ref3}` + commonCardHTML(['3A'], prof) + cards.map(e => dzCardHTML(e, 3)).join('');
+}
+function dzListHTML(prof) {
+  const { auto, cards } = dzEntries(), dz = state.data.dz;
+  const groups = cards.filter(c => c.t === 'group');
+  const allGroups = Object.keys(dz).filter(id => /^G\d+$/.test(id)).sort(byNum);
+  const tagH = t => `<span class="tagp ${DZ_TAG[t][1]}">${DZ_TAG[t][0]}</span>`;
+  const autoRow = a => { const m = (dz[a.id] || {}).m || ''; return `<div class="dl-row${m ? ' merged' : ''}"><span class="k">${esc(a.k)}</span><span>${esc(a.n)}${tagH('auto')}</span><span class="act"><select data-merge="${a.id}" aria-label="合併至群組"><option value="">（不合併）</option>${allGroups.map(g => `<option value="${g}"${m === g ? ' selected' : ''}>併入：${esc(dz[g].n || '未命名群組')}</option>`).join('')}<option value="__new">＋併入新群組…</option></select></span></div>`; };
+  const groupRow = g => `<div class="dl-row grp"><span class="k">${esc(g.k)}</span><span><input type="text" data-k="dz.${g.id}.n" value="${esc(dz[g.id].n || '')}" placeholder="群組名稱" aria-label="群組名稱">${tagH('group')}<small class="mem">包括：${g.mem.map(m => esc(m.n)).join('、')}</small></span><span class="act"><button class="linkbtn" type="button" data-ungroup="${g.id}">解散</button></span></div>`;
+  const selfRow = s => `<div class="dl-row"><span class="k"><select data-k="dz.${s.id}.k" aria-label="對應臨床條件">${SELF_KINDS.map(o => `<option${(dz[s.id].k || SELF_KINDS[0]) === o ? ' selected' : ''}>${o}</option>`).join('')}</select></span><span><input type="text" data-k="dz.${s.id}.n" value="${esc(dz[s.id].n || '')}" placeholder="疾病或情境名稱" aria-label="疾病或情境名稱">${tagH('self')}</span><span class="act"><button class="linkbtn" type="button" data-delself="${s.id}">刪除</button></span></div>`;
+  return `<h3>本會病主相關疾病</h3>
+    <p class="lead" style="font-size:16px;margin-top:6px">下列為本會病人可能符合病主法臨床條件之疾病；階段二、三之疾病卡依此清單產生。第二至五款由本模板依上表預設；第一款（末期病人）由研發小組自列本專科會進展至末期之疾病。病程與處理相近者，研發小組得合併為一組；以情境區分較合適之學會（如急診、重症），得以情境代替疾病。</p>
+    <div class="dl"><div class="dl-head"><span>對應臨床條件</span><span>疾病</span><span></span></div>
+    ${auto.map(autoRow).join('')}${groups.map(groupRow).join('')}${cards.filter(c => c.t === 'self').map(selfRow).join('')}
+    ${prof.diag.some(x => x.label.startsWith('第一款')) && !cards.some(c => c.t === 'self' && c.k.startsWith('第一款')) ? '<div class="dl-row hintrow"><span class="k">第一款　末期病人</span><span>本會得擔任第一款之確診；請以下方「＋新增第一款之疾病」列出本專科會進展至末期之疾病。</span><span class="act"></span></div>' : ''}
+    <div class="dl-row add"><span class="k"></span><span><button class="linkbtn" type="button" data-addself="0">＋新增第一款之疾病</button>　<button class="linkbtn" type="button" data-addself="1">＋新增情境</button></span><span class="act"></span></div></div>`;
+}
+function dzKeys() { return Array.from(document.querySelectorAll('textarea[data-k^="dz."]')).map(el => el.id.slice(2)); }
+function rerenderDz() {
+  const prof = profile(socOf(state.socId));
+  const L = $('#dz-list'), s2 = $('#dz-s2'), s3 = $('#dz-s3'); if (!L) return;
+  L.innerHTML = dzListHTML(prof); s2.innerHTML = dzStageHTML(2, prof); s3.innerHTML = dzStageHTML(3, prof);
+  dzKeys().concat(['2A', '2B', '3A']).forEach(k => { showFm(k); renderComment(k); });
+  updateProgress();
+}
+function dzHasContent(id) { return ['a', 'b', 'c'].some(f => dzDone(id, f)); }
+async function dzWrite(upd) {
+  if (state.mode !== 'cloud') { saveLocal(); return; }
+  try {
+    const { fs, db } = await fb();
+    const u = { updatedAt: fs.serverTimestamp(), updatedBy: editorName() };
+    Object.keys(upd).forEach(p => { u[p] = upd[p] === null ? fs.deleteField() : upd[p]; });
+    await fs.updateDoc(fs.doc(db, 'drafts', state.token), u);
+    setStatus('已同步至雲端 ' + hhmm());
+  } catch (e) { setStatus('儲存失敗：' + errText(e)); }
+}
+function dzMerge(id, to, sel) {
+  const dz = state.data.dz;
+  if (dzHasContent(id) && !window.confirm('此項已有填寫內容；合併後此項之卡片暫不顯示（解散群組即恢復），確定嗎？')) { sel.value = (dz[id] || {}).m || ''; return; }
+  const upd = {};
+  if (to === '__new') {
+    const name = (window.prompt('新群組之名稱（例：神經肌肉疾病）', '') || '').trim();
+    if (!name) { sel.value = (dz[id] || {}).m || ''; return; }
+    const g = 'G' + (Math.max(0, ...Object.keys(dz).filter(x => /^G\d+$/.test(x)).map(x => +x.slice(1))) + 1);
+    dz[g] = { t: 'group', n: name }; upd['dz.' + g] = { t: 'group', n: name }; to = g;
+  }
+  dz[id] = dz[id] || {}; dz[id].m = to; upd[`dz.${id}.m`] = to;
+  rerenderDz(); dzWrite(upd);
+}
+function dzUngroup(g) {
+  const dz = state.data.dz;
+  if (dzHasContent(g) && !window.confirm('解散後，此群組已填寫之內容將一併刪除，確定嗎？')) return;
+  const upd = {};
+  Object.keys(dz).forEach(id => { if ((dz[id] || {}).m === g) { dz[id].m = ''; upd[`dz.${id}.m`] = ''; } });
+  delete dz[g]; upd['dz.' + g] = null;
+  rerenderDz(); dzWrite(upd);
+}
+function dzAddSelf(kind) {
+  const dz = state.data.dz, s = 'S' + (Math.max(0, ...Object.keys(dz).filter(x => /^S\d+$/.test(x)).map(x => +x.slice(1))) + 1);
+  dz[s] = { t: 'self', k: SELF_KINDS[kind], n: '' };
+  rerenderDz(); dzWrite({ ['dz.' + s]: { t: 'self', k: SELF_KINDS[kind], n: '' } });
+  const inp = $(`[data-k="dz.${s}.n"]`); if (inp) inp.focus();
+}
+function dzDelSelf(s) {
+  if ((dzHasContent(s) || (state.data.dz[s].n || '').trim()) && !window.confirm('刪除後，此項已填寫之內容將一併刪除，確定嗎？')) return;
+  delete state.data.dz[s];
+  rerenderDz(); dzWrite({ ['dz.' + s]: null });
+}
+function applyRemoteDz(nd) {
+  const rdz = nd.dz || {}, ldz = state.data.dz;
+  const sig = o => JSON.stringify(Object.keys(o).filter(k => o[k] && (o[k].m || o[k].t)).sort().map(k => [k, o[k].m || '', o[k].t || '', o[k].k || '']));
+  const changed = sig(rdz) !== sig(ldz);
+  Object.keys(rdz).forEach(id => {
+    const loc = ldz[id] || (ldz[id] = {});
+    ['a', 'b', 'c', 'n', 'k'].forEach(f => {
+      const path = `dz.${id}.${f}`; if (pending.has(path)) return;
+      const remote = rdz[id][f] || '', el = $(`[data-k="${path}"]`);
+      if (el && el.value !== remote && document.activeElement === el) { if ('abc'.includes(f)) remoteWaiting.add(id + '_' + f); return; }
+      loc[f] = remote;
+      if (el && el.value !== remote) { el.value = remote; if ('abc'.includes(f)) updateCount(id + '_' + f); }
+    });
+    ['m', 't'].forEach(f => { if (!pending.has(`dz.${id}.${f}`)) loc[f] = rdz[id][f] || ''; });
+    ['a', 'b', 'c'].forEach(f => { const key = id + '_' + f; state.data.fm[key] = nd.fm[key]; state.data.c[key] = nd.c[key]; });
+  });
+  Object.keys(ldz).forEach(id => { if (!rdz[id] && /^[GS]\d+$/.test(id) && !Array.from(pending.keys()).some(p => p.startsWith('dz.' + id))) delete ldz[id]; });
+  const a = document.activeElement, inDz = a && a.closest && a.closest('#dz-list, #dz-s2, #dz-s3');
+  if (changed && !inDz) rerenderDz(); else dzKeys().forEach(k => { showFm(k); renderComment(k); });
+}
+// 進度：1-A、4-A～5-A；階段二各疾病卡之2-A、2-B（無疾病卡時為2-A、2-B）；階段三各疾病卡之3-A（轉介學會或無疾病卡時為3-A）
+function progressItems() {
+  const { cards } = dzEntries(), ref = isRefSoc(), it = [];
+  it.push([1, isDone('1A')]);
+  if (cards.length) cards.forEach(e => { it.push([2, dzDone(e.id, 'a')], [2, dzDone(e.id, 'b')]); }); else it.push([2, isDone('2A')], [2, isDone('2B')]);
+  if (ref || !cards.length) it.push([3, isDone('3A')]); else cards.forEach(e => it.push([3, dzDone(e.id, 'c')]));
+  ['4A', '4B', '4C', '5A'].forEach(k => it.push([FILLS[k].stage, isDone(k)]));
+  return it;
+}
+function drecHTML(id, f, label) {
+  const v = dzVal(id, f).trim(), [code, lab] = DZ_FIELD[f];
+  return `<div class="rec"><div class="code">【${code}】${esc(label || lab)}</div>${v ? v.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join('') : '<p class="empty">（尚未填寫）</p>'}</div>`;
+}
+function handbookStage(s, prof) {
+  if (s.n !== 2 && s.n !== 3) return s.fills.map(k => recBlock(k, prof)).join('');
+  const { cards } = dzEntries(), d = state.data;
+  if (s.n === 2) {
+    if (!cards.length) return recBlock('2A', prof) + recBlock('2B', prof);
+    const common = isDone('2A') || isDone('2B') ? `<div class="dh">各疾病共通</div>${['2A', '2B'].filter(isDone).map(k => recBlock(k, prof)).join('')}` : '';
+    return common + cards.map(e => `<div class="dh">${esc(dzName(e))}</div>${drecHTML(e.id, 'a')}${drecHTML(e.id, 'b')}`).join('');
+  }
+  if (isRefSoc() || !cards.length) return recBlock('3A', prof);
+  const tbl = `<table><tr><th style="width:34%">款別／疾病</th><th>確診資格依據</th></tr>${prof.diag.map(x => `<tr><td>${esc(x.label)}</td><td>${esc(x.basis)}</td></tr>`).join('')}</table>`;
+  const common = isDone('3A') ? `<div class="dh">各疾病共通</div>${recBlock('3A', prof).replace(tbl, '')}` : '';
+  return `<div class="gh">本會於階段三可擔任確診之款別與疾病</div>${tbl}` + common + cards.map(e => `<div class="dh">${esc(dzName(e))}　→　${esc(e.k)}</div>${legalLines(e).map(x => `<div class="lgp"><b>${esc(x.src)}〔法定要求〕</b>${x.lines.map(l => `<br>${esc(l)}`).join('')}</div>`).join('')}${drecHTML(e.id, 'c')}`).join('');
+}
+function summaryRows(prof) {
+  const d = state.data, { cards } = dzEntries(), ref = isRefSoc(), rows = [];
+  const add = (code, st, dz, txt) => { const fs = firstSentence(txt); if (fs) rows.push(`<tr><td>${code}</td><td>${ZH[st - 1]}</td><td>${esc(dz)}</td><td>${esc(fs)}</td></tr>`); };
+  add('1-A', 1, '—', d.f['1A']);
+  add('2-A', 2, cards.length ? '各疾病共通' : '—', d.f['2A']); add('2-B', 2, cards.length ? '各疾病共通' : '—', d.f['2B']);
+  cards.forEach(e => { add('2-A', 2, dzName(e), dzVal(e.id, 'a')); add('2-B', 2, dzName(e), dzVal(e.id, 'b')); });
+  add('3-A', 3, ref || !cards.length ? '—' : '各疾病共通', d.f['3A']);
+  if (!ref) cards.forEach(e => add('3-A', 3, dzName(e) + '→' + e.k, dzVal(e.id, 'c')));
+  ['4A', '4B', '4C', '5A'].forEach(k => add(codeOf(k), FILLS[k].stage, '—', d.f[k]));
+  return rows.join('');
+}
+
 
 // ====================================================================
 // 六、畫面
@@ -940,9 +1250,9 @@ function diagTable(prof) {
     ${prof.diag.map(d => `<tr><td>${esc(d.label)}${d.sub ? `<br><span style="color:var(--muted)">${esc(d.sub)}</span>` : ''}</td><td>${esc(d.basis)}</td><td class="st-${d.st}">${ST_LABEL[d.st]}</td></tr>`).join('')}</table></div>`;
 }
 const TILES = `<div class="tiles">
-  <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>共八格，每格只列題目，內容與篇幅由本會自訂。每格第一句請寫成完整建議句，會自動列入「本會建議一覽」。另於「案例」章提供本會之案例。</p></div>
+  <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>共八格，每格只列題目，內容與篇幅由研發小組自訂。每格第一句請寫成完整建議句，會自動列入手冊之「本會建議一覽」。另於「案例」章提供本會之案例。</p></div>
   <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段之共通基準依現行法訂定，點開即可閱讀。</p></div>
-  <div class="tile"><b><span class="sw ok"></span>角色由核心團隊填入</b><p>階段三可擔任確診之款別，由核心團隊依法定資格預設；各階段之角色，由核心小組討論後填入。本會均不勾選。</p></div>
+  <div class="tile"><b><span class="sw ok"></span>確診資格與角色由本模板預設</b><p>階段三可擔任確診之款別與疾病，以及各階段之角色，均由本模板預設；研發小組不必勾選。</p></div>
   <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入者，內容即時存到雲端，同一學會之成員看到同一份；每格保留歷史版本。</p></div>
 </div>`;
 function updateCount(k) { const c = $('#cnt-' + k); if (c) c.textContent = (($('#f-' + k) || {}).value || '').length + ' 字'; }
@@ -964,12 +1274,12 @@ function renderComment(k) {
     return;
   }
   box.hidden = !(c && (c.text || '').trim());
-  if (!box.hidden) box.innerHTML = `<div class="cm-h">核心團隊意見<span>${esc(c.by || '')}　${esc(when(c.at))}</span></div><div class="cm-t">${br(c.text)}</div>`;
+  if (!box.hidden) box.innerHTML = `<div class="cm-h">審查意見<span>${esc(when(c.at))}</span></div><div class="cm-t">${br(c.text)}</div>`;
 }
 function fillHTML(k, prof) {
   const F = FILLS[k];
   const label = k === '3A' && !prof.diag.length ? F.refLabel : F.label;
-  const ref3 = k === '3A' && prof.diag.length ? `<details class="ref-dx"><summary>本會可擔任確診之款別與疾病（共 ${prof.diag.length} 項，核心團隊預設）</summary>${diagTable(prof)}</details>` : '';
+  const ref3 = k === '3A' && prof.diag.length ? `<details class="ref-dx"><summary>本會於階段三可擔任確診之款別與疾病（共 ${prof.diag.length} 項，本模板預設）</summary>${diagTable(prof)}</details>` : '';
   const v = state.data.f[k] || '';
   const cloud = state.mode === 'cloud';
   const cm = !cloud ? '' : state.admin
@@ -977,14 +1287,20 @@ function fillHTML(k, prof) {
     : `<div class="cbox" id="cm-${k}" hidden></div>`;
   return `<div class="fill" id="card-${k}">
     <label class="hd" for="f-${k}"><span class="code">${codeOf(k)}</span><span class="q">${esc(label)}</span></label>
-    ${ref3}
+    ${F.note ? `<div class="hint">${esc(F.note)}</div>` : ''}${ref3}
+    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${(k === '3A' && !prof.diag.length ? GQ_3A_REF : GQ[k] || []).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
+    <div class="first">第一句請寫成完整建議句（例：「本會建議……」），將自動列入手冊之「本會建議一覽」；其後為說明。</div>
     <textarea id="f-${k}" data-k="f.${k}">${esc(v)}</textarea>
     <div class="ft"><span class="fm" id="fm-${k}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${k}">歷史版本</button>` : ''}<span class="count" id="cnt-${k}">${v.length} 字</span></div>
     ${cloud ? `<div class="hist" id="hist-${k}" hidden></div>` : ''}
     ${cm}
   </div>`;
 }
-const CASE_HINT = '請依序寫出：<b>①</b> 案例經過與病程發展　<b>②</b> 關鍵之決策點在哪個階段；如有困境，卡在哪裡、為什麼　<b>③</b> 依本指引如何處理，與過去作法有何不同';
+const CASE_HINT = '本欄列入手冊。請依序寫出：<b>①</b> 案例經過與病程發展　<b>②</b> 關鍵決策點及所屬階段　<b>③</b> 依本指引之處理';
+function sel(k, f, label, opts) {
+  const v = (state.data.x[k] || {})[f] || '';
+  return `<label class="lf-i"><span>${label}</span><select data-k="x.${k}.${f}"><option value="">（請選擇）</option>${opts.map(o => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label>`;
+}
 function caseHTML(k, i) {
   const c = state.data.x[k], n = '案例' + zh(i + 1), cloud = state.mode === 'cloud';
   const cm = !cloud ? '' : state.admin
@@ -992,15 +1308,36 @@ function caseHTML(k, i) {
     : `<div class="cbox" id="cm-${k}" hidden></div>`;
   const radio = (v, t) => `<label><input type="radio" name="r-${k}" data-k="x.${k}.r" value="${v}"${c.r === v ? ' checked' : ''}>${t}</label>`;
   return `<div class="fill case" id="card-${k}">
-    <div class="hd"><span class="code">${n}</span><input class="ttl" type="text" id="t-${k}" data-k="x.${k}.t" value="${esc(c.t)}" placeholder="案例標題（由本會自訂）" aria-label="${n}標題"></div>
+    <div class="hd"><span class="code">${n}</span><input class="ttl" type="text" id="t-${k}" data-k="x.${k}.t" value="${esc(c.t)}" placeholder="案例標題（由研發小組自訂）" aria-label="${n}標題">${caseBlank(k) ? `<button class="linkbtn del" type="button" data-delcase="${k}">刪除此則</button>` : ''}</div>
     <div class="hint">${CASE_HINT}</div>
     <textarea id="f-${k}" data-k="x.${k}.b" aria-label="${n}內容">${esc(c.b)}</textarea>
+    <div class="stg"><span>本案例涉及之階段：</span>${[1, 2, 3, 4, 5].map(n => `<label><input type="checkbox" data-k="x.${k}.st" data-stage="${n}"${(c.st || '').includes(String(n)) ? ' checked' : ''}>${ZH[n - 1]}</label>`).join('')}<small>（手冊各階段末註記「參見案例」）</small></div>
+    <div class="lf"><div class="lf-h">法律事實（供審查之用，不列入手冊）</div>
+      ${sel(k, 'lc', '臨床條件', ['未達臨床條件', '第一款　末期病人', '第二款　不可逆轉之昏迷狀況', '第三款　永久植物人狀態', '第四款　極重度失智', '第五款　公告疾病', '不確定'])}
+      ${sel(k, 'lad', '預立醫療決定', ['無', '有'])}
+      ${sel(k, 'lhca', '醫療委任代理人', ['無', '有一人', '有二人以上'])}
+      ${sel(k, 'lcap', '病人當時之意思能力', ['有意思能力', '意識昏迷或無法清楚表達意願', '不確定'])}
+      <label class="lf-w"><span>相關各格所勾選之選項</span><input type="text" data-k="x.${k}.lopt" value="${esc(c.lopt || '')}" placeholder="例：末期病人－維持生命治療勾選選項二（限時嘗試三個月）；人工營養及流體餵養勾選選項一"></label>
+    </div>
+    <label class="deid"><input type="checkbox" data-k="x.${k}.d"${c.d === 'y' ? ' checked' : ''}>本案例已去識別化（未勾選者不列入手冊）</label>
     <div class="res"><span>本案套用本指引：</span>${radio('ok', '可順利處理')}${radio('hard', '仍有困難')}<small>（本項與下方回饋供修訂指引之用，不列入手冊）</small></div>
-    <div class="fb"><label for="fb-${k}">對本指引之回饋：本案例顯示指引不足或需細化之處（勾選「仍有困難」者請填）</label><textarea id="fb-${k}" data-k="x.${k}.fb" placeholder="勾選「可順利處理」者，得免填">${esc(c.fb)}</textarea></div>
+    <div class="fb"><label for="fb-${k}">對本指引之回饋（不列入手冊）：如有困境，卡在哪裡、為什麼；依本指引處理與過去作法有何不同；本案例顯示指引不足或需細化之處</label><textarea id="fb-${k}" data-k="x.${k}.fb">${esc(c.fb)}</textarea></div>
     <div class="ft"><span class="fm" id="fm-${k}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${k}">歷史版本</button>` : ''}<span class="count" id="cnt-${k}">${(c.b || '').length} 字</span></div>
     ${cloud ? `<div class="hist" id="hist-${k}" hidden></div>` : ''}
     ${cm}
   </div>`;
+}
+async function deleteCase(k) {
+  if (!caseBlank(k)) return;
+  delete state.data.x[k];
+  if (!caseKeys().length) state.data.x.K1 = blankCase();
+  renderCases(); updateProgress();
+  if (state.mode !== 'cloud') { saveLocal(); return; }
+  try {
+    const { fs, db } = await fb();
+    await fs.updateDoc(fs.doc(db, 'drafts', state.token), { ['x.' + k]: fs.deleteField(), updatedAt: fs.serverTimestamp(), updatedBy: editorName() });
+    setStatus('已刪除空白案例 ' + hhmm());
+  } catch (e) { setStatus('刪除失敗：' + errText(e)); }
 }
 function renderCases() {
   const box = $('#cases-list'); if (!box) return;
@@ -1058,8 +1395,11 @@ function updateWhere() {
     a.classList.toggle('active', on);
   });
   const ck = whereField && /^K\d+$/.test(whereField) ? caseKeys().indexOf(whereField) : -1;
+  const wd = whereField && whereField.match(/^(.+)_([abc])$/);
+  const we = wd && state.data && state.data.dz ? dzEntries().cards.find(e => e.id === wd[1]) : null;
   const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${FILLS[whereField].label}`
-    : ck >= 0 ? `　【案例${zh(ck + 1)}】${(state.data.x[whereField].t || '').trim()}` : '';
+    : ck >= 0 ? `　【案例${zh(ck + 1)}】${(state.data.x[whereField].t || '').trim()}`
+    : we ? `　【${DZ_FIELD[wd[2]][0]}】${dzName(we)}` : '';
   el.textContent = '目前位置：' + SEC_LABEL(cur.id) + f;
 }
 function renderLanding() {
@@ -1080,16 +1420,17 @@ function renderLanding() {
     <div class="in">
       <div class="kicker">給各學會研發小組</div>
       <h1>病主緩和臨床指引</h1>
-      <div class="sub">各學會研發小組填寫平台・依現行法</div>
+      <div class="sub">各學會研發小組填寫平台</div>
       <div class="rule"></div>
-      <p>本網頁供各學會研發小組訂定「○○醫學會病主緩和臨床指引」。五個階段逐一填寫本專科之建議，完成後即可預覽並列印成手冊。</p>
+      <p>本網頁供各學會研發小組擬訂「○○學會病主緩和臨床指引」。五個階段逐一填寫各專科之建議，完成後即可預覽並列印成手冊。</p>
+      <p class="basis">法規基準：病人自主權利法（民國110年1月20日修正）、同法施行細則（107年10月3日修正）、第五款公告疾病（110年4月13日修正公告）</p>
     </div>
   </section>
   <div class="entries">
     <section class="entry">
       <div class="who">研發小組</div>
       <h2>以邀請碼進入</h2>
-      <p>輸入核心團隊提供之邀請碼或邀請連結。內容即時存到雲端，同一學會之成員共同編輯同一份。</p>
+      <p>輸入基金會提供之邀請碼或邀請連結。內容即時存到雲端，同一學會之成員共同編輯同一份。</p>
       <div class="act">
         ${savedTok ? `<button class="btn primary block" type="button" id="btn-resume">繼續編輯${savedName ? '：' + esc(savedName) : '上次的學會'}</button>` : ''}
         <form id="form-code" class="act"><input type="text" id="in-code" placeholder="輸入邀請碼或貼上邀請連結" autocomplete="off" aria-label="邀請碼"><button class="btn${savedTok ? '' : ' primary'} block" type="submit">進入</button></form>
@@ -1144,32 +1485,33 @@ function renderEditor() {
 
   const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
   const adminBar = state.admin ? `<div class="whobar"><span>您正以核心團隊身分檢閱；修改內容與研發小組相同即時生效。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>` : '';
-  const localBar = state.mode === 'local' ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向核心團隊索取邀請碼。</p>` : '';
-  const base = inner => `<details class="base"><summary>共通基準 <small>依現行法</small></summary><div class="in">${inner}</div></details>`;
+  const localBar = state.mode === 'local' ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向基金會索取邀請碼。</p>` : '';
+  const base = inner => `<details class="base" open><summary>共通基準 <small>依現行法</small></summary><div class="in">${inner}</div></details>`;
 
   const guide = `<section class="chapter" id="sec-guide">
-    <div class="chapter-no"><span class="t">給研發小組</span></div>
     <h2>本模板之使用</h2>
-    <p class="lead">本網頁供研發小組訂定「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
+    <p class="lead">本網頁供研發小組擬訂「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
     ${who}${adminBar}${localBar}
     ${TILES}
   </section>`;
 
   const basic = `<section class="chapter" id="sec-basic">
-    <div class="chapter-no"><span class="t">本會資料</span></div>
-    <h2>${esc(soc.name)}</h2>
+    <h2>本會資料與角色</h2>
+    <p class="subt">${esc(soc.name)}</p>
     <p class="lead">部定專科基礎：${esc(soc.base)}</p>
     <div class="basic-grid">
       <div class="field"><label for="m-team">研發小組（召集人與成員）</label><textarea id="m-team" data-k="meta.team">${esc(d.meta.team)}</textarea></div>
       <div class="field"><label for="m-version">版本與日期</label><input type="text" id="m-version" data-k="meta.version" value="${esc(d.meta.version)}"></div>
+      <div class="field"><label for="m-approval">核定會議與日期（本會核定後填寫，例如：第○屆第○次理監事會議，民國○年○月○日）</label><input type="text" id="m-approval" data-k="meta.approval" value="${esc(d.meta.approval || '')}"></div>
     </div>
     <hr>
     <h3>本會於各階段之角色</h3>
     ${rolesTable(prof)}
-    <h3>階段三可擔任確診之款別與疾病</h3>
+    <h3>本會於階段三可擔任確診之款別與疾病</h3>
     ${diagTable(prof)}
     ${soc.note ? `<p class="refline">${esc(soc.note)}</p>` : ''}
-    <p class="notice">階段三可擔任確診之款別與疾病，為核心團隊依病主法施行細則§10–13及第五款公告之預設；本會於各階段之角色，由核心小組討論後填入。標示「待確認」者，將於討論後更新。</p>
+    <p class="notice">階段三可擔任確診之款別與疾病，為本模板依病主法施行細則§10–13及第五款公告之預設；本會於各階段之角色，亦由本模板預設。標示「待確認」者，將於確認後更新。</p>
+    <div id="dz-list">${dzListHTML(prof)}</div>
   </section>`;
 
   const stages = STAGES.map(s => `<section class="chapter" id="sec-s${s.n}">
@@ -1180,36 +1522,34 @@ function renderEditor() {
     <hr>
     <div class="flow">${s.steps.split('→').map(x => `<span>${esc(x.trim())}</span>`).join('<i>→</i>')}</div>
     ${base(groupsHTML(s.groups, true) + s.refs.map(r => `<p class="refline">${esc(r)}</p>`).join(''))}
-    ${s.fills.map(k => fillHTML(k, prof)).join('')}
+    ${s.n === 2 || s.n === 3 ? `<div id="dz-s${s.n}">${dzStageHTML(s.n, prof)}</div>` : s.fills.map(k => fillHTML(k, prof)).join('')}
   </section>`).join('');
 
   const common = `<section class="chapter" id="sec-common">
-    <div class="chapter-no"><span class="t stage">各階段通用</span></div>
-    <h2>醫療機構或醫師無法執行AD時之處理</h2>
+    <h2>各階段通用</h2>
+    <p class="subt">${esc(COMMON.sub)}</p>
     <p class="lead">${esc(COMMON.pos)}</p>
     ${base(`<ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<p class="refline">${esc(r)}</p>`).join('')}`)}
   </section>`;
 
   const cases = `<section class="chapter" id="sec-cases">
-    <div class="chapter-no"><span class="t stage">案例</span></div>
-    <h2>本會案例</h2>
+    <h2>案例</h2>
     <p class="lead">請提供本專科具代表性之案例，先以五則為原則，尤以臨床上較感困擾者為宜。將案例套用本指引走一遍，看出病程之發展與介入之時點，並比較依本指引處理與過去作法之差異；依本指引仍難以處理之處，即是指引需要補充或細化之處。</p>
-    <p class="notice"><b>請先去識別化。</b>不寫病人姓名、病歷號、確切日期、就醫院所，以及可辨識個人之罕見特徵；年齡以年齡層表示（如「80餘歲」）。</p>
+    <p class="notice"><b>請先去識別化。</b>不寫病人姓名、病歷號、確切日期、就醫院所，以及可辨識個人之罕見特徵；年齡以年齡層表示（如「80餘歲」）。案例若仍可能被病人家屬或同仁認出，宜再改寫細節或取得同意。</p>
     <div id="cases-list"></div>
     <div style="margin-top:16px"><button class="btn sm" type="button" id="btn-addcase">新增一則案例</button></div>
   </section>`;
 
   const refs = `<section class="chapter" id="sec-refs">
-    <div class="chapter-no"><span class="t">選填</span></div>
     <h2>參考文獻</h2>
-    <p class="lead">本會建議所依據之文獻，建議採APA或Vancouver格式。</p>
+    <p class="lead">（選填）本會建議所依據之文獻，建議採APA或Vancouver格式。</p>
     <div class="fill"><div class="hd"><span class="q">本會參考文獻</span></div><div class="refs-list" id="refs-list"></div>
     <div class="refs-act"><button class="btn sm" type="button" id="btn-addref">新增一筆</button></div></div>
   </section>`;
 
   $('#main').innerHTML = guide + basic + stages + common + cases + refs;
   renderRefs(); renderCases();
-  CODES.forEach(k => { showFm(k); renderComment(k); });
+  CODES.concat(dzKeys()).forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
   if (state.view === 'book') { showPane('book'); renderHandbook(); } else showPane('editor');
   whereField = ''; requestAnimationFrame(updateWhere);
@@ -1260,28 +1600,34 @@ async function renderAdmin() {
 }
 function updateProgress() {
   if (!state.data) return;
-  const done = CODES.filter(isDone).length;
+  const it = progressItems(), done = it.filter(x => x[1]).length;
   const ks = caseKeys(), nc = ks.filter(caseFilled).length;
-  $('#st-prog').textContent = `已填 ${done}／${CODES.length} 格｜案例 ${nc}／${ks.length} 則`;
+  $('#st-prog').textContent = `已填 ${done}／${it.length} 格｜案例 ${nc}／${ks.length} 則`;
   const dc = $('#dot-cases'); if (dc) dc.classList.toggle('done', nc >= CASE_MIN);
-  $('#st-bar').style.width = (done / CODES.length * 100) + '%';
-  STAGES.forEach(s => { const dot = document.querySelector(`.dot[data-stage="${s.n}"]`); if (dot) dot.classList.toggle('done', s.fills.every(isDone)); });
+  $('#st-bar').style.width = (done / it.length * 100) + '%';
+  STAGES.forEach(s => { const dot = document.querySelector(`.dot[data-stage="${s.n}"]`); if (dot) dot.classList.toggle('done', it.filter(x => x[0] === s.n).every(x => x[1])); });
 }
 function onInput(e) {
   const el = e.target;
   if (el.id === 'in-name') { lsSet(KEY + 'name', el.value.trim()); return; }
+  if (el.dataset && el.dataset.merge) { dzMerge(el.dataset.merge, el.value, el); return; }
   if (el.dataset && el.dataset.c) { clearTimeout(el._t); el._t = setTimeout(() => pushComment(el.dataset.c, el.value), 1200); return; }
   const k = el.dataset && el.dataset.k;
   if (!k) return;
-  setPath(state.data, k, el.value);
-  const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/);
+  const val = el.dataset.stage ? Array.from(document.querySelectorAll(`[data-k="${k}"]`)).filter(x => x.checked).map(x => x.dataset.stage).join('')
+    : el.type === 'checkbox' ? (el.checked ? 'y' : '') : el.value;
+  setPath(state.data, k, val);
+  const md = k.match(/^dz\.(\w+)\.([abc])$/);
+  const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/) || (md ? [k, md[1] + '_' + md[2]] : null);
   if (m) updateCount(m[1]);
+  if (/^dz\.\w+\.[nk]$/.test(k)) { clearTimeout(window._dzT); window._dzT = setTimeout(() => { const s2 = $('#dz-s2'), s3 = $('#dz-s3'), pr = profile(socOf(state.socId)); if (s2) { s2.innerHTML = dzStageHTML(2, pr); s3.innerHTML = dzStageHTML(3, pr); dzKeys().concat(['2A', '2B', '3A']).forEach(x => { showFm(x); renderComment(x); }); updateProgress(); } }, 600); }
   if (/^x\.K\d+\.t$/.test(k)) updateWhere();
   updateProgress();
   if (state.mode === 'cloud') {
     if (k.startsWith('refs.')) queueCloud('refs', state.data.refs.slice());
-    else queueCloud(k, el.value);
+    else queueCloud(k, val);
   } else saveLocal();
+  if (/^x\.K\d+\./.test(k)) { const kk = k.split('.')[1], del = $(`[data-delcase="${kk}"]`); if (!!del !== caseBlank(kk)) { const a = document.activeElement; renderCases(); if (a && a.id && $('#' + a.id)) $('#' + a.id).focus(); } }
 }
 function onBlur(e) {
   const el = e.target;
@@ -1290,7 +1636,8 @@ function onBlur(e) {
   if (k) {
     const path = k.startsWith('refs.') ? 'refs' : k;
     flushCloud(path);
-    const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/);
+    const md = k.match(/^dz\.(\w+)\.([abc])$/);
+    const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/) || (md ? [k, md[1] + '_' + md[2]] : null);
     if (m && remoteWaiting.has(m[1]) && !pending.has(path)) {
       remoteWaiting.delete(m[1]);
       setTimeout(() => { if (FB) FB.fs.getDoc(FB.fs.doc(FB.db, 'drafts', state.token)).then(s => s.exists() && applyRemote(s.data())); }, 1500);
@@ -1334,10 +1681,12 @@ function recBlock(k, prof) {
 function renderHandbook() {
   const soc = socOf(state.socId); if (!soc) return;
   const prof = profile(soc), d = state.data;
+  // 核定狀態（d.status === 'approved'）由基金會管理者登錄；登錄功能隨權限一併建置，未登錄前一律為草案
+  const approved = d.status === 'approved';
   const cover = `<section class="sheet"><div class="cover">
-    <div class="org">${esc(soc.name)}</div>
-    <div class="ttl">病主緩和臨床指引</div>
-    <div class="sub">${esc(d.meta.version || '')}<br>依現行《病人自主權利法》及其施行細則、《安寧緩和醫療條例》<br>預立醫療決定整合型計畫</div>
+    <div class="org">${esc(soc.full || soc.name)}</div>
+    <div class="ttl">病主緩和臨床指引${approved ? '' : '（草案）'}</div>
+    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日修正）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br>預立醫療決定整合型計畫</div>
   </div></section>`;
 
   const intro = `<section class="sheet">
@@ -1345,8 +1694,9 @@ function renderHandbook() {
     <p>本指引之目的，在使《病人自主權利法》所保障之病人自主，於${esc(soc.domain)}之臨床實務中得以實現。</p>
     <p>《病人自主權利法》施行以來，預立醫療決定能否實現，繫於病人及早知悉其得為預立醫療決定，以及各專科在臨床上辨識時機、完成法定程序。本指引不就個別病人為判斷，而是提示一條分五個階段之程序，自病情告知至依預立醫療決定執行與善終照護；診斷與治療之選擇屬專科醫師之判斷，本指引處理者為治療全程中病人意願之確認與實現。此程序分兩層：共通基準以現行法為據，含法定要求與跨專科之共識原則，由預立醫療決定整合型計畫之核心團隊維護；本專科內容由本會依專業共識訂定；緩和醫療之共通建議由台灣安寧緩和醫學學會提供。</p>
     <p>程序之終點是依病人預立醫療決定終止、撤除或不施行維持生命治療或人工營養及流體餵養。此係實現病人之意願，不以縮短生命為目的。</p>
-    <p class="muted">本指引標〔共識原則〕之各項為一般建議，臨床上得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整；標〔法定要求〕之各項為法律所定，依法辦理。標籤說明與縮寫對照表見附錄二。</p>
-    <table><tr><th style="width:22%">研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr></table>
+    <p class="muted">本指引各條所標標籤：〔法定要求〕為法規明定，依法辦理；〔法律解釋〕為依現行法所為之解讀，主管機關另有函釋者從其函釋；〔倫理與臨床建議〕得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整。標籤說明與縮寫對照表見附錄二。</p>
+    <table><tr><th style="width:22%">研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr>
+    <tr><th>核定</th><td>${approved && d.meta.approval ? esc(d.meta.approval) : '<span class="empty">（尚未核定）</span>'}</td></tr></table>
   </section>`;
 
   const ov = `<section class="sheet">
@@ -1355,30 +1705,32 @@ function renderHandbook() {
     <p class="note">縮寫對照表見附錄二。</p>
     <table><tr><th style="width:6%">階段</th><th style="width:15%">名稱</th><th style="width:31%">步驟</th><th>重點</th><th style="width:17%">主要法源</th></tr>
     ${OVERVIEW.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>
-    <h2>三、本會於各階段之角色</h2>
-    <table><tr><th></th>${STAGES.map(s => `<th>${ZH[s.n - 1]}　${esc(s.name)}</th>`).join('')}</tr>
-    <tr><td>本會角色</td>${[1, 2, 3, 4, 5].map(n => `<td>${ROLE_LABEL[prof.roles[n]]}</td>`).join('')}</tr></table>
-    ${prof.diag.length ? `<p class="note">本會於階段三可擔任確診之款別與疾病：${prof.diag.map(x => esc(x.label.replace('　', ''))).join('、')}。</p>` : '<p class="note">本會於階段三轉介相關專科確診。</p>'}
   </section>`;
 
-  const stageBlocks = STAGES.map(s => `<h3>階段${ZH[s.n - 1]}｜${esc(s.name)}</h3><div class="steps">步驟：${esc(s.steps)}</div><div class="pos">${esc(s.pos)}</div><div class="bh">共通基準</div>${groupsHTML(s.groups, false)}${s.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}${s.fills.map(k => recBlock(k, prof)).join('')}`).join('');
+  const printed = caseKeys().filter(casePrinted);
+  const seeCases = n => { const xs = printed.map((k, i) => (d.x[k].st || '').includes(String(n)) ? '案例' + zh(i + 1) : '').filter(Boolean); return xs.length ? `<div class="ref">參見七、案例：${xs.join('、')}</div>` : ''; };
+  const stageBlocks = STAGES.map(s => `<h3>階段${ZH[s.n - 1]}｜${esc(s.name)}</h3><div class="steps">步驟：${esc(s.steps)}</div><div class="pos">${esc(s.pos)}</div><div class="bh">共通基準</div>${groupsHTML(s.groups, false)}${s.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}${handbookStage(s, prof)}${seeCases(s.n)}`).join('');
   const commonBlock = `<div class="keep"><h3>${esc(COMMON.name)}</h3><div class="pos">${esc(COMMON.pos)}</div><div class="bh">共通基準</div><ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}</div>`;
   const stagesSheet = `<section class="sheet"><h2>五、各階段之共通基準與本專科內容</h2>${stageBlocks}${commonBlock}</section>`;
 
-  const sumRows = CODES.map(k => { const fs = firstSentence(d.f[k]); return fs ? `<tr><td>${codeOf(k)}</td><td>${ZH[FILLS[k].stage - 1]}</td><td>${esc(fs)}</td></tr>` : ''; }).join('');
+  const sumRows = summaryRows(prof);
   const summarySheet = `<section class="sheet">
+    <h2 style="margin-top:0">三、本會於各階段之角色</h2>
+    <table><tr><th></th>${STAGES.map(s => `<th>${ZH[s.n - 1]}　${esc(s.name)}</th>`).join('')}</tr>
+    <tr><td>本會角色</td>${[1, 2, 3, 4, 5].map(n => `<td>${ROLE_LABEL[prof.roles[n]]}</td>`).join('')}</tr></table>
+    ${prof.diag.length ? `<p class="note">本會於階段三可擔任確診之款別與疾病：${prof.diag.map(x => esc(x.label.replace('　', ''))).join('、')}。</p>` : '<p class="note">本會於階段三轉介相關專科確診。</p>'}
     <h2>四、本會建議一覽</h2>
-    <p class="muted">本會於各階段之建議一覽，由各填寫格之第一句自動彙整；共通基準不重列，各條之說明見五、各階段。</p>
-    ${sumRows ? `<table><tr><th style="width:9%">編號</th><th style="width:8%">階段</th><th>本會建議</th></tr>${sumRows}</table>` : '<p class="empty">（尚未填寫）</p>'}
+    <p class="muted">本會於各階段之建議一覽，由各填寫格之第一句自動彙整；階段二、三依疾病分列。共通基準不重列，各條之說明見五、各階段。</p>
+    ${sumRows ? `<table><tr><th style="width:9%">編號</th><th style="width:7%">階段</th><th style="width:24%">疾病</th><th>本會建議</th></tr>${sumRows}</table>` : '<p class="empty">（尚未填寫）</p>'}
   </section>`;
   const rec = `<section class="sheet">
     <h2>六、病歷記載檢核</h2>
-    <p class="muted">依§14執行預立醫療決定者，不負刑事與行政責任（§14 V）；是否依§14執行，以病歷記載為憑。§17規定確診、照會、意願確認等事項應詳細記載，相關文件連同病歷保存。本表將其拆為八項，供醫師執行後自查與院內檢核；未標★者為§17所定事項，標★者為本指引建議記載。</p>
+    <p class="muted">依§14執行預立醫療決定者，不負刑事與行政責任；因此所生之損害，除有故意或重大過失，且違反病人預立醫療決定者外，不負賠償責任（§14 V）。病歷記載是證明已依§14執行的主要依據。§17規定確診、照會、意願確認等事項應詳細記載，相關文件連同病歷保存。本表將其拆為八項，供醫師執行後自查與院內檢核；未標★者為§17所定事項，標★者為本指引建議記載。</p>
     <table><tr><th style="width:5%">＃</th><th style="width:20%">事項</th><th>應記載內容</th><th style="width:18%">法源</th><th style="width:6%">☐</th></tr>
     ${RECORDS.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>☐</td></tr>`).join('')}</table>
   </section>`;
 
-  const filled = caseKeys().filter(caseFilled);
+  const filled = printed;
   const caseSheet = `<section class="sheet">
     <h2>七、案例</h2>
     ${filled.length ? `<p class="muted">以下為本會具代表性之案例，含臨床上較感困擾之情境，說明套用本指引之處理。案例均已去識別化。</p>
@@ -1393,11 +1745,11 @@ function renderHandbook() {
     <p class="muted">各階段共通基準所引條文之重點摘要；未標示者為病主法。</p>
     <table><tr><th style="width:20%">條文</th><th>重點</th></tr>${LAWS.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>
     <h2>附錄二　標籤說明與縮寫對照表</h2>
-    <p class="muted">〔法定要求〕為法律明定；〔共識原則〕為跨專科共識或核心團隊之法律解釋。條號以§表示，項用羅馬數字、款用中文數字。</p>
+    <p class="muted">〔法定要求〕：病人自主權利法、同法施行細則或中央主管機關公告之條文本身明定者，依法辦理。〔法律解釋〕：條文未逐字如此規定，為依現行法所為之解讀，可能因主管機關函釋或法院見解而變更；主管機關另有函釋者從其函釋，不依個別病人調整。〔倫理與臨床建議〕：法律未規定，以倫理與良好臨床實務為據之建議，得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整。條號以§表示，項用羅馬數字、款用中文數字。</p>
     <table><tr><th style="width:20%">縮寫</th><th>全稱</th></tr>${ABBR.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>
   </section>`;
 
-  $('#handbook').innerHTML = cover + intro + ov + summarySheet + stagesSheet + rec + caseSheet + app;
+  $('#handbook').innerHTML = `<div class="wm${approved ? '' : ' on'}">草案</div>` + cover + intro + ov + summarySheet + stagesSheet + rec + caseSheet + app;
 }
 
 // ====================================================================
@@ -1416,7 +1768,7 @@ function setView(v) {
 function exportDraft() {
   if (!state.data) return;
   const soc = socOf(state.socId);
-  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x } };
+  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x, dz: state.data.dz } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   const dt = new Date(), ymd = `${dt.getFullYear() - 1911}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`;
@@ -1437,10 +1789,10 @@ function importDraft(file) {
         const nd = normalize(p.data);
         CODES.forEach(k => maybeHistory(k, state.data.f[k] || '', true));
         const { fs, db } = await fb();
-        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
+        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, dz: nd.dz, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
         CODES.forEach(k => { upd['fm.' + k] = { by: editorName() + '（匯入）', at: fs.serverTimestamp() }; });
         await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
-        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x });
+        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, dz: nd.dz });
         renderEditor();
         setStatus('已匯入草稿檔並同步至雲端');
       } else {
@@ -1484,6 +1836,11 @@ function init() {
       state.data.x[k] = blankCase(); renderCases(); updateProgress();
       if (state.mode === 'cloud') { queueCloud('x.' + k, blankCase()); flushCloud('x.' + k); } else saveLocal();
       $('#t-' + k).focus();
+    } else if (t.dataset.ungroup) { dzUngroup(t.dataset.ungroup);
+    } else if (t.dataset.addself) { dzAddSelf(+t.dataset.addself);
+    } else if (t.dataset.delself) { dzDelSelf(t.dataset.delself);
+    } else if (t.dataset.delcase) {
+      deleteCase(t.dataset.delcase);
     } else if (t.id === 'btn-leave') { flushAll(); lsDel(KEY + 'token'); lsDel(KEY + 'tokenName'); history.replaceState(null, '', location.pathname); renderLanding(); setStatus('已離開'); }
     else if (t.id === 'btn-back-admin' || t.id === 'btn-refresh') renderAdmin();
     else if (t.id === 'btn-signout') adminSignOut();
