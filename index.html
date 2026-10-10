@@ -145,6 +145,8 @@ details.base summary::-webkit-details-marker { display: none; }
 details.base summary::after { content: ""; margin-left: auto; width: 9px; height: 9px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform .2s; }
 details.base[open] summary::after { transform: rotate(-135deg); }
 details.base summary small { font-family: var(--sans); font-size: 14px; color: var(--faint); }
+details.base summary .bsum { font-family: var(--sans); font-size: 14px; color: var(--muted); margin-left: auto; }
+details.base summary::after { margin-left: 12px; }
 .base .in { padding: 0 26px 22px; }
 .base .gh { font-family: var(--serif); font-size: 17px; color: var(--ink-2); margin: 18px 0 6px; }
 .base ul { margin: 0; padding-left: 1.2em; }
@@ -237,6 +239,13 @@ table.t.admin tr.testrow td { background: #fffaf6; }
 .tagp { font-size: 12.5px; padding: 0 8px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); margin-left: 6px; white-space: nowrap; }
 .tagp.self { background: var(--coral-soft); color: var(--coral-ink); }
 .dz .hd { flex-wrap: wrap; }
+details.dz > summary { list-style: none; cursor: pointer; align-items: center; }
+details.dz > summary::-webkit-details-marker { display: none; }
+details.dz > summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--ink-2); border-bottom: 2px solid var(--ink-2); transform: rotate(45deg); margin-left: 12px; transition: transform .2s; }
+details.dz[open] > summary::after { transform: rotate(-135deg); }
+details.dz:not([open]) > summary { border-bottom: 0; }
+.dzst { font-family: var(--sans); font-size: 13px; padding: 1px 10px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); margin-left: 10px; white-space: nowrap; }
+.dzst.done { background: var(--ok-soft); color: var(--ok); }
 .dz .src-l { margin-left: auto; font-size: 13.5px; color: var(--muted); font-family: var(--sans); }
 .dfield + .dfield { border-top: 1px solid var(--line); }
 .sub-h { display: block; margin: 16px 22px 0; font-family: var(--serif); font-size: 17px; color: var(--ink-2); }
@@ -1077,15 +1086,24 @@ function dfieldHTML(id, f) {
     ${cm}
   </div>`;
 }
+const DZ_OPEN = new Set();
+function dzBadge(n, total) { return `<span class="dzst${n === total ? ' done' : ''}">已填 ${n}／${total}</span>`; }
 function dzCardHTML(e, stage) {
   const title = stage === 2 ? esc(dzName(e)) : `${esc(dzName(e))}　→　${esc(e.k)}`;
   const src = stage === 2 ? '對應臨床條件：' + esc(e.k) : DZ_TAG[e.t][0];
   const mem = e.mem ? `<div class="hint">本組包括：${e.mem.map(m => esc(m.n)).join('、')}</div>` : '';
   const body = stage === 2 ? dfieldHTML(e.id, 'a') + dfieldHTML(e.id, 'b') : legalHTML(e) + dfieldHTML(e.id, 'c');
-  return `<div class="fill dz" id="dzc-${stage}-${e.id}"><div class="hd"><span class="q">${title}</span><span class="src-l">${src}</span></div>${mem}${body}</div>`;
+  const fs = stage === 2 ? ['a', 'b'] : ['c'], cid = `dzc-${stage}-${e.id}`;
+  return `<details class="fill dz" id="${cid}"${DZ_OPEN.has(cid) ? ' open' : ''}><summary class="hd"><span class="q">${title}</span><span class="src-l">${src}</span>${dzBadge(fs.filter(f => dzDone(e.id, f)).length, fs.length)}</summary>${mem}${body}</details>`;
 }
 function commonCardHTML(keys, prof, note) {
-  return `<div class="fill dz"><div class="hd"><span class="q">各疾病共通</span><span class="src-l">無共通原則者免填</span></div>${note || ''}${keys.map(k => cfieldHTML(k)).join('')}</div>`;
+  const cid = 'dzc-' + FILLS[keys[0]].stage + '-common';
+  return `<details class="fill dz" id="${cid}"${DZ_OPEN.has(cid) ? ' open' : ''}><summary class="hd"><span class="q">各疾病共通</span><span class="src-l">無共通原則者免填</span>${dzBadge(keys.filter(isDone).length, keys.length)}</summary>${note || ''}${keys.map(k => cfieldHTML(k)).join('')}</details>`;
+}
+function dzRefreshBadge(el) {
+  const card = el && el.closest && el.closest('details.dz'); if (!card) return;
+  const tas = card.querySelectorAll('textarea[data-k^="dz."], textarea[data-k^="f."]'), n = Array.from(tas).filter(t => t.value.trim()).length;
+  const b = card.querySelector('.dzst'); if (b) b.outerHTML = dzBadge(n, tas.length);
 }
 function cfieldHTML(k) {
   const F = FILLS[k], v = state.data.f[k] || '', cloud = state.mode === 'cloud';
@@ -1486,7 +1504,11 @@ function renderEditor() {
   const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
   const adminBar = state.admin ? `<div class="whobar"><span>您正以核心團隊身分檢閱；修改內容與研發小組相同即時生效。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>` : '';
   const localBar = state.mode === 'local' ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向基金會索取邀請碼。</p>` : '';
-  const base = inner => `<details class="base" open><summary>共通基準 <small>依現行法</small></summary><div class="in">${inner}</div></details>`;
+  const base = (inner, items) => {
+    const n = k => items.filter(x => x[1] === k).length, total = n(LAW) + n(INT) + n(TABLE) + n(REC);
+    const parts = [[LAW, '法定要求'], [INT, '法律解釋'], [REC, '倫理與臨床建議']].map(([k, l]) => { const c = n(k) + (k === INT ? n(TABLE) : 0); return c ? l + ' ' + c : ''; }).filter(Boolean).join('、');
+    return `<details class="base"><summary>共通基準 <small>依現行法</small><span class="bsum">共 ${total} 條：${parts}</span></summary><div class="in">${inner}</div></details>`;
+  };
 
   const guide = `<section class="chapter" id="sec-guide">
     <h2>本模板之使用</h2>
@@ -1521,7 +1543,7 @@ function renderEditor() {
     <p class="lead">${esc(s.pos)}</p>
     <hr>
     <div class="flow">${s.steps.split('→').map(x => `<span>${esc(x.trim())}</span>`).join('<i>→</i>')}</div>
-    ${base(groupsHTML(s.groups, true) + s.refs.map(r => `<p class="refline">${esc(r)}</p>`).join(''))}
+    ${base(groupsHTML(s.groups, true) + s.refs.map(r => `<p class="refline">${esc(r)}</p>`).join(''), s.groups.map(g => g.items).flat())}
     ${s.n === 2 || s.n === 3 ? `<div id="dz-s${s.n}">${dzStageHTML(s.n, prof)}</div>` : s.fills.map(k => fillHTML(k, prof)).join('')}
   </section>`).join('');
 
@@ -1529,7 +1551,7 @@ function renderEditor() {
     <h2>各階段通用</h2>
     <p class="subt">${esc(COMMON.sub)}</p>
     <p class="lead">${esc(COMMON.pos)}</p>
-    ${base(`<ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<p class="refline">${esc(r)}</p>`).join('')}`)}
+    ${base(`<ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<p class="refline">${esc(r)}</p>`).join('')}`, COMMON.items)}
   </section>`;
 
   const cases = `<section class="chapter" id="sec-cases">
@@ -1620,6 +1642,7 @@ function onInput(e) {
   const md = k.match(/^dz\.(\w+)\.([abc])$/);
   const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/) || (md ? [k, md[1] + '_' + md[2]] : null);
   if (m) updateCount(m[1]);
+  dzRefreshBadge(el);
   if (/^dz\.\w+\.[nk]$/.test(k)) { clearTimeout(window._dzT); window._dzT = setTimeout(() => { const s2 = $('#dz-s2'), s3 = $('#dz-s3'), pr = profile(socOf(state.socId)); if (s2) { s2.innerHTML = dzStageHTML(2, pr); s3.innerHTML = dzStageHTML(3, pr); dzKeys().concat(['2A', '2B', '3A']).forEach(x => { showFm(x); renderComment(x); }); updateProgress(); } }, 600); }
   if (/^x\.K\d+\.t$/.test(k)) updateWhere();
   updateProgress();
@@ -1692,7 +1715,7 @@ function renderHandbook() {
   const intro = `<section class="sheet">
     <h1>本指引之定位</h1>
     <p>本指引之目的，在使《病人自主權利法》所保障之病人自主，於${esc(soc.domain)}之臨床實務中得以實現。</p>
-    <p>《病人自主權利法》施行以來，預立醫療決定能否實現，繫於病人及早知悉其得為預立醫療決定，以及各專科在臨床上辨識時機、完成法定程序。本指引不就個別病人為判斷，而是提示一條分五個階段之程序，自病情告知至依預立醫療決定執行與善終照護；診斷與治療之選擇屬專科醫師之判斷，本指引處理者為治療全程中病人意願之確認與實現。此程序分兩層：共通基準以現行法為據，含法定要求與跨專科之共識原則，由預立醫療決定整合型計畫之核心團隊維護；本專科內容由本會依專業共識訂定；緩和醫療之共通建議由台灣安寧緩和醫學學會提供。</p>
+    <p>《病人自主權利法》施行以來，預立醫療決定能否實現，繫於病人及早知悉其得為預立醫療決定，以及各專科在臨床上辨識時機、完成法定程序。本指引不就個別病人為判斷，而是提示一條分五個階段之程序，自病情告知至依預立醫療決定執行與善終照護；診斷與治療之選擇屬專科醫師之判斷，本指引處理者為治療全程中病人意願之確認與實現。此程序分兩層：共通基準以現行法為據，含法定要求、法律解釋與倫理與臨床建議，由預立醫療決定整合型計畫之核心團隊維護；本專科內容由本會依專業共識訂定；緩和醫療之共通建議由台灣安寧緩和醫學學會提供。</p>
     <p>程序之終點是依病人預立醫療決定終止、撤除或不施行維持生命治療或人工營養及流體餵養。此係實現病人之意願，不以縮短生命為目的。</p>
     <p class="muted">本指引各條所標標籤：〔法定要求〕為法規明定，依法辦理；〔法律解釋〕為依現行法所為之解讀，主管機關另有函釋者從其函釋；〔倫理與臨床建議〕得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整。標籤說明與縮寫對照表見附錄二。</p>
     <table><tr><th style="width:22%">研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr>
@@ -1823,6 +1846,7 @@ function init() {
   $('#tab-edit').addEventListener('click', () => setView('edit'));
   $('#tab-book').addEventListener('click', () => setView('book'));
   const main = $('#main');
+  main.addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('dz') && d.id) { if (d.open) DZ_OPEN.add(d.id); else DZ_OPEN.delete(d.id); } }, true);
   main.addEventListener('input', onInput);
   main.addEventListener('focusout', onBlur);
   main.addEventListener('click', e => {
