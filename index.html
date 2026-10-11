@@ -471,7 +471,7 @@ const STAGES = [
     pos: '嚴重度與預後之客觀評估，使醫病雙方對何時討論緩和醫療有共同依據；緩和醫療與積極治療並行，不是治療的終點。',
     groups: [{ items: [
       ['對符合重症或病程進展條件之病人，宜及早啟動緩和共同照護，不宜延遲至末期；共同照護自此同時提供積極治療與緩和醫療，並持續至後續各階段。', REC, '', []],
-      ['啟動共同照護之時機，以台灣安寧緩和醫學學會提供之各大類疾病共通原則為基礎，並由本會依本專科疾病特性訂定（見【2-B】）。', REC, '', []],
+      ['啟動共同照護之時機，以安寧緩和學會共通建議為基礎，並由本會依本專科疾病特性訂定（見各疾病之【2-B】）。', REC, '', []],
       ['病程進展常為再次溝通之契機；宜以SIC重新確認病人對病情、預後之理解與照護目標。', REC, '', []],
       ['是否及何時啟動緩和共同照護，宜以SDM與病人共同形成，並於啟動前徵得病人同意進行緩和共同照護評估；病人無法表達意願時，徵得關係人同意。', REC, '', ['§4']],
       ['本階段非§14之法定步驟；法定之照會確認見階段三。', NOTE, '', ['§14']]
@@ -496,7 +496,7 @@ const STAGES = [
         ['確診與照會確認事項應詳細記載於病歷。', LAW, '§17', ['§17']]
       ]}
     ],
-    refs: ['照會之評估要點、二次照會之間隔與內容、緩和醫療團隊之組成，由台灣安寧緩和醫學學會提供共通建議；照會之啟動流程與聯絡窗口，由各醫院依院內流程訂定。'], fills: ['3A'] },
+    refs: ['照會之評估要點、二次照會之間隔與內容、緩和醫療團隊之組成，依安寧緩和學會共通建議；照會之啟動流程與聯絡窗口，由各醫院依院內流程訂定。'], fills: ['3A'] },
   { n: 4, name: '意願確認與治療決策',
     steps: '意思能力評估 →〔有意思能力〕§15確認、臨床意思表示與AD不一致之處理／〔意識昏迷或無法清楚表達意願〕HCA依AD代理表達 → 限時嘗試之決策',
     pos: '尊重病人的決定是各階段的核心；確認意願的目的是實現它，不是重新審查它。限時嘗試則使是否繼續治療有明確之評估時點與停損點。',
@@ -531,10 +531,10 @@ const STAGES = [
       ['醫療機構或醫師遇有危急病人，除符合第十四條第一項、第二項及安寧緩和醫療條例相關規定者外，應先予適當急救或採取必要措施，不得無故拖延。', LAW, '§7', ['§7', '§14', '安寧條例']],
       ['所執行事項應詳細記載於病歷。', LAW, '§17', ['§17']],
       ['依§14終止、撤除或不施行維持生命治療或人工營養及流體餵養之全部或一部者，不負刑事與行政責任；因此所生之損害，除有故意或重大過失且違反病人預立醫療決定者外，不負賠償責任。', LAW, '§14 V', ['§14']],
-      ['撤除維持生命治療（如撤除呼吸器）或終止人工營養及流體餵養時，宜有標準化之症狀控制與舒適照護流程；其共通標準由台灣安寧緩和醫學學會提供，並由本會依本專科疾病特性予以客製化（見【5-A】）。', REC, '', []],
+      ['撤除維持生命治療（如撤除呼吸器）或終止人工營養及流體餵養時，宜有標準化之症狀控制與舒適照護流程；其共通標準依安寧緩和學會共通建議，並由本會依本專科疾病特性予以客製化（見【5-A】）。', REC, '', []],
       ['執行後宜持續提供身、心、社會、靈性之全人照護，由多專業團隊（社工師、心理師、靈性關懷人員／宗教師、藝術治療師等）協力；宜以SIC持續討論照護目標並與關係人溝通，提供預期性哀傷支持。', REC, '', []]
     ]}],
-    refs: ['法源另見§3第七款（緩和醫療之定義）。全人照護內容與團隊角色由台灣安寧緩和醫學學會提供。'], fills: ['5A'] }
+    refs: ['法源另見§3第七款（緩和醫療之定義）。全人照護內容與團隊角色，依安寧緩和學會共通建議。'], fills: ['5A'] }
 ];
 const COMMON = {
   name: '各階段通用｜醫療機構或醫師無法執行AD時之處理',
@@ -747,7 +747,7 @@ function normalize(d) {
   const b = blank(); d = d || {};
   return {
     meta: Object.assign(b.meta, d.meta || {}), f: Object.assign(b.f, d.f || {}), fm: d.fm || {}, c: d.c || {},
-    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x), dz: d.dz && typeof d.dz === 'object' ? JSON.parse(JSON.stringify(d.dz)) : {}, rv: d.rv || {}, rd: d.rd ? JSON.parse(JSON.stringify(d.rd)) : {}, status: d.status === 'approved' ? 'approved' : 'draft',
+    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x), dz: d.dz && typeof d.dz === 'object' ? JSON.parse(JSON.stringify(d.dz)) : {}, rv: d.rv || {}, rd: d.rd ? JSON.parse(JSON.stringify(d.rd)) : {}, hc: d.hc && typeof d.hc === 'object' ? JSON.parse(JSON.stringify(d.hc)) : {}, status: d.status === 'approved' ? 'approved' : 'draft',
     soc: d.soc, updatedAt: d.updatedAt, updatedBy: d.updatedBy
   };
 }
@@ -762,7 +762,7 @@ let saveTimer = null;
 function saveLocal() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x, dz: state.data.dz }));
+    const ok = lsSet(KEY + state.socId, JSON.stringify({ meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x, dz: state.data.dz, hc: state.data.hc }));
     lsSet(KEY + 'last', state.socId);
     setStatus(ok ? '已存於本機瀏覽器 ' + hhmm() : '此瀏覽器無法自動儲存，請以「匯出草稿檔」保存');
   }, 400);
@@ -842,6 +842,7 @@ function applyRemote(d) {
     if (el && el.value !== remote && document.activeElement !== el) el.value = remote;
   });
   applyRemoteCases(nd);
+  applyRemoteHc(nd);
   applyRemoteDz(nd);
   if (stChanged) { renderEditor(); return; }
   renderAllComments();
@@ -886,13 +887,14 @@ async function pushCloud(path, value, t) {
   try {
     const { fs, db } = await fb();
     const upd = { [path]: value, updatedAt: fs.serverTimestamp(), updatedBy: editorName() };
-    const md = path.match(/^dz\.(\w+)\.([abc])$/);
-    const m = path.match(/^f\.(\w+)$/) || path.match(/^x\.(K\d+)\.(?:t|b|r|fb|d|st|lc|lad|lopt|lhca|lcap)$/) || (md ? [path, md[1] + '_' + md[2]] : null);
+    const md = path.match(/^dz\.(\w+)\.([abc])$/) || path.match(/^hc\.(g\d+)\.([abc])$/);
+    const mh = path.match(/^hc\.(g\d+)\.([abc])$/);
+    const m = path.match(/^f\.(\w+)$/) || path.match(/^x\.(K\d+)\.(?:t|b|r|fb|d|st|lc|lad|lopt|lhca|lcap)$/) || (mh ? [path, 'hc_' + mh[1] + '_' + mh[2]] : md ? [path, md[1] + '_' + md[2]] : null);
     if (m) upd['fm.' + m[1]] = { by: editorName(), at: fs.serverTimestamp() };
     await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
     if (pending.get(path) === t) pending.delete(path);
     setStatus('已同步至雲端 ' + hhmm());
-    if (m && /^(f\.\w+|x\.K\d+\.b|dz\.\w+\.[abc])$/.test(path)) maybeHistory(m[1], value, false);
+    if (m && /^(f\.\w+|x\.K\d+\.b|dz\.\w+\.[abc]|hc\.g\d+\.[abc])$/.test(path)) maybeHistory(m[1], value, false);
   } catch (e) {
     setStatus('儲存失敗：' + errText(e) + '。內容仍在畫面上，請稍後再試或匯出草稿檔');
   }
@@ -1027,6 +1029,61 @@ function groupsHTML(groups, inEditor) {
   }).join('');
 }
 function isDone(k) { return !!(state.data.f[k] || '').trim(); }
+
+// ====================================================================
+// 安寧緩和學會共通建議（甲案，1151011）
+//   撰寫：台灣安寧緩和醫學學會於其學會頁「安寧緩和學會共通建議」章撰寫（欄位 hc.<群>.<欄>）。
+//   併入：核心團隊審定後，將定稿抄入 HOSPICE_COMMON，即顯示於各學會階段二、三、五之共通基準，
+//         標〔倫理與臨床建議〕安寧緩和學會共通建議（標籤分類不增，來源以尾註標示）。
+// ====================================================================
+const HC_TAG = '安寧緩和學會共通建議';
+const HC_GROUPS = [['g0', '各款共通'], ['g1', '第一款　末期病人'], ['g23', '第二款、第三款　不可逆轉之昏迷狀況、永久植物人狀態'], ['g4', '第四款　極重度失智'], ['g5', '第五款　公告疾病']];
+const HC_FIELDS = { a: [2, '啟動緩和共同照護之時機'], b: [3, '照會確認之評估要點（含二次照會之間隔與內容、緩和醫療團隊之組成）'], c: [5, '緩和醫療處置（含撤除時之症狀控制與舒適照護、全人照護）'] };
+const HOSPICE_COMMON = {}; // 核心團隊審定後之定稿，例：{ g1: { a: '…', b: '…', c: '…' } }
+function hcStageField(stage) { return Object.keys(HC_FIELDS).find(f => HC_FIELDS[f][0] === stage); }
+function hcItems(stage) {
+  const f = hcStageField(stage); if (!f) return [];
+  return HC_GROUPS.map(([g, lab]) => [((HOSPICE_COMMON[g] || {})[f] || '').trim(), lab]).filter(x => x[0]).map(([t, lab]) => ['【' + lab + '】' + t, REC, HC_TAG]);
+}
+function hcBlockHTML(stage, inEditor) {
+  if (!hcStageField(stage)) return '';
+  const it = hcItems(stage), h = `<div class="gh">${HC_TAG}</div>`;
+  if (!it.length) return h + (inEditor ? '<p class="refline">尚待台灣安寧緩和醫學學會提供，經核心團隊審定後列入。</p>' : '<div class="ref">尚待台灣安寧緩和醫學學會提供，經核心團隊審定後列入。</div>');
+  return h + `<ul>${it.map(([t, k, sx]) => `<li>${esc(t).replace(/\n/g, '<br>')}${tag(k, sx)}</li>`).join('')}</ul>`;
+}
+function hcVal(g, f) { return (((state.data.hc || {})[g] || {})[f]) || ''; }
+function hcFieldHTML(g, f) {
+  const key = `hc_${g}_${f}`, v = hcVal(g, f), cloud = state.mode === 'cloud', [st, label] = HC_FIELDS[f];
+  return `<div class="dfield" id="card-${key}">
+    <label class="sub-h" for="f-${key}">階段${ZH[st - 1]}｜${esc(label)}</label>
+    <textarea id="f-${key}" data-k="hc.${g}.${f}">${esc(v)}</textarea>
+    <div class="ft"><span class="fm" id="fm-${key}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${key}">歷史版本</button>` : ''}<span class="count" id="cnt-${key}">${v.length} 字</span></div>
+    ${cloud ? `<div class="hist" id="hist-${key}" hidden></div>` : ''}
+    ${cmBoxHTML(key)}
+  </div>`;
+}
+function hcChapterHTML() {
+  if (state.socId !== 'hospice') return '';
+  const card = ([g, lab]) => { const cid = 'dzc-hc-' + g; return `<details class="fill dz" id="${cid}"${DZ_OPEN.has(cid) ? ' open' : ''}><summary class="hd"><span class="q">${esc(lab)}</span><span class="src-l">得依疾病分述</span>${dzBadge(Object.keys(HC_FIELDS).filter(f => hcVal(g, f).trim()).length, 3)}</summary>${Object.keys(HC_FIELDS).map(f => hcFieldHTML(g, f)).join('')}</details>`; };
+  return `<section class="chapter" id="sec-hc">
+    <h2>安寧緩和學會共通建議</h2>
+    <p class="subt">提供各學會之建議（由本會研發小組撰寫）</p>
+    <p class="lead">本章撰寫符合五款臨床條件之各疾病，於醫療過程中照會與適當緩和醫療處置之建議，供各學會共用；各款得依疾病分述，無共通建議者免填。內容經核心團隊審定後，列入各學會指引階段二、三、五之共通基準，標示〔倫理與臨床建議〕安寧緩和學會共通建議。本章不屬本會指引之本專科內容，手冊亦不另印本章。</p>
+    ${HC_GROUPS.map(card).join('')}
+  </section>`;
+}
+function applyRemoteHc(nd) {
+  const rh = nd.hc || {}, lh = state.data.hc || (state.data.hc = {});
+  Object.keys(rh).forEach(g => Object.keys(HC_FIELDS).forEach(f => {
+    const path = `hc.${g}.${f}`, key = `hc_${g}_${f}`; if (pending.has(path)) return;
+    const remote = (rh[g] || {})[f] || '', el = $(`[data-k="${path}"]`);
+    if (el && el.value !== remote && document.activeElement === el) { remoteWaiting.add(key); return; }
+    (lh[g] = lh[g] || {})[f] = remote;
+    if (el && el.value !== remote) { el.value = remote; updateCount(key); dzRefreshBadge(el); }
+    state.data.fm[key] = nd.fm[key]; state.data.c[key] = nd.c[key]; showFm(key);
+  }));
+}
+function hcKeys() { return HC_GROUPS.map(([g]) => Object.keys(HC_FIELDS).map(f => `hc_${g}_${f}`)).flat(); }
 
 // ====================================================================
 // 權限介面（A 階段，1151011；依孫教授1151009意見第一節）
@@ -1217,7 +1274,7 @@ function commonCardHTML(keys, prof, note) {
 }
 function dzRefreshBadge(el) {
   const card = el && el.closest && el.closest('details.dz'); if (!card) return;
-  const tas = card.querySelectorAll('textarea[data-k^="dz."], textarea[data-k^="f."]'), n = Array.from(tas).filter(t => t.value.trim()).length;
+  const tas = card.querySelectorAll('textarea[data-k^="dz."], textarea[data-k^="f."], textarea[data-k^="hc."]'), n = Array.from(tas).filter(t => t.value.trim()).length;
   const b = card.querySelector('.dzst'); if (b) b.outerHTML = dzBadge(n, tas.length);
 }
 function cfieldHTML(k) {
@@ -1382,7 +1439,7 @@ function diagTable(prof) {
 }
 const TILES = `<div class="tiles">
   <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>共八格，每格只列題目，內容與篇幅由研發小組自訂。每格第一句請寫成完整建議句，會自動列入手冊之「本會建議一覽」。另於「案例」章提供本會之案例。</p></div>
-  <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段之共通基準依現行法訂定，點開即可閱讀。</p></div>
+  <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段之共通基準分為法定要求、法律解釋、倫理與臨床建議三類，點開即可閱讀。</p></div>
   <div class="tile"><b><span class="sw ok"></span>確診資格與角色由本模板預設</b><p>階段三可擔任確診之款別與疾病，以及各階段之角色，均由本模板預設；研發小組不必勾選。</p></div>
   <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入者，內容即時存到雲端，同一學會之成員看到同一份；每格保留歷史版本。</p></div>
 </div>`;
@@ -1514,7 +1571,7 @@ function goHome() {
 }
 // ---------- 目前位置 ----------
 let whereRaf = 0, whereField = '';
-const SEC_LABEL = id => id === 'sec-guide' ? '本模板之使用' : id === 'sec-basic' ? '本會資料與角色' : id === 'sec-common' ? '各階段通用' : id === 'sec-cases' ? '案例' : id === 'sec-refs' ? '參考文獻'
+const SEC_LABEL = id => id === 'sec-guide' ? '本模板之使用' : id === 'sec-basic' ? '本會資料與角色' : id === 'sec-common' ? '各階段通用' : id === 'sec-hc' ? '安寧緩和學會共通建議' : id === 'sec-cases' ? '案例' : id === 'sec-refs' ? '參考文獻'
   : (m => m ? `階段${ZH[+m[1] - 1]}｜${STAGES[+m[1] - 1].name}` : '')(id.match(/^sec-s(\d)$/));
 function updateWhere() {
   whereRaf = 0;
@@ -1537,7 +1594,8 @@ function updateWhere() {
   const we = wd && state.data && state.data.dz ? dzEntries().cards.find(e => e.id === wd[1]) : null;
   const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${FILLS[whereField].label}`
     : ck >= 0 ? `　【案例${zh(ck + 1)}】${(state.data.x[whereField].t || '').trim()}`
-    : we ? `　【${DZ_FIELD[wd[2]][0]}】${dzName(we)}` : '';
+    : we ? `　【${DZ_FIELD[wd[2]][0]}】${dzName(we)}`
+    : /^hc_g\d+_[abc]$/.test(whereField || '') ? `　【${HC_TAG}】${(HC_GROUPS.find(x => x[0] === whereField.split('_')[1]) || [])[1] || ''}` : '';
   el.textContent = '目前位置：' + SEC_LABEL(cur.id) + f;
 }
 function renderLanding() {
@@ -1619,7 +1677,7 @@ function renderEditor() {
   $('#landing').innerHTML = '';
   $('#nav').innerHTML = [`<a href="#sec-guide"><span class="dot"></span>本模板之使用</a>`, `<a href="#sec-basic"><span class="dot"></span>本會資料與角色</a>`, `<div class="sep"></div>`]
     .concat(STAGES.map(s => `<a href="#sec-s${s.n}"><span class="dot" data-stage="${s.n}"></span>階段${ZH[s.n - 1]}　${esc(s.name)}</a>`))
-    .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, `<a href="#sec-cases"><span class="dot" id="dot-cases"></span>案例</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`]).join('');
+    .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, ...(state.socId === 'hospice' ? [`<a href="#sec-hc"><span class="dot"></span>安寧緩和學會共通建議</a>`] : []), `<a href="#sec-cases"><span class="dot" id="dot-cases"></span>案例</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`]).join('');
 
   const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
   const adminBar = !state.admin ? '' : isReviewer()
@@ -1630,7 +1688,7 @@ function renderEditor() {
   const base = (inner, items) => {
     const n = k => items.filter(x => x[1] === k).length, total = n(LAW) + n(INT) + n(TABLE) + n(REC);
     const parts = [[LAW, '法定要求'], [INT, '法律解釋'], [REC, '倫理與臨床建議']].map(([k, l]) => { const c = n(k) + (k === INT ? n(TABLE) : 0); return c ? l + ' ' + c : ''; }).filter(Boolean).join('、');
-    return `<details class="base"><summary>共通基準 <small>依現行法</small><span class="bsum">共 ${total} 條：${parts}</span></summary><div class="in">${inner}</div></details>`;
+    return `<details class="base"><summary>共通基準<span class="bsum">共 ${total} 條：${parts}</span></summary><div class="in">${inner}</div></details>`;
   };
 
   const guide = `<section class="chapter" id="sec-guide">
@@ -1666,7 +1724,7 @@ function renderEditor() {
     <p class="lead">${esc(s.pos)}</p>
     <hr>
     <div class="flow">${s.steps.split('→').map(x => `<span>${esc(x.trim())}</span>`).join('<i>→</i>')}</div>
-    ${base(groupsHTML(s.groups, true) + s.refs.map(r => `<p class="refline">${esc(r)}</p>`).join(''), s.groups.map(g => g.items).flat())}
+    ${base(groupsHTML(s.groups, true) + hcBlockHTML(s.n, true) + s.refs.map(r => `<p class="refline">${esc(r)}</p>`).join(''), s.groups.map(g => g.items).flat().concat(hcItems(s.n)))}
     ${s.n === 2 || s.n === 3 ? `<div id="dz-s${s.n}">${dzStageHTML(s.n, prof)}</div>` : s.fills.map(k => fillHTML(k, prof)).join('')}
   </section>`).join('');
 
@@ -1692,9 +1750,9 @@ function renderEditor() {
     <div class="refs-act"><button class="btn sm" type="button" id="btn-addref">新增一筆</button></div></div>
   </section>`;
 
-  $('#main').innerHTML = guide + basic + stages + common + cases + refs;
+  $('#main').innerHTML = guide + basic + stages + common + hcChapterHTML() + cases + refs;
   renderRefs(); renderCases();
-  CODES.concat(dzKeys()).forEach(k => { showFm(k); renderComment(k); });
+  CODES.concat(dzKeys(), hcKeys()).forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
   renderAllComments(); applyReadOnly();
   if (state.view === 'book') { showPane('book'); renderHandbook(); } else showPane('editor');
@@ -1771,8 +1829,8 @@ function onInput(e) {
   const val = el.dataset.stage ? Array.from(document.querySelectorAll(`[data-k="${k}"]`)).filter(x => x.checked).map(x => x.dataset.stage).join('')
     : el.type === 'checkbox' ? (el.checked ? 'y' : '') : el.value;
   setPath(state.data, k, val);
-  const md = k.match(/^dz\.(\w+)\.([abc])$/);
-  const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/) || (md ? [k, md[1] + '_' + md[2]] : null);
+  const md = k.match(/^dz\.(\w+)\.([abc])$/), mh = k.match(/^hc\.(g\d+)\.([abc])$/);
+  const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/) || (mh ? [k, 'hc_' + mh[1] + '_' + mh[2]] : md ? [k, md[1] + '_' + md[2]] : null);
   if (m) updateCount(m[1]);
   dzRefreshBadge(el);
   if (/^dz\.\w+\.[nk]$/.test(k)) { clearTimeout(window._dzT); window._dzT = setTimeout(() => { const s2 = $('#dz-s2'), s3 = $('#dz-s3'), pr = profile(socOf(state.socId)); if (s2) { s2.innerHTML = dzStageHTML(2, pr); s3.innerHTML = dzStageHTML(3, pr); dzKeys().concat(['2A', '2B', '3A']).forEach(x => { showFm(x); renderComment(x); }); updateProgress(); } }, 600); }
@@ -1848,10 +1906,10 @@ function renderHandbook() {
     <h1>本指引之定位</h1>
     <p>本指引有兩個目的：一是使《病人自主權利法》保障的病人自主，在${esc(soc.domain)}的臨床實務中得以實現；二是使病人及早獲得緩和醫療，自積極治療階段起即與治療並行，不必等到生命末期。</p>
     <p>本指引依病程將臨床照護分為五個階段：病情及預立醫療照護諮商與預立醫療決定之告知，積極治療與及早共同照護，臨床條件確診與照會確認，意願確認與治療決策，以及執行、緩和醫療與善終照護。各階段寫明醫療團隊應在什麼時機、依什麼程序確認並實現病人的意願；涉及本專科者，並依疾病別寫明本會對積極治療方針、啟動緩和共同照護之時機與確診指標等之建議。對個別病人的診斷與治療，仍由醫師依專業判斷。</p>
-    <p>本指引的內容有兩個部分。第一部分是「共通基準」，為各學會指引所共用，由財團法人新北市為愛前行社會福利基金會「預立醫療決定整合型計畫」之核心團隊整理，分為法定要求、法律解釋、倫理與臨床建議三類（見附錄二）；其中法定要求與法律解釋以現行法為據。第二部分是「本專科內容」，由本會依專業共識訂定，包括各階段之填寫內容與案例。緩和共同照護的啟動時機與照護內容，以台灣安寧緩和醫學學會提供之共通建議〔名稱、版本、取得方式待補〕為基礎，再由本會依本專科疾病特性訂定（見階段二各疾病之【2-B】與【5-A】）；台灣安寧緩和醫學學會另亦如其他學會，訂定其本專科之指引。</p>
+    <p>本指引的內容有兩個部分。第一部分是「共通基準」，為各學會指引所共用，由財團法人新北市為愛前行社會福利基金會「預立醫療決定整合型計畫」之核心團隊整理，分為法定要求、法律解釋、倫理與臨床建議三類（見附錄二）；其中法定要求與法律解釋以現行法為據。第二部分是「本專科內容」，由本會依專業共識訂定，包括各階段之填寫內容與案例。台灣安寧緩和醫學學會提供符合五款臨床條件之各疾病，於醫療過程中照會與適當緩和醫療處置之建議（以下稱安寧緩和學會共通建議），其內容經核心團隊審定後，列入各階段之共通基準；緩和共同照護之啟動時機與照護內容，以此為基礎，再由本會依本專科疾病特性訂定（見階段二各疾病之【2-B】及階段五之【5-A】）。台灣安寧緩和醫學學會另亦如其他學會，訂定其本專科之指引。</p>
     <p>本會核定本指引時，對共通基準為採用，對本專科內容為訂定並負其責任。兩者如有出入，以法定要求為準，本專科內容不得與之牴觸。</p>
-    <p>程序的終點，是病人意願的實現，以及持續的緩和醫療與善終照護。病人可能選擇接受維持生命治療，也可能始終未達臨床條件；依預立醫療決定終止、撤除或不施行維持生命治療，是實現意願的方式之一，不是本指引的目的，也不以縮短生命為目的。</p>
-    <p>本指引階段三至五之確診、照會確認與執行程序，以病人已為預立醫療決定為前提。病人未為預立醫療決定者，不適用該等程序；其中末期病人不施行、終止或撤除心肺復甦術或維生醫療，依《安寧緩和醫療條例》§7辦理：由病人簽署意願書；病人未簽署且意識昏迷或無法清楚表達意願時，由最近親屬出具同意書代替之；無最近親屬者，經安寧緩和醫療照會後，依末期病人最大利益出具醫囑代替之。階段一、二之告知與及早緩和共同照護，則適用於所有病人。</p>
+    <p>程序的終點，是病人意願的實現，以及持續的緩和醫療與善終照護。病人可能選擇接受維持生命治療或人工營養及流體餵養，也可能始終未達臨床條件；依預立醫療決定終止、撤除或不施行維持生命治療或人工營養及流體餵養，是實現意願的方式之一，不是本指引的目的，也不以縮短生命為目的。</p>
+    <p>本指引階段三至五之確診、照會確認與執行程序，以病人已為預立醫療決定為前提。病人未為預立醫療決定者，不適用該等程序；其中末期病人不施行、終止或撤除心肺復甦術或維生醫療，依《安寧緩和醫療條例》§7辦理：應由二位具相關專科醫師資格之醫師診斷確為末期病人，並由病人簽署意願書；病人未簽署且意識昏迷或無法清楚表達意願時，由最近親屬出具同意書代替之；無最近親屬者，經安寧緩和醫療照會後，依末期病人最大利益出具醫囑代替之。同意書或醫囑均不得與末期病人於意識昏迷或無法清楚表達意願前明示之意思表示相反。階段一、二之告知與及早緩和共同照護，則適用於所有病人。</p>
     <p class="muted">本指引各條所標標籤：〔法定要求〕為法規明定，依法辦理；〔法律解釋〕為依現行法所為之解讀，主管機關另有函釋者從其函釋；〔倫理與臨床建議〕得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整。標籤說明與縮寫對照表見附錄二。</p>
     <table><tr><th style="width:22%">研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr>
     <tr><th>核定</th><td>${approved && d.meta.approval ? esc(d.meta.approval) : '<span class="empty">（尚未核定）</span>'}</td></tr></table>
@@ -1867,7 +1925,7 @@ function renderHandbook() {
 
   const printed = caseKeys().filter(casePrinted);
   const seeCases = n => { const xs = printed.map((k, i) => (d.x[k].st || '').includes(String(n)) ? '案例' + zh(i + 1) : '').filter(Boolean); return xs.length ? `<div class="ref">參見七、案例：${xs.join('、')}</div>` : ''; };
-  const stageBlocks = STAGES.map(s => `<h3>階段${ZH[s.n - 1]}｜${esc(s.name)}</h3><div class="steps">步驟：${esc(s.steps)}</div><div class="pos">${esc(s.pos)}</div><div class="bh">共通基準</div>${groupsHTML(s.groups, false)}${s.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}${handbookStage(s, prof)}${seeCases(s.n)}`).join('');
+  const stageBlocks = STAGES.map(s => `<h3>階段${ZH[s.n - 1]}｜${esc(s.name)}</h3><div class="steps">步驟：${esc(s.steps)}</div><div class="pos">${esc(s.pos)}</div><div class="bh">共通基準</div>${groupsHTML(s.groups, false)}${hcBlockHTML(s.n, false)}${s.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}${handbookStage(s, prof)}${seeCases(s.n)}`).join('');
   const commonBlock = `<div class="keep"><h3>${esc(COMMON.name)}</h3><div class="pos">${esc(COMMON.pos)}</div><div class="bh">共通基準</div><ul>${COMMON.items.map(([t, k, sx]) => `<li>${esc(t)}${tag(k, sx)}</li>`).join('')}</ul>${COMMON.refs.map(r => `<div class="ref">${esc(r)}</div>`).join('')}</div>`;
   const stagesSheet = `<section class="sheet"><h2>五、各階段之共通基準與本專科內容</h2>${stageBlocks}${commonBlock}</section>`;
 
@@ -1926,7 +1984,7 @@ function setView(v) {
 function exportDraft() {
   if (!state.data) return;
   const soc = socOf(state.socId);
-  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x, dz: state.data.dz } };
+  const payload = { kind: 'pspg-template-draft', version: 2, society: state.socId, societyName: soc.name, exportedAt: new Date().toISOString(), data: { meta: state.data.meta, f: state.data.f, refs: state.data.refs, x: state.data.x, dz: state.data.dz, hc: state.data.hc } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   const dt = new Date(), ymd = `${dt.getFullYear() - 1911}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`;
@@ -1947,10 +2005,10 @@ function importDraft(file) {
         const nd = normalize(p.data);
         CODES.forEach(k => maybeHistory(k, state.data.f[k] || '', true));
         const { fs, db } = await fb();
-        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, dz: nd.dz, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
+        const upd = { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, dz: nd.dz, hc: nd.hc, updatedAt: fs.serverTimestamp(), updatedBy: editorName() + '（匯入草稿檔）' };
         CODES.forEach(k => { upd['fm.' + k] = { by: editorName() + '（匯入）', at: fs.serverTimestamp() }; });
         await fs.updateDoc(fs.doc(db, 'drafts', state.token), upd);
-        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, dz: nd.dz });
+        state.data = Object.assign(state.data, { meta: nd.meta, f: nd.f, refs: nd.refs, x: nd.x, dz: nd.dz, hc: nd.hc });
         renderEditor();
         setStatus('已匯入草稿檔並同步至雲端');
       } else {
