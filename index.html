@@ -345,6 +345,7 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 .sheet .cover .ttl { font-size: 30pt; letter-spacing: .12em; }
 .sheet .cover .nw { white-space: nowrap; }
 .sheet .cover .gap { display: block; height: 14pt; }
+.sheet .cover .plan { font-size: 14pt; font-weight: bold; color: var(--sheet-navy); letter-spacing: .08em; }
 .sheet .cover .sub { font-size: 11pt; color: var(--sheet-muted); margin-top: 40pt; line-height: 2; }
 .sheet svg { width: 100%; height: auto; display: block; }
 .sheet .note { color: var(--sheet-muted); font-size: 9.5pt; }
@@ -1197,7 +1198,7 @@ function draftProgress(r) {
 }
 // ====================================================================
 // 疾病別（1151011）：階段二、三依「本會病主相關疾病」逐項撰寫
-//   dz.<id>：A2／A3／A4／A5_n＝本模板預設（依確診資格表）；G n＝研發小組合併之群組；S n＝研發小組新增（第一款或情境）
+//   dz.<id>：A2／A3／A4／A5_n＝本模板預設（依確診資格表）；G n＝研發小組合併之群組；S n＝研發小組新增（第一款疾病；原情境選項暫停）（第一款或情境）
 //   欄位：m 併入之群組、n 名稱、k 對應臨床條件、a 2-A、b 2-B、c 3-A
 // ====================================================================
 const LEGAL = {
@@ -1213,9 +1214,10 @@ const GQ_DZ = {
   b: ['以哪些客觀指標判斷病程進展（如分期、功能量表、住院次數）？', '達到什麼程度時，主治醫師應提出緩和共同照護評估？', '由誰提出、如何徵得病人同意？'],
   c: ['法定或公告條件中之各項，本專科以哪些評估方式或檢查判定？', '由誰評估、結果如何記載於病歷？', '判定有疑義時，如何會同其他專科？']
 };
+const GQ_K1 = '本疾病之病人，何時符合「不可治癒，且近期內病程進行至死亡已不可避免」？請具體寫出判斷之臨床指標（醫學分期本身不足以認定）。';
 const DZ_FIELD = { a: ['2-A', '積極治療之方針', '寫治療目標與重新評估治療目標之時點；治療細節得引用本會既有之診療指引'], b: ['2-B', '啟動緩和共同照護之時機與指標', ''], c: ['3-A', '操作型確診指標及所需檢查', ''] };
 const DZ_TAG = { auto: ['本模板預設', ''], group: ['研發小組合併', 'self'], self: ['研發小組新增', 'self'] };
-const SELF_KINDS = ['第一款　末期病人', '情境（不對應特定款別）'];
+const SELF_KINDS = ['第一款　末期病人', '情境（不對應特定款別）']; // 情境選項已於1151011暫停使用（介面不再提供；保留以相容既有資料）
 const byNum = (a, b) => (+a.replace(/\D/g, '')) - (+b.replace(/\D/g, ''));
 function dzAuto(prof) {
   const out = [], has = l => prof.diag.some(d => d.label.startsWith(l));
@@ -1259,12 +1261,12 @@ function legalHTML(e) {
   const lab = e.lg.some(g => g.startsWith('k5_')) ? '公告條件' : '法定條件';
   return `<details class="lg"><summary>${lab}${tag(LAW, '')}</summary><div class="lg-in">${ls.map(x => `<p class="lg-src">${esc(x.src)}</p>${x.lines.map(l => `<p>${esc(l)}</p>`).join('')}`).join('')}</div></details>`;
 }
-function dfieldHTML(id, f) {
+function dfieldHTML(id, f, extra) {
   const key = id + '_' + f, v = dzVal(id, f), cloud = state.mode === 'cloud', [code, label, desc] = DZ_FIELD[f];
   const cm = cmBoxHTML(key);
   return `<div class="dfield" id="card-${key}">
     <label class="sub-h" for="f-${key}">【${code}】${esc(label)}${desc ? `<small>${esc(desc)}</small>` : ''}</label>
-    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${GQ_DZ[f].map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
+    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${(extra || []).concat(GQ_DZ[f]).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
     <div class="first">第一句請寫成完整建議句（例：「本會建議……」），將自動列入手冊之「本會建議一覽」；其後為說明。</div>
     <textarea id="f-${key}" data-k="dz.${id}.${f}">${esc(v)}</textarea>
     <div class="ft"><span class="fm" id="fm-${key}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${key}">歷史版本</button>` : ''}<span class="count" id="cnt-${key}">${v.length} 字</span></div>
@@ -1278,7 +1280,7 @@ function dzCardHTML(e, stage) {
   const title = stage === 2 ? esc(dzName(e)) : `${esc(dzName(e))}　→　${esc(e.k)}`;
   const src = stage === 2 ? '對應臨床條件：' + esc(e.k) : DZ_TAG[e.t][0];
   const mem = e.mem ? `<div class="hint">本組包括：${e.mem.map(m => esc(m.n)).join('、')}</div>` : '';
-  const body = stage === 2 ? dfieldHTML(e.id, 'a') + dfieldHTML(e.id, 'b') : legalHTML(e) + dfieldHTML(e.id, 'c');
+  const body = stage === 2 ? dfieldHTML(e.id, 'a') + dfieldHTML(e.id, 'b') : legalHTML(e) + dfieldHTML(e.id, 'c', e.lg.includes('k1') ? [GQ_K1] : []);
   const fs = stage === 2 ? ['a', 'b'] : ['c'], cid = `dzc-${stage}-${e.id}`;
   return `<details class="fill dz" id="${cid}"${DZ_OPEN.has(cid) ? ' open' : ''}><summary class="hd"><span class="q">${title}</span><span class="src-l">${src}</span>${dzBadge(fs.filter(f => dzDone(e.id, f)).length, fs.length)}</summary>${mem}${body}</details>`;
 }
@@ -1321,13 +1323,13 @@ function dzListHTML(prof) {
   const tagH = t => `<span class="tagp ${DZ_TAG[t][1]}">${DZ_TAG[t][0]}</span>`;
   const autoRow = a => { const m = (dz[a.id] || {}).m || ''; return `<div class="dl-row${m ? ' merged' : ''}"><span class="k">${esc(a.k)}</span><span>${esc(a.n)}${tagH('auto')}</span><span class="act"><select data-merge="${a.id}" aria-label="合併至群組"><option value="">（不合併）</option>${allGroups.map(g => `<option value="${g}"${m === g ? ' selected' : ''}>併入：${esc(dz[g].n || '未命名群組')}</option>`).join('')}<option value="__new">＋併入新群組…</option></select></span></div>`; };
   const groupRow = g => `<div class="dl-row grp"><span class="k">${esc(g.k)}</span><span><input type="text" data-k="dz.${g.id}.n" value="${esc(dz[g.id].n || '')}" placeholder="群組名稱" aria-label="群組名稱">${tagH('group')}<small class="mem">包括：${g.mem.map(m => esc(m.n)).join('、')}</small></span><span class="act"><button class="linkbtn" type="button" data-ungroup="${g.id}">解散</button></span></div>`;
-  const selfRow = s => `<div class="dl-row"><span class="k"><select data-k="dz.${s.id}.k" aria-label="對應臨床條件">${SELF_KINDS.map(o => `<option${(dz[s.id].k || SELF_KINDS[0]) === o ? ' selected' : ''}>${o}</option>`).join('')}</select></span><span><input type="text" data-k="dz.${s.id}.n" value="${esc(dz[s.id].n || '')}" placeholder="疾病或情境名稱" aria-label="疾病或情境名稱">${tagH('self')}</span><span class="act"><button class="linkbtn" type="button" data-delself="${s.id}">刪除</button></span></div>`;
+  const selfRow = s => `<div class="dl-row"><span class="k">第一款　末期病人</span><span><input type="text" data-k="dz.${s.id}.n" value="${esc(dz[s.id].n || '')}" placeholder="疾病名稱（例：心衰竭）" aria-label="疾病名稱">${tagH('self')}</span><span class="act"><button class="linkbtn" type="button" data-delself="${s.id}">刪除</button></span></div>`;
   return `<h3>本會病主相關疾病</h3>
-    <p class="lead" style="font-size:16px;margin-top:6px">下列為本專科病人可能符合病主法臨床條件之疾病；階段二、三之疾病卡依此清單產生。第二至五款由本模板依上表預設；第一款（末期病人）由研發小組自列本專科會進展至末期之疾病。病程與處理相近者，研發小組得合併為一組；以情境區分較合適之學會（如急診、重症），得以情境代替疾病。</p>
+    <p class="lead" style="font-size:16px;margin-top:6px">下列為本專科病人可能符合病主法臨床條件之疾病；階段二、三之疾病卡依此清單產生。第二至五款由本模板依上表預設；第一款（末期病人）由研發小組自列本專科可能進展至末期之疾病；醫學分期之名稱（如末期腎臟病、末期心衰竭）不當然符合安寧緩和醫療條例所定之末期病人。病程與處理相近者，研發小組得合併為一組。</p>
     <div class="dl"><div class="dl-head"><span>對應臨床條件</span><span>疾病</span><span></span></div>
     ${auto.map(autoRow).join('')}${groups.map(groupRow).join('')}${cards.filter(c => c.t === 'self').map(selfRow).join('')}
     ${(() => { const m1 = prof.diag.find(x => x.label.startsWith('第一款')); if (!m1 || cards.some(c => c.t === 'self' && c.k.startsWith('第一款'))) return ''; const lead = m1.st === 'yes' ? '本會專科醫師得擔任第一款之確診' : m1.st === 'member' ? '本會會員得依其部定專科擔任第一款之確診' : '本會會員得否擔任第一款之確診，尚待確認'; return `<div class="dl-row hintrow"><span class="k">第一款　末期病人</span><span>${lead}；請以下方「＋新增第一款之疾病」列出本專科會進展至末期之疾病。</span><span class="act"></span></div>`; })()}
-    <div class="dl-row add"><span class="k"></span><span><button class="linkbtn" type="button" data-addself="0">＋新增第一款之疾病</button>　<button class="linkbtn" type="button" data-addself="1">＋新增情境</button></span><span class="act"></span></div></div>`;
+    <div class="dl-row add"><span class="k"></span><span><button class="linkbtn" type="button" data-addself="0">＋新增第一款之疾病</button></span><span class="act"></span></div></div>`;
 }
 function dzKeys() { return Array.from(document.querySelectorAll('textarea[data-k^="dz."]')).map(el => el.id.slice(2)); }
 function rerenderDz() {
@@ -1912,7 +1914,7 @@ function renderHandbook() {
   const cover = `<section class="sheet"><div class="cover">
     <div class="org">${esc(soc.full || soc.name)}</div>
     <div class="ttl">病主緩和臨床指引${approved ? '' : '（草案）'}</div>
-    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日訂定發布）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br><span class="gap"></span>預立醫療決定整合型計畫<br><span class="nw">財團法人新北市為愛前行社會福利基金會</span><br><span class="nw">臺灣生命教育學會　國立臺灣大學生命教育研發育成中心　共同推動</span></div>
+    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日訂定發布）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br><span class="gap"></span><span class="plan">預立醫療決定整合型計畫</span><br><span class="nw">財團法人新北市為愛前行社會福利基金會</span><br><span class="nw">臺灣生命教育學會　國立臺灣大學生命教育研發育成中心　共同推動</span></div>
   </div></section>`;
 
   const intro = `<section class="sheet">
