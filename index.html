@@ -1234,6 +1234,10 @@ function dzEntries() {
     const e = dz[id], k = e.k || SELF_KINDS[0];
     cards.push({ id, t: 'self', n: e.n || '', k: k === SELF_KINDS[1] ? '情境' : k, lg: k === SELF_KINDS[0] ? ['k1'] : [] });
   });
+  // 依款別排列：第一款→第五款（第五款依公告類別序）→情境；同款依建立順序
+  const rank = c => { const g = c.t === 'group' ? c.mem : [c]; return Math.min(...g.map(x => x.id === 'A2' ? 200 : x.id === 'A3' ? 300 : x.id === 'A4' ? 400 : /^A5_/.test(x.id) ? 500 + +x.id.slice(3) : x.t === 'self' ? (x.k.startsWith('第一款') ? 100 : 900) : 950)); };
+  cards.forEach((c, i) => { c._i = i; });
+  cards.sort((a, b) => rank(a) - rank(b) || a._i - b._i);
   return { auto, cards, prof };
 }
 function dzVal(id, f) { return ((state.data.dz[id] || {})[f]) || ''; }
