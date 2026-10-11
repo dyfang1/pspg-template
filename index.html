@@ -343,6 +343,8 @@ code.tok { font-size: 12px; color: var(--muted); margin-right: 6px; }
 .sheet .cover { min-height: 230mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10pt; }
 .sheet .cover .org { font-size: 20pt; color: var(--sheet-navy); }
 .sheet .cover .ttl { font-size: 30pt; letter-spacing: .12em; }
+.sheet .cover .nw { white-space: nowrap; }
+.sheet .cover .gap { display: block; height: 14pt; }
 .sheet .cover .sub { font-size: 11pt; color: var(--sheet-muted); margin-top: 40pt; line-height: 2; }
 .sheet svg { width: 100%; height: auto; display: block; }
 .sheet .note { color: var(--sheet-muted); font-size: 9.5pt; }
@@ -1910,7 +1912,7 @@ function renderHandbook() {
   const cover = `<section class="sheet"><div class="cover">
     <div class="org">${esc(soc.full || soc.name)}</div>
     <div class="ttl">病主緩和臨床指引${approved ? '' : '（草案）'}</div>
-    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日訂定發布）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br>預立醫療決定整合型計畫<br>財團法人新北市為愛前行社會福利基金會　臺灣生命教育學會　國立臺灣大學生命教育研發育成中心　共同推動</div>
+    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日訂定發布）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br><span class="gap"></span>預立醫療決定整合型計畫<br><span class="nw">財團法人新北市為愛前行社會福利基金會</span><br><span class="nw">臺灣生命教育學會　國立臺灣大學生命教育研發育成中心　共同推動</span></div>
   </div></section>`;
 
   const intro = `<section class="sheet">
