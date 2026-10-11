@@ -1198,7 +1198,7 @@ function draftProgress(r) {
 }
 // ====================================================================
 // 疾病別（1151011）：階段二、三依「本會病主相關疾病」逐項撰寫
-//   dz.<id>：A2／A3／A4／A5_n＝本模板預設（依確診資格表）；G n＝研發小組合併之群組；S n＝研發小組新增（第一款疾病；原情境選項暫停）（第一款或情境）
+//   dz.<id>：A2／A3／A4／A5_n＝本模板預設（依確診資格表）；G n＝研發小組合併之群組；S n＝研發小組新增（第一款疾病；原情境選項暫停）
 //   欄位：m 併入之群組、n 名稱、k 對應臨床條件、a 2-A、b 2-B、c 3-A
 // ====================================================================
 const LEGAL = {
@@ -1214,7 +1214,7 @@ const GQ_DZ = {
   b: ['以哪些客觀指標判斷病程進展（如分期、功能量表、住院次數）？', '達到什麼程度時，主治醫師應提出緩和共同照護評估？', '由誰提出、如何徵得病人同意？'],
   c: ['法定或公告條件中之各項，本專科以哪些評估方式或檢查判定？', '由誰評估、結果如何記載於病歷？', '判定有疑義時，如何會同其他專科？']
 };
-const GQ_K1 = '本疾病之病人，何時符合「不可治癒，且近期內病程進行至死亡已不可避免」？請具體寫出判斷之臨床指標（醫學分期本身不足以認定）。';
+const GQ_K1 = '本疾病之病人，何時符合「不可治癒，且近期內病程進行至死亡已不可避免」？請具體寫出判斷之臨床指標（疾病分期本身不足以認定）。';
 const DZ_FIELD = { a: ['2-A', '積極治療之方針', '寫治療目標與重新評估治療目標之時點；治療細節得引用本會既有之診療指引'], b: ['2-B', '啟動緩和共同照護之時機與指標', ''], c: ['3-A', '操作型確診指標及所需檢查', ''] };
 const DZ_TAG = { auto: ['本模板預設', ''], group: ['研發小組合併', 'self'], self: ['研發小組新增', 'self'] };
 const SELF_KINDS = ['第一款　末期病人', '情境（不對應特定款別）']; // 情境選項已於1151011暫停使用（介面不再提供；保留以相容既有資料）
@@ -1325,10 +1325,10 @@ function dzListHTML(prof) {
   const groupRow = g => `<div class="dl-row grp"><span class="k">${esc(g.k)}</span><span><input type="text" data-k="dz.${g.id}.n" value="${esc(dz[g.id].n || '')}" placeholder="群組名稱" aria-label="群組名稱">${tagH('group')}<small class="mem">包括：${g.mem.map(m => esc(m.n)).join('、')}</small></span><span class="act"><button class="linkbtn" type="button" data-ungroup="${g.id}">解散</button></span></div>`;
   const selfRow = s => `<div class="dl-row"><span class="k">第一款　末期病人</span><span><input type="text" data-k="dz.${s.id}.n" value="${esc(dz[s.id].n || '')}" placeholder="疾病名稱（例：心衰竭）" aria-label="疾病名稱">${tagH('self')}</span><span class="act"><button class="linkbtn" type="button" data-delself="${s.id}">刪除</button></span></div>`;
   return `<h3>本會病主相關疾病</h3>
-    <p class="lead" style="font-size:16px;margin-top:6px">下列為本專科病人可能符合病主法臨床條件之疾病；階段二、三之疾病卡依此清單產生。第二至五款由本模板依上表預設；第一款（末期病人）由研發小組自列本專科可能進展至末期之疾病；醫學分期之名稱（如末期腎臟病、末期心衰竭）不當然符合安寧緩和醫療條例所定之末期病人。病程與處理相近者，研發小組得合併為一組。</p>
+    <p class="lead" style="font-size:16px;margin-top:6px">下列為本專科病人可能符合病主法臨床條件之疾病；階段二、三之疾病卡依此清單產生。第二至五款由本模板依上表預設；第一款（末期病人）由研發小組自列本專科可能進展至末期之疾病。<br>疾病名稱中之「末期」（如末期腎臟病、末期心衰竭），不當然等同《安寧緩和醫療條例》所定之末期病人。<br>病程與處理相近者，研發小組得合併為一組。</p>
     <div class="dl"><div class="dl-head"><span>對應臨床條件</span><span>疾病</span><span></span></div>
     ${auto.map(autoRow).join('')}${groups.map(groupRow).join('')}${cards.filter(c => c.t === 'self').map(selfRow).join('')}
-    ${(() => { const m1 = prof.diag.find(x => x.label.startsWith('第一款')); if (!m1 || cards.some(c => c.t === 'self' && c.k.startsWith('第一款'))) return ''; const lead = m1.st === 'yes' ? '本會專科醫師得擔任第一款之確診' : m1.st === 'member' ? '本會會員得依其部定專科擔任第一款之確診' : '本會會員得否擔任第一款之確診，尚待確認'; return `<div class="dl-row hintrow"><span class="k">第一款　末期病人</span><span>${lead}；請以下方「＋新增第一款之疾病」列出本專科會進展至末期之疾病。</span><span class="act"></span></div>`; })()}
+    ${(() => { const m1 = prof.diag.find(x => x.label.startsWith('第一款')); if (!m1 || cards.some(c => c.t === 'self' && c.k.startsWith('第一款'))) return ''; const lead = m1.st === 'yes' ? '本會專科醫師得擔任第一款之確診' : m1.st === 'member' ? '本會會員得依其部定專科擔任第一款之確診' : '本會會員得否擔任第一款之確診，尚待確認'; return `<div class="dl-row hintrow"><span class="k">第一款　末期病人</span><span>${lead}；請以下方「＋新增第一款之疾病」列出本專科可能進展至末期之疾病。</span><span class="act"></span></div>`; })()}
     <div class="dl-row add"><span class="k"></span><span><button class="linkbtn" type="button" data-addself="0">＋新增第一款之疾病</button></span><span class="act"></span></div></div>`;
 }
 function dzKeys() { return Array.from(document.querySelectorAll('textarea[data-k^="dz."]')).map(el => el.id.slice(2)); }
@@ -1456,7 +1456,7 @@ function diagTable(prof) {
 const TILES = `<div class="tiles">
   <div class="tile"><b><span class="sw coral"></span>填寫各格</b><p>每格有撰寫主題與參考問題，內容與篇幅由研發小組自訂。每格第一句請寫成完整的建議句，手冊的「本會建議一覽」會自動收錄。</p></div>
   <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段的共通基準為各學會共用，不需填寫，點開即可閱讀。</p></div>
-  <div class="tile"><b><span class="sw ok"></span>預設內容</b><p>本會可擔任確診的款別與疾病，已依法定資格列出；研發小組只需補列本專科會進展至末期的疾病（第一款）。</p></div>
+  <div class="tile"><b><span class="sw ok"></span>預設內容</b><p>本會可擔任確診的款別與疾病，已依法定資格列出；研發小組只需補列本專科可能進展至末期的疾病（第一款）。</p></div>
   <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入時，內容即時存到雲端，同一學會研發小組的成員看到同一份，每格都保留歷史版本。</p></div>
 </div>`;
 function updateCount(k) { const c = $('#cnt-' + k); if (c) c.textContent = (($('#f-' + k) || {}).value || '').length + ' 字'; }
