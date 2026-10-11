@@ -1446,10 +1446,10 @@ function diagTable(prof) {
     ${prof.diag.map(d => `<tr><td>${esc(d.label)}${d.sub ? `<br><span style="color:var(--muted)">${esc(d.sub)}</span>` : ''}</td><td>${esc(d.basis)}</td><td class="st-${d.st}">${ST_LABEL[d.st]}</td></tr>`).join('')}</table></div>`;
 }
 const TILES = `<div class="tiles">
-  <div class="tile"><b><span class="sw coral"></span>填寫各題</b><p>每格列有題目與參考問題，內容與篇幅由研發小組自訂；階段二、三依疾病分卡填寫。每格第一句請寫成完整建議句，會自動列入手冊之「本會建議一覽」。另於「案例」章提供本會之案例。</p></div>
-  <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段之共通基準分為法定要求、法律解釋、倫理與臨床建議三類，點開即可閱讀。</p></div>
-  <div class="tile"><b><span class="sw ok"></span>確診資格與角色由本模板預設</b><p>階段三可擔任確診之款別與疾病，以及各階段之角色，均由本模板預設；研發小組不必勾選。</p></div>
-  <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入者，內容即時存到雲端，同一學會之成員看到同一份；每格保留歷史版本。</p></div>
+  <div class="tile"><b><span class="sw coral"></span>填寫各格</b><p>每格有撰寫主題與參考問題，內容與篇幅由研發小組自訂。每格第一句請寫成完整的建議句，手冊的「本會建議一覽」會自動收錄。</p></div>
+  <div class="tile"><b><span class="sw ink"></span>閱讀共通基準</b><p>各階段的共通基準為各學會共用，不需填寫，點開即可閱讀。</p></div>
+  <div class="tile"><b><span class="sw ok"></span>預設內容</b><p>本會可擔任確診的款別與疾病，已依法定資格列出；研發小組只需補列本專科會進展至末期的疾病（第一款）。</p></div>
+  <div class="tile"><b><span class="sw gray"></span>多人共同編輯</b><p>以邀請碼進入時，內容即時存到雲端，同一學會研發小組的成員看到同一份，每格都保留歷史版本。</p></div>
 </div>`;
 function updateCount(k) { const c = $('#cnt-' + k); if (c) c.textContent = (($('#f-' + k) || {}).value || '').length + ' 字'; }
 function showFm(k) {
