@@ -260,6 +260,14 @@ details.lg summary { cursor: pointer; padding: 8px 14px; font-family: var(--seri
 .sheet .lgp { margin: 2pt 0 4pt 11pt; font-size: 9pt; color: var(--sheet-muted); line-height: 1.55; }
 .sheet .lgp b { font-weight: normal; color: var(--sheet-navy); }
 @media (max-width: 760px) { .dl-head, .dl-row { grid-template-columns: minmax(0, 1fr); } .dl-row .act { text-align: left; } .dl-row input[type=text] { width: 100%; } }
+.cbox.admin { padding: 12px 16px 14px; }
+.cbox .rd-list { border: 1px dashed var(--line); border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; background: var(--paper); }
+.cbox .rd-item + .rd-item { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; }
+.cbox .rd-item .linkbtn { margin-right: 10px; font-size: 13.5px; }
+.cbox .cm-issued { border-left: 3px solid var(--ok); background: var(--ok-soft); border-radius: 0 8px 8px 0; padding: 8px 12px; margin-bottom: 10px; }
+.cbox .cm-act { margin-top: 8px; text-align: right; }
+body.ro #main textarea[readonly], body.ro #main input[readonly] { background: #fafafa; color: var(--muted); }
+.rvchip { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; padding: 1px 8px; border-radius: 999px; background: var(--soft); margin: 2px 4px 2px 0; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; }
 .tile { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
 .tile b { display: flex; align-items: center; gap: 8px; font-size: 17px; margin-bottom: 2px; }
@@ -739,7 +747,7 @@ function normalize(d) {
   const b = blank(); d = d || {};
   return {
     meta: Object.assign(b.meta, d.meta || {}), f: Object.assign(b.f, d.f || {}), fm: d.fm || {}, c: d.c || {},
-    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x), dz: d.dz && typeof d.dz === 'object' ? JSON.parse(JSON.stringify(d.dz)) : {},
+    refs: Array.isArray(d.refs) && d.refs.length ? d.refs.slice() : b.refs, x: normCases(d.x), dz: d.dz && typeof d.dz === 'object' ? JSON.parse(JSON.stringify(d.dz)) : {}, rv: d.rv || {}, rd: d.rd ? JSON.parse(JSON.stringify(d.rd)) : {}, status: d.status === 'approved' ? 'approved' : 'draft',
     soc: d.soc, updatedAt: d.updatedAt, updatedBy: d.updatedBy
   };
 }
@@ -770,6 +778,7 @@ function editorName() { return (lsGet(KEY + 'name') || '').trim() || '未具名'
 
 // ---------- Firebase（動態載入；無網路時本機試填仍可用）----------
 let FB = null;
+let adminRows = [];
 async function fb() {
   if (FB) return FB;
   const base = `https://www.gstatic.com/firebasejs/${FBV}/`;
@@ -796,6 +805,7 @@ async function openCloud(token, asAdmin) {
     if (!snap.exists()) throw { code: 'permission-denied' };
     const d = snap.data();
     if (!socOf(d.soc)) throw { message: '資料中的學會代碼無法辨識' };
+    if (asAdmin) { if (!state.role) await resolveRole(); if (state.role === 'reviewer' && !(d.rv || {})[state.me]) throw { code: 'permission-denied' }; }
     if (unsub) unsub();
     pending.clear(); remoteWaiting.clear();
     state.mode = 'cloud'; state.admin = !!asAdmin; state.token = token; state.socId = d.soc; state.label = d.label || ''; state.data = normalize(d);
@@ -811,6 +821,8 @@ async function openCloud(token, asAdmin) {
 }
 function applyRemote(d) {
   const nd = normalize(d);
+  const stChanged = nd.status !== state.data.status;
+  state.data.rv = nd.rv; state.data.rd = nd.rd; state.data.status = nd.status;
   CODES.forEach(k => {
     state.data.fm[k] = nd.fm[k];
     state.data.c[k] = nd.c[k];
@@ -831,6 +843,8 @@ function applyRemote(d) {
   });
   applyRemoteCases(nd);
   applyRemoteDz(nd);
+  if (stChanged) { renderEditor(); return; }
+  renderAllComments();
   if (!pending.has('refs') && !(document.activeElement && document.activeElement.id && document.activeElement.id.startsWith('ref-'))) {
     if (JSON.stringify(nd.refs) !== JSON.stringify(state.data.refs)) { state.data.refs = nd.refs; renderRefs(); }
   }
@@ -938,7 +952,7 @@ async function adminEntry() {
     const { au, auth } = await fb();
     await new Promise(res => { const off = au.onAuthStateChanged(auth, () => { off(); res(); }); });
     if (auth.currentUser) await renderAdmin();
-    else setStatus('請按「核心團隊」卡片中的「以 Google 帳號登入」');
+    else setStatus('請按「總覽與檢閱」卡片中的「以 Google 帳號登入」');
   } catch (e) { setStatus('無法檢查登入狀態：' + errText(e)); }
 }
 async function deleteDraft(token) {
@@ -971,7 +985,7 @@ async function createInvite(socId) {
     const { fs, db } = await fb();
     const token = randToken();
     const b = blank();
-    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, label, meta: b.meta, f: b.f, fm: {}, c: {}, refs: b.refs, x: b.x, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
+    await fs.setDoc(fs.doc(db, 'drafts', token), { soc: socId, token, label, meta: b.meta, f: b.f, fm: {}, c: {}, rv: {}, rd: {}, status: 'draft', refs: b.refs, x: b.x, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp(), updatedBy: '核心團隊建立' });
     await renderAdmin();
   } catch (e) { setStatus('建立失敗：' + errText(e)); }
 }
@@ -1013,6 +1027,109 @@ function groupsHTML(groups, inEditor) {
   }).join('');
 }
 function isDone(k) { return !!(state.data.f[k] || '').trim(); }
+
+// ====================================================================
+// 權限介面（A 階段，1151011；依孫教授1151009意見第一節）
+//   身分：基金會管理者（foundation）、審查委員（reviewer）、研發小組（邀請碼）。
+//   注意：本階段僅於畫面依身分限制；資料庫規則尚未區分，B 階段改寫規則後始具安全效力。
+//   欄位：rv{委員雜湊:顯示名稱}＝受指派之審查委員；rd.<格>.<委員雜湊>{text,at}＝草擬意見；c.<格>{text,at}＝核定發出之審查意見（不存撰寫者）；status＝draft／approved
+// ====================================================================
+const FOUNDATION_HASHES = ['6fb6a0ce13e7e5eb7b61c7d16bbd1c464ea7b75f75417315650a19663b10573f', '6e3cb06aaa5891cb2da737e544665aa4b16c4562c45c8a511f7d596d875b97a9']; // 基金會管理者（方東岳、孫效智）Google 帳號信箱（小寫）之 SHA-256；空白時所有核心團隊帳號均視為基金會管理者
+async function sha256(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); }
+async function resolveRole() {
+  const u = FB && FB.auth && FB.auth.currentUser;
+  if (!u) { state.role = ''; state.me = ''; return; }
+  state.me = await sha256((u.email || '').trim().toLowerCase());
+  state.role = !FOUNDATION_HASHES.length || FOUNDATION_HASHES.includes(state.me) ? 'foundation' : 'reviewer';
+}
+function isFoundation() { return state.admin && state.role === 'foundation'; }
+function isReviewer() { return state.admin && state.role === 'reviewer'; }
+function readOnly() { return state.mode === 'cloud' && !!state.data && (state.admin || state.data.status === 'approved'); }
+function applyReadOnly() {
+  if (!readOnly()) return;
+  document.querySelectorAll('#main [data-k], #main [data-merge], #main [data-addself], #main [data-delself], #main [data-ungroup], #main [data-delcase], #main #btn-addcase, #main #btn-addref, #main [data-restore]').forEach(el => {
+    if ((el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && el.type === 'text'))) el.readOnly = true; else el.disabled = true;
+  });
+  document.body.classList.add('ro');
+}
+function cmBoxHTML(key) {
+  if (state.mode !== 'cloud') return '';
+  return `<div class="cbox${state.admin ? ' admin' : ''}" id="cm-${key}"${state.admin ? '' : ' hidden'}></div>`;
+}
+function renderAllComments() { document.querySelectorAll('#main .cbox[id^="cm-"]').forEach(b => renderComment(b.id.slice(3))); }
+async function cloudUpdate(upd, okMsg) {
+  try {
+    const { fs, db } = await fb();
+    const u = {};
+    Object.keys(upd).forEach(p => {
+      const v = upd[p];
+      if (v === null) u[p] = fs.deleteField();
+      else if (v && typeof v === 'object' && v.__ts) { const o = Object.assign({}, v); delete o.__ts; o.at = fs.serverTimestamp(); u[p] = o; }
+      else u[p] = v;
+    });
+    await fs.updateDoc(fs.doc(db, 'drafts', state.token), u);
+    if (okMsg) setStatus(okMsg + ' ' + hhmm());
+    return true;
+  } catch (e) { setStatus('儲存失敗：' + errText(e)); return false; }
+}
+function rdSave(k, text) {
+  const rd = state.data.rd, mine = (rd[k] = rd[k] || {});
+  mine[state.me] = { text, at: Date.now() };
+  return cloudUpdate({ [`rd.${k}.${state.me}`]: { text, __ts: 1 } }, '草擬意見已儲存');
+}
+async function rdIssue(keys) {
+  const upd = {}, rd = state.data.rd;
+  keys.forEach(k => { const t = (((rd[k] || {})[state.me] || {}).text || '').trim(); if (t) { upd['c.' + k] = { text: t, __ts: 1 }; state.data.c[k] = { text: t, at: Date.now() }; } });
+  if (!Object.keys(upd).length) { setStatus('沒有可發出之意見（請先在「發出稿」撰寫或併入草擬）'); return; }
+  if (await cloudUpdate(upd, '已核定發出 ' + Object.keys(upd).length + ' 則審查意見')) renderAllComments();
+}
+function rdIssueAll() {
+  const rd = state.data.rd, keys = Object.keys(rd).filter(k => { const t = (((rd[k] || {})[state.me] || {}).text || '').trim(); return t && t !== ((state.data.c[k] || {}).text || '').trim(); });
+  if (!keys.length) { setStatus('沒有尚未發出之發出稿'); return; }
+  if (!window.confirm(`將發出 ${keys.length} 則審查意見給研發小組（不顯示審查委員姓名），確定嗎？`)) return;
+  rdIssue(keys);
+}
+function approvalProblems() {
+  const prof = profile(socOf(state.socId)), out = [];
+  const miss = progressItems().filter(x => !x[1]).length;
+  if (miss) out.push(`尚有 ${miss} 格未填寫`);
+  if ([1, 2, 3, 4, 5].some(n => prof.roles[n] === 'tbd')) out.push('本會於各階段之角色仍有「待確認」');
+  if (prof.diag.some(x => x.st === 'gray')) out.push('可擔任確診之款別與疾病仍有「待確認」');
+  if (!(state.data.meta.approval || '').trim()) out.push('「核定會議與日期」尚未填寫');
+  return out;
+}
+async function toggleApproval() {
+  if (!isFoundation()) return;
+  if (state.data.status === 'approved') {
+    if (!window.confirm('退回為草案後，研發小組即可再修改內容，確定嗎？')) return;
+    if (await cloudUpdate({ status: 'draft' }, '已退回為草案')) { state.data.status = 'draft'; renderEditor(); }
+    return;
+  }
+  const p = approvalProblems();
+  if (p.length) { window.alert('尚不能登錄為核定版：\n・' + p.join('\n・')); return; }
+  if (!window.confirm('登錄為核定版後，手冊封面去除「草案」並列出核定會議與日期；研發小組不能再修改內容。確定嗎？')) return;
+  if (await cloudUpdate({ status: 'approved' }, '已登錄為核定版')) { state.data.status = 'approved'; renderEditor(); }
+}
+async function rvAdd(token) {
+  const email = (window.prompt('審查委員之 Google 帳號信箱（須已列入核心團隊名單）', '') || '').trim().toLowerCase();
+  if (!email) return;
+  if (!/^[^@\s]+@[^@\s]+$/.test(email)) { window.alert('信箱格式不正確'); return; }
+  const label = (window.prompt('顯示名稱（僅基金會管理者看得到，例如：王○○醫師）', '') || '').trim() || '審查委員';
+  const h = await sha256(email);
+  try { const { fs, db } = await fb(); await fs.updateDoc(fs.doc(db, 'drafts', token), { ['rv.' + h]: label }); await renderAdmin(); setStatus('已指派審查委員'); }
+  catch (e) { setStatus('指派失敗：' + errText(e)); }
+}
+async function rvDel(v) {
+  const [token, h] = v.split('|');
+  if (!window.confirm('取消此審查委員之指派？其已寫之草擬意見仍保留。')) return;
+  try { const { fs, db } = await fb(); await fs.updateDoc(fs.doc(db, 'drafts', token), { ['rv.' + h]: fs.deleteField() }); await renderAdmin(); setStatus('已取消指派'); }
+  catch (e) { setStatus('取消失敗：' + errText(e)); }
+}
+function draftProgress(r) {
+  const save = { socId: state.socId, data: state.data };
+  state.socId = r.soc; state.data = normalize(r);
+  try { const it = progressItems(); return [it.filter(x => x[1]).length, it.length]; } finally { state.socId = save.socId; state.data = save.data; }
+}
 // ====================================================================
 // 疾病別（1151011）：階段二、三依「本會病主相關疾病」逐項撰寫
 //   dz.<id>：A23／A4／A5_n＝本模板預設（依確診資格表）；G n＝研發小組合併之群組；S n＝研發小組新增（第一款或情境）
@@ -1073,9 +1190,7 @@ function legalHTML(e) {
 }
 function dfieldHTML(id, f) {
   const key = id + '_' + f, v = dzVal(id, f), cloud = state.mode === 'cloud', [code, label, desc] = DZ_FIELD[f];
-  const cm = !cloud ? '' : state.admin
-    ? `<div class="cbox admin" id="cm-${key}"><label class="cm-h" for="cmt-${key}">核心團隊意見<span id="cmm-${key}"></span></label><textarea id="cmt-${key}" data-c="${key}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[key] || {}).text || '')}</textarea></div>`
-    : `<div class="cbox" id="cm-${key}" hidden></div>`;
+  const cm = cmBoxHTML(key);
   return `<div class="dfield" id="card-${key}">
     <label class="sub-h" for="f-${key}">【${code}】${esc(label)}${desc ? `<small>${esc(desc)}</small>` : ''}</label>
     <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${GQ_DZ[f].map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
@@ -1107,9 +1222,7 @@ function dzRefreshBadge(el) {
 }
 function cfieldHTML(k) {
   const F = FILLS[k], v = state.data.f[k] || '', cloud = state.mode === 'cloud';
-  const cm = !cloud ? '' : state.admin
-    ? `<div class="cbox admin" id="cm-${k}"><label class="cm-h" for="cmt-${k}">核心團隊意見<span id="cmm-${k}"></span></label><textarea id="cmt-${k}" data-c="${k}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[k] || {}).text || '')}</textarea></div>`
-    : `<div class="cbox" id="cm-${k}" hidden></div>`;
+  const cm = cmBoxHTML(k);
   return `<div class="dfield" id="card-${k}">
     <label class="sub-h" for="f-${k}">【${codeOf(k)}】${esc(F.label)}</label>
     <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${(GQ[k] || []).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
@@ -1151,7 +1264,7 @@ function rerenderDz() {
   const L = $('#dz-list'), s2 = $('#dz-s2'), s3 = $('#dz-s3'); if (!L) return;
   L.innerHTML = dzListHTML(prof); s2.innerHTML = dzStageHTML(2, prof); s3.innerHTML = dzStageHTML(3, prof);
   dzKeys().concat(['2A', '2B', '3A']).forEach(k => { showFm(k); renderComment(k); });
-  updateProgress();
+  updateProgress(); applyReadOnly();
 }
 function dzHasContent(id) { return ['a', 'b', 'c'].some(f => dzDone(id, f)); }
 async function dzWrite(upd) {
@@ -1284,15 +1397,25 @@ function showFm(k) {
 }
 function renderComment(k) {
   const box = $('#cm-' + k); if (!box) return;
-  const c = state.data.c[k];
-  if (state.admin) {
-    const ta = $('#cmt-' + k);
-    if (ta && document.activeElement !== ta && c && ta.value !== (c.text || '')) ta.value = c.text || '';
-    const meta = $('#cmm-' + k); if (meta) meta.textContent = c && c.at ? `${c.by || ''}　${when(c.at)}` : '';
+  const c = state.data.c[k], rd = (state.data.rd || {})[k] || {};
+  if (!state.admin) {
+    box.hidden = !(c && (c.text || '').trim());
+    if (!box.hidden) box.innerHTML = `<div class="cm-h">審查意見<span>${esc(when(c.at))}</span></div><div class="cm-t">${br(c.text)}</div>`;
     return;
   }
-  box.hidden = !(c && (c.text || '').trim());
-  if (!box.hidden) box.innerHTML = `<div class="cm-h">審查意見<span>${esc(when(c.at))}</span></div><div class="cm-t">${br(c.text)}</div>`;
+  const a = document.activeElement; if (a && box.contains(a) && a.tagName === 'TEXTAREA') return;
+  const mine = rd[state.me] || {};
+  const issued = c && (c.text || '').trim() ? `<div class="cm-issued"><div class="cm-h">已發出之審查意見<span>${esc(when(c.at))}</span></div><div class="cm-t">${br(c.text)}</div>${isFoundation() ? `<button class="linkbtn" type="button" data-unissue="${k}">撤回</button>` : ''}</div>` : '';
+  if (isReviewer()) {
+    box.innerHTML = `${issued}<label class="cm-h" for="rd-${k}">審查意見（草擬）<span>${mine.at ? '已儲存 ' + esc(when(mine.at)) : ''}</span></label><textarea id="rd-${k}" data-rd="${k}" placeholder="審查意見經基金會核定後，才會發給研發小組">${esc(mine.text || '')}</textarea>`;
+    return;
+  }
+  const others = Object.keys(rd).filter(h => h !== state.me && ((rd[h] || {}).text || '').trim());
+  const list = others.map(h => `<div class="rd-item"><div class="cm-h">${esc((state.data.rv || {})[h] || '審查委員')}<span>${esc(when(rd[h].at))}</span></div><div class="cm-t">${br(rd[h].text)}</div><button class="linkbtn" type="button" data-adopt="${k}|${h}">併入發出稿</button><button class="linkbtn" type="button" data-rddel="${k}|${h}">刪除</button></div>`).join('');
+  box.innerHTML = `${list ? `<div class="rd-list"><div class="cm-h">審查委員草擬</div>${list}</div>` : ''}${issued}
+    <label class="cm-h" for="rd-${k}">發出稿<span>${mine.at ? '已儲存 ' + esc(when(mine.at)) : ''}</span></label>
+    <textarea id="rd-${k}" data-rd="${k}" placeholder="可直接撰寫，或併入審查委員草擬後修改；按「核定發出」後研發小組才看得到（不顯示審查委員姓名）">${esc(mine.text || '')}</textarea>
+    <div class="cm-act"><button class="btn sm primary" type="button" data-issue="${k}">核定發出</button></div>`;
 }
 function fillHTML(k, prof) {
   const F = FILLS[k];
@@ -1300,9 +1423,7 @@ function fillHTML(k, prof) {
   const ref3 = k === '3A' && prof.diag.length ? `<details class="ref-dx"><summary>本會於階段三可擔任確診之款別與疾病（共 ${prof.diag.length} 項，本模板預設）</summary>${diagTable(prof)}</details>` : '';
   const v = state.data.f[k] || '';
   const cloud = state.mode === 'cloud';
-  const cm = !cloud ? '' : state.admin
-    ? `<div class="cbox admin" id="cm-${k}"><label class="cm-h" for="cmt-${k}">核心團隊意見<span id="cmm-${k}"></span></label><textarea id="cmt-${k}" data-c="${k}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[k] || {}).text || '')}</textarea></div>`
-    : `<div class="cbox" id="cm-${k}" hidden></div>`;
+  const cm = cmBoxHTML(k);
   return `<div class="fill" id="card-${k}">
     <label class="hd" for="f-${k}"><span class="code">${codeOf(k)}</span><span class="q">${esc(label)}</span></label>
     ${F.note ? `<div class="hint">${esc(F.note)}</div>` : ''}${ref3}
@@ -1321,9 +1442,7 @@ function sel(k, f, label, opts) {
 }
 function caseHTML(k, i) {
   const c = state.data.x[k], n = '案例' + zh(i + 1), cloud = state.mode === 'cloud';
-  const cm = !cloud ? '' : state.admin
-    ? `<div class="cbox admin" id="cm-${k}"><label class="cm-h" for="cmt-${k}">核心團隊意見<span id="cmm-${k}"></span></label><textarea id="cmt-${k}" data-c="${k}" placeholder="研發小組看得到，只有核心團隊能修改">${esc((state.data.c[k] || {}).text || '')}</textarea></div>`
-    : `<div class="cbox" id="cm-${k}" hidden></div>`;
+  const cm = cmBoxHTML(k);
   const radio = (v, t) => `<label><input type="radio" name="r-${k}" data-k="x.${k}.r" value="${v}"${c.r === v ? ' checked' : ''}>${t}</label>`;
   return `<div class="fill case" id="card-${k}">
     <div class="hd"><span class="code">${n}</span><input class="ttl" type="text" id="t-${k}" data-k="x.${k}.t" value="${esc(c.t)}" placeholder="案例標題（由研發小組自訂）" aria-label="${n}標題">${caseBlank(k) ? `<button class="linkbtn del" type="button" data-delcase="${k}">刪除此則</button>` : ''}</div>
@@ -1362,6 +1481,7 @@ function renderCases() {
   const ks = caseKeys();
   box.innerHTML = ks.map(caseHTML).join('');
   ks.forEach(k => { showFm(k); renderComment(k); });
+  applyReadOnly();
 }
 function renderRefs() {
   const box = $('#refs-list'); if (!box) return;
@@ -1374,7 +1494,7 @@ function setToolbar() {
   $('#top-title').textContent = has ? socOf(state.socId).name : '病主緩和臨床指引';
   const tag = $('#mode-tag');
   tag.hidden = !state.mode;
-  tag.textContent = (state.mode === 'admin-list' ? '核心團隊總覽' : state.mode === 'local' ? '本機試填' : state.admin ? '核心團隊檢閱中' : state.mode ? '● 雲端協作中' : '') + (has && state.label ? '｜' + state.label : '');
+  tag.textContent = (state.mode === 'admin-list' ? (state.role === 'reviewer' ? '審查委員' : '基金會總覽') : state.mode === 'local' ? '本機試填' : state.admin ? (state.role === 'reviewer' ? '審查委員審閱中' : '基金會管理者檢閱中') : state.mode ? '● 雲端協作中' : '') + (has && state.label ? '｜' + state.label : '');
   tag.className = 'mode-tag' + (state.mode === 'local' ? ' local' : state.admin || state.mode === 'admin-list' ? ' admin' : '');
 }
 function showPane(p) {
@@ -1461,9 +1581,9 @@ function renderLanding() {
       <div class="act"><select id="soc-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select><button class="btn block" type="button" id="btn-local">開始試填</button><button class="linkbtn" type="button" id="btn-import-home">或匯入先前匯出之草稿檔</button></div>
     </section>
     <section class="entry">
-      <div class="who">核心團隊</div>
+      <div class="who">基金會／核心團隊</div>
       <h2>總覽與檢閱</h2>
-      <p>以列入核心團隊名單之 Google 帳號登入，可查看各學會進度、建立邀請碼並填寫意見。</p>
+      <p>基金會管理者可查看各學會進度、建立邀請碼並核定審查意見；核心團隊審查委員可閱讀受指派學會之草案並書寫審查意見。</p>
       <div class="act"><button class="btn grad block" type="button" id="btn-admin">${signedIn ? '進入總覽' : '以 Google 帳號登入'}</button></div>
     </section>
   </div>
@@ -1502,7 +1622,10 @@ function renderEditor() {
     .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, `<a href="#sec-cases"><span class="dot" id="dot-cases"></span>案例</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`]).join('');
 
   const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
-  const adminBar = state.admin ? `<div class="whobar"><span>您正以核心團隊身分檢閱；修改內容與研發小組相同即時生效。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>` : '';
+  const adminBar = !state.admin ? '' : isReviewer()
+    ? `<div class="whobar"><span>審查中：可於各格下方書寫審查意見，意見經基金會核定後才會發給研發小組；不能修改研發小組擬訂之內容。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>`
+    : `<div class="whobar"><span>基金會管理者檢閱中：草案內容唯讀；可於各格下方併入審查委員之草擬、撰寫發出稿並核定發出（研發小組看不到審查委員姓名）。目前狀態：<b>${d.status === 'approved' ? '核定版' : '草案'}</b></span><button class="btn sm primary" type="button" id="btn-issue-all">全部發出</button><button class="btn sm" type="button" id="btn-approve">${d.status === 'approved' ? '退回為草案' : '登錄為核定版'}</button><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>`;
+  const lockBar = state.mode === 'cloud' && !state.admin && d.status === 'approved' ? `<p class="notice">本指引已登錄為核定版，內容已鎖定；如需修改，請洽基金會。</p>` : '';
   const localBar = state.mode === 'local' ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向基金會索取邀請碼。</p>` : '';
   const base = (inner, items) => {
     const n = k => items.filter(x => x[1] === k).length, total = n(LAW) + n(INT) + n(TABLE) + n(REC);
@@ -1513,7 +1636,7 @@ function renderEditor() {
   const guide = `<section class="chapter" id="sec-guide">
     <h2>本模板之使用</h2>
     <p class="lead">本網頁供研發小組擬訂「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
-    ${who}${adminBar}${localBar}
+    ${who}${adminBar}${lockBar}${localBar}
     ${TILES}
   </section>`;
 
@@ -1573,6 +1696,7 @@ function renderEditor() {
   renderRefs(); renderCases();
   CODES.concat(dzKeys()).forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
+  renderAllComments(); applyReadOnly();
   if (state.view === 'book') { showPane('book'); renderHandbook(); } else showPane('editor');
   whereField = ''; requestAnimationFrame(updateWhere);
 }
@@ -1590,6 +1714,7 @@ async function renderAdmin() {
     setStatus(`無法開啟總覽：${errText(e)}${email ? '（目前帳號：' + email + '）' : ''}`);
     return;
   }
+  await resolveRole();
   if (unsub) { unsub(); unsub = null; }
   state.mode = 'admin-list'; state.admin = true; state.socId = ''; state.data = null; state.label = ''; state.view = 'edit';
   setToolbar();
@@ -1598,25 +1723,31 @@ async function renderAdmin() {
   $('#nav').innerHTML = '';
   $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
   const email = FB.auth.currentUser ? FB.auth.currentUser.email : '';
+  await resolveRole();
+  const fnd = state.role === 'foundation';
+  adminRows = rows;
+  const progCell = r => { const [n, t] = draftProgress(r); return `<td><span class="prog"><i style="width:${t ? n / t * 100 : 0}%"></i></span> ${n}／${t}</td>`; };
+  const rvCell = r => `<td>${Object.keys(r.rv || {}).map(h => `<span class="rvchip">${esc(r.rv[h] || '審查委員')}<button class="linkbtn" type="button" data-rvdel="${esc(r.token)}|${h}" title="取消指派">×</button></span>`).join('') || '<span class="muted">未指派</span>'}<br><button class="linkbtn" type="button" data-rvadd="${esc(r.token)}">＋指派</button></td>`;
+  const stCell = r => `<td>${r.status === 'approved' ? '<span class="st-yes">核定版</span>' : '草案'}</td>`;
   const body = SOCIETIES.map(s => {
-    const list = rows.filter(r => r.soc === s.id);
+    const list = rows.filter(r => r.soc === s.id && (fnd || (r.rv || {})[state.me]));
     const nameCell = r => `<td>${esc(s.name)}${r && r.label ? `<br><span class="muted">${esc(r.label)}</span>` : ''}</td>`;
-    const rowsHTML = list.map(r => {
-      const n = CODES.filter(k => ((r.f || {})[k] || '').trim()).length;
-      return `<tr${s.test ? ' class="testrow"' : ''}>${nameCell(r)}<td><span class="prog"><i style="width:${n / CODES.length * 100}%"></i></span> ${n}／${CODES.length}</td><td>${esc(when(r.updatedAt))}<br><span class="muted">${esc(r.updatedBy || '')}</span></td>
-        <td><code class="tok">${esc(r.token)}</code><button class="linkbtn" type="button" data-copy="${esc(inviteLink(r.token))}">複製邀請連結</button></td>
-        <td class="acts-cell"><button class="btn sm primary" type="button" data-open="${esc(r.token)}">檢閱</button>${s.test ? `<button class="btn sm danger" type="button" data-del="${esc(r.token)}">刪除</button>` : ''}</td></tr>`;
-    }).join('');
-    if (s.test) return rowsHTML + `<tr class="testrow"><td>${esc(s.name)}</td><td colspan="3" class="muted">${list.length ? '已建立 ' + list.length + ' 組練習邀請碼；可再建立，例如一桌一組。' : '工作坊練習用，可建立多組邀請碼，例如一桌一組。'}</td><td><button class="btn sm" type="button" data-create="${s.id}">${list.length ? '再建立一組' : '建立練習邀請碼'}</button></td></tr>`;
-    if (!list.length) return `<tr>${nameCell(null)}<td colspan="3" class="muted">尚未建立邀請碼</td><td><button class="btn sm" type="button" data-create="${s.id}">建立邀請碼</button></td></tr>`;
+    const rowsHTML = list.map(r => `<tr${s.test ? ' class="testrow"' : ''}>${nameCell(r)}${progCell(r)}<td>${esc(when(r.updatedAt))}<br><span class="muted">${esc(r.updatedBy || '')}</span></td>
+        ${fnd ? rvCell(r) + stCell(r) + `<td><code class="tok">${esc(r.token)}</code><button class="linkbtn" type="button" data-copy="${esc(inviteLink(r.token))}">複製邀請連結</button></td>` : ''}
+        <td class="acts-cell"><button class="btn sm primary" type="button" data-open="${esc(r.token)}">${fnd ? '檢閱' : '審閱'}</button>${fnd && s.test ? `<button class="btn sm danger" type="button" data-del="${esc(r.token)}">刪除</button>` : ''}</td></tr>`).join('');
+    if (!fnd) return rowsHTML;
+    if (s.test) return rowsHTML + `<tr class="testrow"><td>${esc(s.name)}</td><td colspan="5" class="muted">${list.length ? '已建立 ' + list.length + ' 組練習邀請碼；可再建立，例如一桌一組。' : '工作坊練習用，可建立多組邀請碼，例如一桌一組。'}</td><td><button class="btn sm" type="button" data-create="${s.id}">${list.length ? '再建立一組' : '建立練習邀請碼'}</button></td></tr>`;
+    if (!list.length) return `<tr>${nameCell(null)}<td colspan="5" class="muted">尚未建立邀請碼</td><td><button class="btn sm" type="button" data-create="${s.id}">建立邀請碼</button></td></tr>`;
     return rowsHTML;
   }).join('');
+  const head = fnd ? '<tr><th>學會</th><th>已填</th><th>最後更新</th><th>審查委員</th><th>狀態</th><th>邀請碼</th><th></th></tr>' : '<tr><th>學會</th><th>已填</th><th>最後更新</th><th></th></tr>';
   $('#main').innerHTML = `<section class="chapter">
-    <div class="chapter-no"><span class="t">核心團隊</span></div>
-    <h2>各學會總覽</h2>
-    <p class="lead">登入帳號：${esc(email)}。建立邀請碼後，將邀請連結交給該學會研發小組；持有連結者即可共同編輯該學會之內容，請勿公開張貼。</p>
+    <div class="chapter-no"><span class="t">${fnd ? '基金會管理者' : '審查委員'}</span></div>
+    <h2>${fnd ? '各學會總覽' : '受指派審閱之學會'}</h2>
+    <p class="lead">登入帳號：${esc(email)}。${fnd ? '建立邀請碼後，將邀請連結交給該學會研發小組；持有連結者即可共同編輯該學會之內容，請勿公開張貼。審查委員須先列入核心團隊名單（Firebase 後台 config/admins），再於下表指派。' : '以下為您受指派審閱之學會。您可閱讀草案並於各格書寫審查意見；意見經基金會核定後才會發給研發小組。'}</p>
     <div class="whobar"><button class="btn sm" type="button" id="btn-refresh">重新整理</button><button class="btn sm" type="button" id="btn-signout">登出</button></div>
-    <div class="panel"><div class="tbl-wrap"><table class="t admin"><tr><th>學會</th><th>已填</th><th>最後更新</th><th>邀請碼</th><th></th></tr>${body}</table></div></div>
+    <div class="panel"><div class="tbl-wrap"><table class="t admin">${head}${body || '<tr><td class="muted">目前沒有受指派之學會。</td></tr>'}</table></div></div>
+    <p class="refline">本頁之身分區分目前僅於畫面上實施；資料庫權限規則將於下一階段同步調整。</p>
   </section>`;
   setStatus('已載入 ' + rows.length + ' 份');
 }
@@ -1633,7 +1764,8 @@ function onInput(e) {
   const el = e.target;
   if (el.id === 'in-name') { lsSet(KEY + 'name', el.value.trim()); return; }
   if (el.dataset && el.dataset.merge) { dzMerge(el.dataset.merge, el.value, el); return; }
-  if (el.dataset && el.dataset.c) { clearTimeout(el._t); el._t = setTimeout(() => pushComment(el.dataset.c, el.value), 1200); return; }
+  if (el.dataset && el.dataset.rd) { clearTimeout(el._t); el._t = setTimeout(() => rdSave(el.dataset.rd, el.value), 1200); return; }
+  if (readOnly()) return;
   const k = el.dataset && el.dataset.k;
   if (!k) return;
   const val = el.dataset.stage ? Array.from(document.querySelectorAll(`[data-k="${k}"]`)).filter(x => x.checked).map(x => x.dataset.stage).join('')
@@ -1709,14 +1841,17 @@ function renderHandbook() {
   const cover = `<section class="sheet"><div class="cover">
     <div class="org">${esc(soc.full || soc.name)}</div>
     <div class="ttl">病主緩和臨床指引${approved ? '' : '（草案）'}</div>
-    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日訂定發布）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br>預立醫療決定整合型計畫</div>
+    <div class="sub">${esc(d.meta.version || '')}${approved && d.meta.approval ? '<br>' + esc(d.meta.approval) + '核定' : ''}<br>依《病人自主權利法》（民國110年1月20日修正）及其施行細則（107年10月3日訂定發布）、<br>第五款公告疾病（110年4月13日修正公告）、《安寧緩和醫療條例》<br>財團法人新北市為愛前行社會福利基金會　預立醫療決定整合型計畫</div>
   </div></section>`;
 
   const intro = `<section class="sheet">
     <h1>本指引之定位</h1>
-    <p>本指引之目的，在使《病人自主權利法》所保障之病人自主，於${esc(soc.domain)}之臨床實務中得以實現。</p>
-    <p>《病人自主權利法》施行以來，預立醫療決定能否實現，繫於病人及早知悉其得為預立醫療決定，以及各專科在臨床上辨識時機、完成法定程序。本指引不就個別病人為判斷，而是提示一條分五個階段之程序，自病情告知至依預立醫療決定執行與善終照護；診斷與治療之選擇屬專科醫師之判斷，本指引處理者為治療全程中病人意願之確認與實現。此程序分兩層：共通基準以現行法為據，含法定要求、法律解釋與倫理與臨床建議，由預立醫療決定整合型計畫之核心團隊維護；本專科內容由本會依專業共識訂定；緩和醫療之共通建議由台灣安寧緩和醫學學會提供。</p>
-    <p>程序之終點是依病人預立醫療決定終止、撤除或不施行維持生命治療或人工營養及流體餵養。此係實現病人之意願，不以縮短生命為目的。</p>
+    <p>本指引有兩個目的：一是使《病人自主權利法》保障的病人自主，在${esc(soc.domain)}的臨床實務中得以實現；二是使病人及早獲得緩和醫療，自積極治療階段起即與治療並行，不必等到生命末期。</p>
+    <p>本指引依病程將臨床照護分為五個階段：病情及預立醫療照護諮商與預立醫療決定之告知，積極治療與及早共同照護，臨床條件確診與照會確認，意願確認與治療決策，以及執行、緩和醫療與善終照護。各階段寫明醫療團隊應在什麼時機、依什麼程序確認並實現病人的意願；涉及本專科者，並依疾病別寫明本會對積極治療方針、啟動緩和共同照護之時機與確診指標等之建議。對個別病人的診斷與治療，仍由醫師依專業判斷。</p>
+    <p>本指引的內容有兩個部分。第一部分是「共通基準」，為各學會指引所共用，由財團法人新北市為愛前行社會福利基金會「預立醫療決定整合型計畫」之核心團隊整理，分為法定要求、法律解釋、倫理與臨床建議三類（見附錄二）；其中法定要求與法律解釋以現行法為據。第二部分是「本專科內容」，由本會依專業共識訂定，包括各階段之填寫內容與案例。緩和共同照護的啟動時機與照護內容，以台灣安寧緩和醫學學會提供之共通建議〔名稱、版本、取得方式待補〕為基礎，再由本會依本專科疾病特性訂定（見階段二各疾病之【2-B】與【5-A】）；台灣安寧緩和醫學學會另亦如其他學會，訂定其本專科之指引。</p>
+    <p>本會核定本指引時，對共通基準為採用，對本專科內容為訂定並負其責任。兩者如有出入，以法定要求為準，本專科內容不得與之牴觸。</p>
+    <p>程序的終點，是病人意願的實現，以及持續的緩和醫療與善終照護。病人可能選擇接受維持生命治療，也可能始終未達臨床條件；依預立醫療決定終止、撤除或不施行維持生命治療，是實現意願的方式之一，不是本指引的目的，也不以縮短生命為目的。</p>
+    <p>本指引階段三至五之確診、照會確認與執行程序，以病人已為預立醫療決定為前提。病人未為預立醫療決定者，不適用該等程序；其中末期病人不施行、終止或撤除心肺復甦術或維生醫療，依《安寧緩和醫療條例》§7辦理：由病人簽署意願書；病人未簽署且意識昏迷或無法清楚表達意願時，由最近親屬出具同意書代替之；無最近親屬者，經安寧緩和醫療照會後，依末期病人最大利益出具醫囑代替之。階段一、二之告知與及早緩和共同照護，則適用於所有病人。</p>
     <p class="muted">本指引各條所標標籤：〔法定要求〕為法規明定，依法辦理；〔法律解釋〕為依現行法所為之解讀，主管機關另有函釋者從其函釋；〔倫理與臨床建議〕得依個別病人之狀況，經重症溝通（SIC）與醫病共享決策（SDM）調整。標籤說明與縮寫對照表見附錄二。</p>
     <table><tr><th style="width:22%">研發小組</th><td>${br(d.meta.team) || '<span class="empty">（尚未填寫）</span>'}</td></tr>
     <tr><th>核定</th><td>${approved && d.meta.approval ? esc(d.meta.approval) : '<span class="empty">（尚未核定）</span>'}</td></tr></table>
@@ -1860,6 +1995,14 @@ function init() {
       state.data.x[k] = blankCase(); renderCases(); updateProgress();
       if (state.mode === 'cloud') { queueCloud('x.' + k, blankCase()); flushCloud('x.' + k); } else saveLocal();
       $('#t-' + k).focus();
+    } else if (t.dataset.rvadd) { rvAdd(t.dataset.rvadd);
+    } else if (t.dataset.rvdel) { rvDel(t.dataset.rvdel);
+    } else if (t.dataset.issue) { rdIssue([t.dataset.issue]);
+    } else if (t.dataset.unissue) { if (window.confirm('撤回後研發小組將看不到這則審查意見，確定嗎？')) { const k = t.dataset.unissue; delete state.data.c[k]; cloudUpdate({ ['c.' + k]: null }, '已撤回').then(renderAllComments); }
+    } else if (t.dataset.adopt) { const [k, h] = t.dataset.adopt.split('|'), ta = $('#rd-' + k), add = ((state.data.rd[k] || {})[h] || {}).text || ''; if (ta) { ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + add; rdSave(k, ta.value); } renderComment(k);
+    } else if (t.dataset.rddel) { const [k, h] = t.dataset.rddel.split('|'); if (window.confirm('刪除這則審查委員草擬？')) { delete state.data.rd[k][h]; cloudUpdate({ [`rd.${k}.${h}`]: null }, '已刪除草擬').then(() => renderComment(k)); }
+    } else if (t.id === 'btn-issue-all') { rdIssueAll();
+    } else if (t.id === 'btn-approve') { toggleApproval();
     } else if (t.dataset.ungroup) { dzUngroup(t.dataset.ungroup);
     } else if (t.dataset.addself) { dzAddSelf(+t.dataset.addself);
     } else if (t.dataset.delself) { dzDelSelf(t.dataset.delself);
