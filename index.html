@@ -710,7 +710,7 @@ const FILLS = {
 // 引導問題（孫教授1151009意見七-4，採A＋B：僅供參考，不列入手冊）
 const GQ = {"1A": ["本專科病人在病程中哪些時點（如確診、分期改變、首次住院）適合告知？", "由誰告知、在什麼場合（門診、住院、個案管理）？", "如何轉介或安排預立醫療照護諮商？"], "2A": ["本會各疾病共通之積極治療原則為何？", "共通之重新評估治療目標之時點為何？"], "2B": ["本會各疾病共通之啟動緩和共同照護原則為何？", "由誰提出、如何徵得病人同意？"], "3A": ["本會各疾病共通之確診作業流程為何？", "判定有疑義時，如何會同其他專科？"], "4A": ["本專科病人常見哪些影響意思能力之因素（如意識波動、認知障礙、溝通障礙）？", "採用何種評估方式或工具，由誰評估？", "如何依最大協助原則協助病人表達（如溝通輔具、選擇評估時機）？"], "4B": ["本專科常見病人改變意思之情境為何？", "依表4-1處理時，由誰確認、如何記載？", "需協助病人以書面變更預立醫療決定時，流程為何？"], "4C": ["本專科哪些治療適合限時嘗試？", "各治療合理之嘗試期程與評估時點為何？", "停損點之判斷指標為何？屆期後如何轉銜緩和醫療？"], "5A": ["本專科常見之執行情境為何（如撤除呼吸器）？", "執行時團隊如何分工（主治醫師、緩和醫療團隊、護理）？", "本專科病人之症狀控制與舒適照護，需做哪些調整？"]};
 const GQ_SOLO = { '2A': ['本專科主要疾病之標準治療路徑為何？', '在什麼情況下需要重新評估治療目標（如療效不佳、併發症反覆）？', '重新評估時，如何與病人討論治療之效益與負擔？'], '2B': ['本專科以哪些客觀指標判斷病程進展（如分期、功能量表、住院次數）？', '達到什麼程度時，主治醫師應提出緩和共同照護評估？', '由誰提出、如何徵得病人同意？'], '3A': ['本會可擔任確診之各款（見上表），各以哪些臨床表現與檢查判定？', '需要哪些檢查或評估工具，結果如何記載？', '判定有疑義時，如何會同其他專科？'] };
-const GQ_3B = ['接獲照會後，由誰、於多久內完成評估？', '二次照會之間隔與內容為何？', '如何確認病人之預立醫療決定及其內容，並記載於病歷？', '緩和醫療團隊之組成為何？'];
+const GQ_3B = ['接獲照會後，由誰、於多久內完成評估？', '二次照會之內容為何？', '如何確認病人之預立醫療決定及其內容，並記載於病歷？', '緩和醫療團隊之組成為何？'];
 const GQ_3A_REF = ["病人符合哪些情形時，應轉介確診？", "轉介或會同哪些專科、透過什麼流程？", "轉介期間，本專科之照護角色為何？"];
 const CODES = Object.keys(FILLS);
 function codeOf(k) { return k[0] + '-' + k[1]; }
@@ -1473,14 +1473,12 @@ function summaryRows(prof) {
 // 首頁五階段流程圖（名稱取自 STAGES，與內文一致；手機寬度隱藏）
 function heroFigSVG() {
   const y = i => 34 + i * 62;
-  let g = `<rect x="6" y="${y(1) - 26}" width="388" height="${y(4) - y(1) + 52}" rx="12" fill="#fff" opacity=".13"/>`;
-  g += `<line x1="34" y1="${y(0)}" x2="34" y2="${y(4)}" stroke="#fff" stroke-width="2" opacity=".85"/>`;
+  let g = `<line x1="34" y1="${y(0)}" x2="34" y2="${y(4)}" stroke="#fff" stroke-width="2" opacity=".85"/>`;
   STAGES.forEach((st, i) => {
     g += `<circle cx="34" cy="${y(i)}" r="17" fill="#fff"/><text x="34" y="${y(i) + 6}" font-size="17" font-weight="700" fill="#c2414e" text-anchor="middle">${ZH[i]}</text>`;
     g += `<text x="66" y="${y(i) + 6}" font-size="17" fill="#fff">${esc(st.name)}</text>`;
   });
-  g += `<text x="200" y="${y(4) + 52}" font-size="13.5" fill="#fff" text-anchor="middle" opacity=".95">淺色區塊：緩和醫療自階段二起與積極治療並行</text>`;
-  return `<svg class="fig5" viewBox="0 0 400 ${y(4) + 64}" role="img" aria-label="五階段示意圖" font-family="Noto Sans TC, PingFang TC, sans-serif">${g}</svg>`;
+  return `<svg class="fig5" viewBox="0 0 400 ${y(4) + 34}" role="img" aria-label="五階段示意圖" font-family="Noto Sans TC, PingFang TC, sans-serif">${g}</svg>`;
 }
 function rolesTable(prof) {
   return `<div class="tbl-wrap"><table class="t"><tr><th></th>${STAGES.map(s => `<th>${ZH[s.n - 1]}　${esc(s.name)}</th>`).join('')}</tr>
@@ -1730,7 +1728,7 @@ function renderEditor() {
   $('#landing').innerHTML = '';
   $('#nav').innerHTML = [`<a href="#sec-guide"><span class="dot"></span>本模板之使用</a>`, `<a href="#sec-basic"><span class="dot"></span>本會資料與角色</a>`, `<div class="sep"></div>`]
     .concat(STAGES.map(s => `<a href="#sec-s${s.n}"><span class="dot" data-stage="${s.n}"></span>階段${ZH[s.n - 1]}　${esc(s.name)}</a>`))
-    .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, ...(state.socId === 'hospice' ? [`<a href="#sec-hc"><span class="dot"></span>安寧緩和學會共通建議</a>`] : []), `<a href="#sec-cases"><span class="dot" id="dot-cases"></span>案例</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`]).join('');
+    .concat([`<div class="sep"></div>`, `<a href="#sec-common"><span class="dot"></span>各階段通用</a>`, `<a href="#sec-cases"><span class="dot" id="dot-cases"></span>案例</a>`, `<a href="#sec-refs"><span class="dot"></span>參考文獻</a>`, ...(state.socId === 'hospice' ? [`<div class="sep"></div>`, `<a href="#sec-hc"><span class="dot"></span>安寧緩和學會共通建議</a>`] : [])]).join('');
 
   const who = cloud && !state.admin ? `<div class="whobar"><label for="in-name">您的姓名（標示於您修改之格）</label><input type="text" id="in-name" value="${esc(lsGet(KEY + 'name') || '')}" placeholder="例：王○○醫師"><button class="btn sm" type="button" id="btn-leave">離開此學會</button></div>` : '';
   const adminBar = !state.admin ? '' : isReviewer()
@@ -1748,7 +1746,7 @@ function renderEditor() {
     <h2>本模板之使用</h2>
     <p class="lead">本網頁供研發小組擬訂「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
     ${who}${adminBar}${lockBar}${localBar}
-    ${isHospice() ? '<p class="notice">本會頁面另有「安寧緩和學會共通建議」一章（位於「各階段通用」之後）：撰寫各款疾病於醫療過程中照會與緩和醫療處置之建議，經審定後列入各學會指引之共通基準，供各學會共用；本章不印入本會手冊。本會於階段二為受照會方，免填；階段三分「確診方」與「受照會方」兩部分。</p>' : ''}
+    ${isHospice() ? '<p class="notice">本會頁面另有「安寧緩和學會共通建議」一章（位於「參考文獻」之後）：撰寫各款疾病於醫療過程中照會與緩和醫療處置之建議，經審定後列入各學會指引之共通基準，供各學會共用；本章不印入本會手冊。本會於階段二為受照會方，免填；階段三分「確診方」與「受照會方」兩部分。</p>' : ''}
     ${TILES}
   </section>`;
 
@@ -1804,7 +1802,7 @@ function renderEditor() {
     <div class="refs-act"><button class="btn sm" type="button" id="btn-addref">新增一筆</button></div></div>
   </section>`;
 
-  $('#main').innerHTML = guide + basic + stages + common + hcChapterHTML() + cases + refs;
+  $('#main').innerHTML = guide + basic + stages + common + cases + refs + hcChapterHTML(); // 共通建議章不印入本會手冊，置於最後（1151012）
   renderRefs(); renderCases();
   CODES.concat(dzKeys(), hcKeys()).forEach(k => { showFm(k); renderComment(k); });
   updateProgress();
