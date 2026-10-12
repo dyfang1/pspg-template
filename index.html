@@ -1655,6 +1655,7 @@ function updateWhere() {
 function renderLanding() {
   state.mode = ''; state.socId = ''; state.data = null; state.admin = false; state.label = ''; state.view = 'edit';
   if (unsub) { unsub(); unsub = null; }
+  try { if (location.hash && location.hash !== '#admin') history.replaceState(null, '', location.pathname); } catch (e) {}
   setToolbar();
   $('#nav').innerHTML = ''; $('#main').innerHTML = '';
   $('#st-prog').textContent = ''; $('#st-bar').style.width = '0';
@@ -1708,6 +1709,7 @@ function renderLanding() {
     const tk = (m ? m[1] : v).trim();
     if (tk.length >= 12) openCloud(tk, false); else setStatus('邀請碼格式不正確');
   });
+  { const lp = lsGet(KEY + 'last'); if (lp && socOf(lp)) $('#soc-pick').value = lp; } // 預選上次試填之學會
   $('#soc-pick').addEventListener('change', e => { if (e.target.value) openLocal(e.target.value); });
   $('#btn-local').addEventListener('click', () => { const v = $('#soc-pick').value; if (v) openLocal(v); else setStatus('請先選擇學會'); });
   $('#btn-admin').addEventListener('click', adminSignIn);
@@ -1717,6 +1719,7 @@ function renderLanding() {
 function openLocal(id) {
   if (unsub) { unsub(); unsub = null; }
   state.mode = 'local'; state.admin = false; state.token = ''; state.socId = id; state.data = loadLocal(id);
+  try { history.replaceState(null, '', location.pathname + '#' + id); } catch (e) {} // 重新整理時留在本頁；直接開網址則到首頁（1151012）
   renderEditor();
   setStatus('');
 }
@@ -2144,10 +2147,7 @@ function init() {
   if (h === 'admin') { history.replaceState(null, '', location.pathname); renderLanding(); adminEntry(); return; }
   const sid = h.split('-')[0];
   if (socOf(sid)) { openLocal(sid); if (/-book$/.test(h)) setView('book'); return; }
-  const saved = lsGet(KEY + 'token');
-  if (saved) { openCloud(saved, false); return; }
-  const last = lsGet(KEY + 'last');
-  if (last && socOf(last)) { openLocal(last); return; }
+  // 直接開網址一律到首頁（1151012）：以邀請碼進入者按「繼續編輯」、本機試填者已預選上次之學會
   renderLanding();
 }
 init();
