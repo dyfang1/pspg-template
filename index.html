@@ -279,6 +279,35 @@ body.ro #main textarea[readonly], body.ro #main input[readonly] { background: #f
 .sw.ink { background: var(--paper); border: 2px solid var(--ink-2); }
 .sw.ok { background: var(--ok-soft); border: 2px solid var(--ok); }
 .sw.gray { background: var(--soft); border: 2px solid var(--faint); }
+/* ---------- 模板意見（審查者以個人連結進入；1151013） ---------- */
+.fbb { display: inline-flex; align-items: center; border: 1px solid #c9d4e6; background: #e9eff7; color: #2b4c7e; border-radius: 999px; font-size: 12.5px; font-weight: 500; line-height: 22px; padding: 0 9px; margin-left: 8px; cursor: pointer; vertical-align: 2px; white-space: nowrap; font-family: var(--sans); letter-spacing: 0; }
+.fbb:hover { background: #dbe5f3; }
+.fbb.has { background: #2b4c7e; border-color: #2b4c7e; color: #fff; }
+h2 > .fbb, h3 > .fbb { font-size: 13px; vertical-align: 6px; }
+#fbchip[hidden] { display: none; }
+#fbchip { position: fixed; right: 16px; bottom: 16px; z-index: 40; background: #2b4c7e; color: #fff; border-radius: 12px; padding: 10px 14px; font-size: 14.5px; box-shadow: 0 8px 24px rgba(20, 30, 60, .25); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; max-width: calc(100vw - 32px); }
+#fbchip b { font-weight: 700; }
+#fbchip .due { background: rgba(255, 255, 255, .18); border-radius: 999px; padding: 0 9px; }
+#fbchip button { border: 1px solid rgba(255, 255, 255, .6); background: transparent; color: #fff; border-radius: 8px; padding: 2px 10px; font: inherit; font-size: 13.5px; cursor: pointer; }
+.fbnote { background: #e9eff7; color: #2b4c7e; border-radius: 10px; padding: 12px 16px; font-size: 15.5px; margin: 20px 0 0; }
+.fbdlg { position: fixed; inset: 0; z-index: 60; background: rgba(20, 20, 30, .45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.fbdlg[hidden] { display: none; }
+.fbdlg .box { background: #fff; border-radius: 14px; width: min(640px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 20px 22px; box-shadow: 0 20px 60px rgba(0, 0, 0, .25); }
+.fbdlg h3 { margin: 0 0 6px; font-size: 18px; color: #2b4c7e; }
+.fbdlg .loc { font-size: 14px; color: var(--muted); margin: 0 0 6px; }
+.fbdlg .quote { font-size: 14px; border-left: 3px solid #c9d4e6; background: #f7f9fc; padding: 6px 10px; margin: 0 0 10px; color: var(--ink-2); white-space: pre-wrap; }
+.fbdlg textarea { width: 100%; min-height: 140px; border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: inherit; font-size: 16px; }
+.fbdlg .act { display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.fbdlg .act .note { margin-right: auto; font-size: 13.5px; color: var(--muted); }
+.fb-welcome { grid-column: 1 / -1; border-top: 4px solid #2b4c7e; }
+.fb-welcome .who { color: #2b4c7e; }
+.fb-welcome ol { margin: 4px 0 6px; padding-left: 1.3em; }
+.fb-welcome .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.fb-welcome select { max-width: 100%; }
+table.t.fbt td.loc { width: 34%; }
+table.t.fbt td.loc small { display: block; color: var(--muted); margin-top: 2px; }
+table.t.fbt tr.g td { background: #fbf6f5; font-weight: 700; color: var(--coral-ink); }
+@media print { #fbchip, .fbb, .fbdlg { display: none !important; } }
 .notice { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 12px 16px; font-size: 15.5px; margin: 20px 0 0; }
 .whobar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 20px; padding: 12px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; font-size: 15.5px; }
 .whobar label { color: var(--muted); }
@@ -1352,7 +1381,7 @@ function rerenderDz() {
   const L = $('#dz-list'), s2 = $('#dz-s2'), s3 = $('#dz-s3'); if (!L) return;
   L.innerHTML = dzListHTML(prof); s2.innerHTML = dzStageHTML(2, prof); s3.innerHTML = dzStageHTML(3, prof);
   dzKeys().concat(['2A', '2B', '3A', '3B']).forEach(k => { showFm(k); renderComment(k); });
-  updateProgress(); applyReadOnly();
+  updateProgress(); applyReadOnly(); fbDecorate();
 }
 function dzHasContent(id) { return ['a', 'b', 'c'].some(f => dzDone(id, f)); }
 async function dzWrite(upd) {
@@ -1616,6 +1645,7 @@ function showPane(p) {
 function flushAll() { Array.from(pending.keys()).forEach(flushCloud); }
 function goHome() {
   if (state.mode === 'cloud') flushAll();
+  { const d = $('#fbdlg'); if (d) d.hidden = true; }
   setView('edit');
   renderLanding();
   setStatus('');
@@ -1672,6 +1702,7 @@ function renderLanding() {
     </div>
   </section>
   <div class="entries">
+    ${fbWelcomeHTML()}
     <section class="entry">
       <div class="who">研發小組</div>
       <h2>以邀請碼進入</h2>
@@ -1713,6 +1744,7 @@ function renderLanding() {
   $('#btn-admin').addEventListener('click', adminSignIn);
   $('#btn-import-home').addEventListener('click', () => $('#file-import').click());
   if (savedTok) $('#btn-resume').addEventListener('click', () => openCloud(savedTok, false));
+  fbBind(); fbChip();
 }
 function openLocal(id) {
   if (unsub) { unsub(); unsub = null; }
@@ -1809,6 +1841,7 @@ function renderEditor() {
   renderAllComments(); applyReadOnly();
   if (state.view === 'book') { showPane('book'); renderHandbook(); } else showPane('editor');
   whereField = ''; requestAnimationFrame(updateWhere);
+  fbDecorate();
 }
 async function renderAdmin() {
   setStatus('讀取各學會資料…');
@@ -1858,8 +1891,9 @@ async function renderAdmin() {
     <div class="whobar"><button class="btn sm" type="button" id="btn-refresh">重新整理</button><button class="btn sm" type="button" id="btn-signout">登出</button></div>
     <div class="panel"><div class="tbl-wrap"><table class="t admin">${head}${body || '<tr><td class="muted">目前沒有受指派之學會。</td></tr>'}</table></div></div>
     <p class="refline">本頁之身分區分目前僅於畫面上實施；資料庫權限規則將於下一階段同步調整。</p>
-  </section>`;
+  </section>${fnd ? `<section class="chapter" id="fb-admin"><div class="chapter-no"><span class="t">核心團隊</span></div><h2>模板意見</h2><div id="fb-admin-body"><p class="muted">讀取中…</p></div></section>` : ''}`;
   setStatus('已載入 ' + rows.length + ' 份');
+  if (fnd) fbAdminLoad();
 }
 function updateProgress() {
   if (!state.data) return;
@@ -1885,7 +1919,7 @@ function onInput(e) {
   const m = k.match(/^f\.(\w+)$/) || k.match(/^x\.(K\d+)\.b$/) || (mh ? [k, 'hc_' + mh[1] + '_' + mh[2]] : md ? [k, md[1] + '_' + md[2]] : null);
   if (m) updateCount(m[1]);
   dzRefreshBadge(el);
-  if (/^dz\.\w+\.[nk]$/.test(k)) { clearTimeout(window._dzT); window._dzT = setTimeout(() => { const s2 = $('#dz-s2'), s3 = $('#dz-s3'), pr = profile(socOf(state.socId)); if (s2) { s2.innerHTML = dzStageHTML(2, pr); s3.innerHTML = dzStageHTML(3, pr); dzKeys().concat(['2A', '2B', '3A']).forEach(x => { showFm(x); renderComment(x); }); updateProgress(); } }, 600); }
+  if (/^dz\.\w+\.[nk]$/.test(k)) { clearTimeout(window._dzT); window._dzT = setTimeout(() => { const s2 = $('#dz-s2'), s3 = $('#dz-s3'), pr = profile(socOf(state.socId)); if (s2) { s2.innerHTML = dzStageHTML(2, pr); s3.innerHTML = dzStageHTML(3, pr); dzKeys().concat(['2A', '2B', '3A', '3B']).forEach(x => { showFm(x); renderComment(x); }); updateProgress(); fbDecorate(); } }, 600); }
   if (/^x\.K\d+\.t$/.test(k)) updateWhere();
   updateProgress();
   if (state.mode === 'cloud') {
@@ -2081,6 +2115,194 @@ async function copyText(t) {
   try { await navigator.clipboard.writeText(t); setStatus('已複製邀請連結'); }
   catch (e) { window.prompt('請複製以下邀請連結', t); }
 }
+// ====================================================================
+// 模板意見（1151013）
+//   對象：核心團隊成員（約六位），以個人專屬連結（#rv=代碼）進入；研發小組看不到本功能。
+//   資料：tfr/{代碼}{name, active, createdAt}＝審查者；tfr/{代碼}/tfc/{位置}{loc,label,quote,text,soc,ord,at}＝意見（每位置一則，可修改刪除）。
+//   權限：持代碼者只能讀寫自己的意見；基金會管理者（config/admins）可讀全部、新增或停用審查者（見 firestore.rules）。
+//   截止後將 FEEDBACK.open 改為 false：連結只顯示「已結束」，已收意見保留。
+// ====================================================================
+const FEEDBACK = { open: true, due: '115年10月27日', dueShort: '10月27日' };
+state.fbr = null; state.fbc = {}; state.fbMeta = {};
+function fbLink(code) { return location.origin + location.pathname + '#rv=' + code; }
+function fbActive() { return !!state.fbr && FEEDBACK.open && state.mode === 'local'; }
+async function fbLoad(code, fromLink) {
+  let msg = '';
+  try {
+    const { fs, db } = await fb();
+    const snap = await fs.getDoc(fs.doc(db, 'tfr', code));
+    if (!snap.exists() || snap.data().active === false) throw { code: 'permission-denied' };
+    state.fbr = { code, name: snap.data().name || '' };
+    state.fbc = {};
+    if (FEEDBACK.open) { const qs = await fs.getDocs(fs.collection(db, 'tfr', code, 'tfc')); qs.forEach(d => { state.fbc[d.id] = d.data(); }); }
+    lsSet(KEY + 'rv', code);
+  } catch (e) {
+    state.fbr = null; state.fbc = {};
+    if (/permission-denied/.test((e && e.code) || '')) { lsDel(KEY + 'rv'); if (fromLink) msg = '此意見連結已停用或無效，請洽基金會。'; }
+    else if (fromLink) msg = '無法載入意見資料：' + errText(e);
+  }
+  if (!state.mode) renderLanding(); else if (state.mode === 'local') fbDecorate();
+  if (msg) setStatus(msg);
+}
+function fbWelcomeHTML() {
+  if (!state.fbr) return '';
+  const nm = esc(state.fbr.name);
+  if (!FEEDBACK.open) return `<section class="entry fb-welcome"><div class="who">模板意見</div><h2>${nm}，您好</h2><p>模板意見徵詢已結束，感謝您的協助。</p></section>`;
+  const n = Object.keys(state.fbc).length;
+  return `<section class="entry fb-welcome"><div class="who">模板意見</div><h2>${nm}，您好</h2>
+    <p>感謝您協助檢視病主緩和臨床指引模板，請於 <b>${FEEDBACK.due}</b> 前提供意見。${n ? `您已送出 ${n} 則意見。` : ''}</p>
+    <ol><li>選擇一個學會進入，即可檢視該會之模板內容；可換不同學會檢視。</li><li>模板上每章標題、每條共通基準、每個填寫格旁，都有「意見」按鈕；按下即可撰寫。</li><li>系統會自動記下位置與原句，您只要寫意見本身。</li><li>您的意見只有您本人與基金會看得到；送出後仍可修改或刪除。</li></ol>
+    <div class="row"><select id="fb-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.filter(x => !x.test).map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><button class="btn primary" type="button" id="fb-go">開始檢視</button><button class="btn" type="button" id="fb-general-home">撰寫整體意見</button></div></section>`;
+}
+function fbBind() {
+  const go = $('#fb-go'); if (!go) return;
+  go.addEventListener('click', () => { const v = $('#fb-pick').value; if (v) openLocal(v); else setStatus('請先選擇學會'); });
+  $('#fb-general-home').addEventListener('click', () => fbOpen('general'));
+}
+// 於填寫畫面加上「意見」按鈕（位置、原句、排序由畫面結構自動產生）
+function fbDecorate() {
+  const chip = $('#fbchip');
+  document.querySelectorAll('#main .fbb, #main .fbnote').forEach(x => x.remove());
+  if (!fbActive() || !state.socId) { if (chip) chip.hidden = true; return; }
+  const soc = socOf(state.socId), meta = {}; let ord = 0;
+  const cut = (t, n) => { t = (t || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n) + '……' : t; };
+  const txt = el => { const c = el.cloneNode(true); c.querySelectorAll('.fbb, .tag, button, small, .dzst, .src-l').forEach(x => x.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); };
+  const add = (host, loc, label, quote) => {
+    if (!host) return;
+    meta[loc] = meta[loc] || { label, quote: cut(quote, 300), ord: ++ord };
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'fbb' + (state.fbc[loc] ? ' has' : ''); b.dataset.fb = loc; b.textContent = state.fbc[loc] ? '已留意見' : '意見';
+    host.appendChild(b);
+  };
+  document.querySelectorAll('#main section.chapter[id^="sec-"]').forEach(sec => {
+    const sid = sec.id, sl = SEC_LABEL(sid), h2 = sec.querySelector(':scope > h2');
+    add(h2, 'ch-' + sid, sl + '（整章，含說明與步驟）', '');
+    const sm = sid.match(/^sec-s(\d)$/), pre = sm ? 's' + sm[1] : sid === 'sec-common' ? 'common' : '';
+    if (pre) sec.querySelectorAll('details.base > .in').forEach(inn => {
+      let gi = 0, gh = '', ii = 0;
+      Array.from(inn.querySelectorAll('.gh, li, .tcap')).forEach(el => {
+        if (el.classList.contains('gh')) { gi++; ii = 0; gh = txt(el); add(el, `${pre}-g${gi}`, `${sl} › 共通基準 › ${gh}`, ''); }
+        else if (el.classList.contains('tcap')) add(el, `${pre}-tbl`, `${sl} › 共通基準 › ${txt(el)}`, '');
+        else { ii++; add(el, `${pre}-g${gi}-i${ii}`, `${sl} › 共通基準${gh ? ' › ' + gh : ''} › 第${ii}條`, txt(el)); }
+      });
+    });
+    if (sid === 'sec-basic') sec.querySelectorAll('h3').forEach((h, i) => add(h, `basic-${state.socId}-${i + 1}`, `${soc.name} › ${sl} › ${txt(h)}`, ''));
+    sec.querySelectorAll('.fill[id^="card-"] > .hd, .dfield[id^="card-"] > .sub-h').forEach(lab => {
+      const card = lab.parentElement, key = card.id.slice(5), qs = Array.from(card.querySelectorAll(':scope > .gq li')).map(li => li.textContent.trim());
+      const quote = txt(lab) + (qs.length ? '\n參考問題：' + qs.join('；') : '');
+      if (FILLS[key]) { const inCommon = card.closest('details.dz'); add(lab, 'f-' + key, `${sl}${inCommon ? ' › 各疾病共通' : ''} › 【${codeOf(key)}】${FILLS[key].label}`, `【${codeOf(key)}】${txt(lab).replace(/^【?\d-[A-Z]】?/, '')}` + (qs.length ? '\n參考問題：' + qs.join('；') : '')); return; }
+      const mh = key.match(/^hc_(g\d+)_([abc])$/);
+      if (mh) { add(lab, `hc-${mh[1]}-${mh[2]}`, `${HC_TAG} › ${(HC_GROUPS.find(x => x[0] === mh[1]) || [])[1] || ''} › ${HC_FIELDS[mh[2]][1]}`, quote); return; }
+      const md = key.match(/^(.+)_([abc])$/);
+      if (md) { const sumq = card.closest('details.dz') && card.closest('details.dz').querySelector('summary .q'); add(lab, `dz-${state.socId}-${md[1]}-${md[2]}`, `${soc.name} › ${sl} › ${sumq ? txt(sumq) : ''} › 【${DZ_FIELD[md[2]][0]}】${DZ_FIELD[md[2]][1]}`, quote); }
+    });
+  });
+  meta.general = { label: '整體意見', quote: '', ord: 100000 };
+  state.fbMeta = meta;
+  const g = $('#sec-guide');
+  if (g) g.querySelector(':scope > h2').insertAdjacentHTML('afterend', `<p class="fbnote">模板意見模式（${esc(state.fbr.name)}）：各章標題、每條共通基準與每個填寫格旁之「意見」按鈕，按下即可撰寫，系統自動記下位置與原句。填寫格可試填，內容只存在本機，不會送出。請於${FEEDBACK.due}前提供意見。</p>`);
+  fbChip();
+}
+function fbChip() {
+  let c = $('#fbchip');
+  if (!c) { c = document.createElement('div'); c.id = 'fbchip'; document.body.appendChild(c); c.addEventListener('click', e => { if (e.target.id === 'fbchip-general') fbOpen('general'); }); }
+  if (!fbActive()) { c.hidden = true; return; }
+  c.hidden = false;
+  c.innerHTML = `<span>模板意見｜<b>${esc(state.fbr.name)}</b></span><span class="due">截止 ${FEEDBACK.dueShort}</span><span>已送出 ${Object.keys(state.fbc).length} 則</span><button type="button" id="fbchip-general">整體意見</button>`;
+}
+function fbOpen(loc) {
+  if (!state.fbr || !FEEDBACK.open) return;
+  const m = (state.fbMeta || {})[loc] || (loc === 'general' ? { label: '整體意見', quote: '', ord: 100000 } : null); if (!m) return;
+  const cur = state.fbc[loc];
+  let d = $('#fbdlg');
+  if (!d) { d = document.createElement('div'); d.id = 'fbdlg'; d.className = 'fbdlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.hidden = true; }); }
+  d.innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-labelledby="fbdlg-h"><h3 id="fbdlg-h">${loc === 'general' ? '整體意見' : '意見'}</h3>
+    <p class="loc">位置：<b>${esc(m.label)}</b></p>${m.quote ? `<div class="quote">${esc(m.quote)}</div>` : loc === 'general' ? '<div class="quote">不針對特定位置之意見，例如整體架構、手冊版面。</div>' : ''}
+    <textarea id="fbdlg-t" aria-label="意見內容" placeholder="請寫下您的意見">${esc(cur ? cur.text : '')}</textarea>
+    <div class="act"><span class="note">只有您本人與基金會看得到${cur && cur.at ? '｜上次送出：' + esc(when(cur.at)) : ''}</span>${cur ? '<button class="btn sm" type="button" id="fbdlg-del">刪除</button>' : ''}<button class="btn sm" type="button" id="fbdlg-x">取消</button><button class="btn sm primary" type="button" id="fbdlg-ok">${cur ? '更新' : '送出'}</button></div></div>`;
+  d.hidden = false; $('#fbdlg-t').focus();
+  $('#fbdlg-x').onclick = () => { d.hidden = true; };
+  $('#fbdlg-ok').onclick = () => fbSave(loc, m, $('#fbdlg-t').value);
+  if (cur) $('#fbdlg-del').onclick = () => { if (window.confirm('刪除這則意見？')) fbSave(loc, m, ''); };
+}
+async function fbSave(loc, m, text) {
+  text = (text || '').trim();
+  const ok = $('#fbdlg-ok'); if (ok) ok.disabled = true;
+  try {
+    const { fs, db } = await fb();
+    const ref = fs.doc(db, 'tfr', state.fbr.code, 'tfc', loc);
+    if (!text) { await fs.deleteDoc(ref); delete state.fbc[loc]; setStatus('已刪除意見'); }
+    else {
+      const rec = { loc, label: m.label, quote: m.quote || '', text, soc: state.socId ? socOf(state.socId).name : '', ord: m.ord || 0, at: fs.serverTimestamp() };
+      await fs.setDoc(ref, rec); state.fbc[loc] = Object.assign({}, rec, { at: new Date() }); setStatus('已送出意見 ' + hhmm());
+    }
+    $('#fbdlg').hidden = true;
+    document.querySelectorAll(`#main .fbb[data-fb="${loc}"]`).forEach(b => { b.classList.toggle('has', !!state.fbc[loc]); b.textContent = state.fbc[loc] ? '已留意見' : '意見'; });
+    fbChip(); if (!state.mode) renderLanding();
+  } catch (e) { if (ok) ok.disabled = false; window.alert('送出失敗：' + errText(e) + '。意見內容仍在框內，請稍後再試。'); }
+}
+// ---------- 基金會管理者：審查者與意見彙整 ----------
+async function fbAdminLoad() {
+  const box = $('#fb-admin-body'); if (!box) return;
+  try {
+    const { fs, db } = await fb();
+    const rs = await fs.getDocs(fs.collection(db, 'tfr')), reviewers = [];
+    rs.forEach(d => reviewers.push(Object.assign({ code: d.id }, d.data())));
+    reviewers.sort((a, b) => ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0));
+    const comments = [];
+    await Promise.all(reviewers.map(async r => { const qs = await fs.getDocs(fs.collection(db, 'tfr', r.code, 'tfc')); qs.forEach(d => comments.push(Object.assign({ who: r.name, code: r.code }, d.data()))); }));
+    state.fbAdmin = { reviewers, comments };
+    fbAdminRender();
+  } catch (e) { box.innerHTML = `<p class="refline">無法讀取模板意見：${esc(errText(e))}。若尚未於 Firebase 後台更新權限規則，請先更新（見 README）。</p>`; }
+}
+function fbSorted(list) { return list.slice().sort((a, b) => (a.ord || 0) - (b.ord || 0) || String(a.label).localeCompare(String(b.label)) || ((a.at && a.at.seconds) || 0) - ((b.at && b.at.seconds) || 0)); }
+function fbGroup(label) { return String(label || '').split(' › ')[0].replace(/（整章，含說明與步驟）$/, ''); }
+function fbAdminRender() {
+  const box = $('#fb-admin-body'), A = state.fbAdmin; if (!box || !A) return;
+  const sel = (state.fbFilter || '');
+  const cnt = c => A.comments.filter(x => x.code === c).length;
+  const rvRows = A.reviewers.map(r => `<tr><td>${esc(r.name)}${r.active === false ? ' <span class="muted">（已停用）</span>' : ''}</td><td><code class="tok">…#rv=${esc(r.code.slice(0, 6))}…</code><button class="linkbtn" type="button" data-copy="${esc(fbLink(r.code))}">複製連結</button></td><td>${cnt(r.code)}</td><td><button class="btn sm" type="button" data-fbtoggle="${esc(r.code)}">${r.active === false ? '重新啟用' : '停用'}</button></td></tr>`).join('');
+  const list = fbSorted(A.comments.filter(x => !sel || x.code === sel));
+  let last = '', rows = '';
+  list.forEach(c => {
+    const g = c.loc === 'general' ? '整體意見' : fbGroup(c.label);
+    if (g !== last) { rows += `<tr class="g"><td colspan="3">${esc(g)}</td></tr>`; last = g; }
+    rows += `<tr><td class="loc">${esc(c.label)}${c.quote ? `<small>${esc(c.quote)}</small>` : ''}${c.soc && /^(dz-|basic-)/.test(c.loc) ? `<small>檢視學會：${esc(c.soc)}</small>` : ''}</td><td>${esc(c.who)}<br><span class="muted">${esc(when(c.at))}</span></td><td>${br(c.text)}</td></tr>`;
+  });
+  const given = new Set(A.comments.map(x => x.code)).size;
+  box.innerHTML = `<p class="lead">意見截止日：${FEEDBACK.due}${FEEDBACK.open ? '' : '（已結束）'}｜審查者 ${A.reviewers.length} 位，已提供 ${given} 位，共 ${A.comments.length} 則。專屬連結請以私訊個別傳送，勿張貼於群組。</p>
+    <div class="panel"><div class="tbl-wrap"><table class="t admin"><tr><th>審查者</th><th>專屬連結</th><th>意見數</th><th></th></tr>${rvRows || '<tr><td colspan="4" class="muted">尚無審查者</td></tr>'}</table></div></div>
+    <div class="whobar"><button class="btn sm primary" type="button" id="fb-add">＋新增審查者</button><select id="fb-filter" aria-label="篩選審查者"><option value="">全部審查者</option>${A.reviewers.map(r => `<option value="${esc(r.code)}"${sel === r.code ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select><button class="btn sm" type="button" id="fb-export">匯出 Word</button><button class="btn sm" type="button" id="fb-reload">重新整理</button></div>
+    <div class="panel"><div class="tbl-wrap"><table class="t fbt"><tr><th>位置與原句</th><th style="width:16%">審查者</th><th>意見</th></tr>${rows || '<tr><td colspan="3" class="muted">尚無意見</td></tr>'}</table></div></div>`;
+  $('#fb-filter').addEventListener('change', e => { state.fbFilter = e.target.value; fbAdminRender(); });
+  $('#fb-add').addEventListener('click', fbAddReviewer);
+  $('#fb-export').addEventListener('click', fbExport);
+  $('#fb-reload').addEventListener('click', fbAdminLoad);
+  box.querySelectorAll('[data-fbtoggle]').forEach(b => b.addEventListener('click', () => fbToggle(b.dataset.fbtoggle)));
+}
+async function fbAddReviewer() {
+  const name = (window.prompt('審查者姓名與稱謂（例：王○○醫師）；將顯示於對方畫面與意見彙整', '') || '').trim(); if (!name) return;
+  try { const { fs, db } = await fb(); const code = randToken(); await fs.setDoc(fs.doc(db, 'tfr', code), { name, active: true, createdAt: fs.serverTimestamp() }); await copyText(fbLink(code)); setStatus(`已新增 ${name}，專屬連結已複製`); fbAdminLoad(); }
+  catch (e) { setStatus('新增失敗：' + errText(e)); }
+}
+async function fbToggle(code) {
+  const r = state.fbAdmin.reviewers.find(x => x.code === code); if (!r) return;
+  const off = r.active !== false;
+  if (off && !window.confirm(`停用「${r.name}」之連結？停用後該連結無法再留言；已留下之意見保留。`)) return;
+  try { const { fs, db } = await fb(); await fs.updateDoc(fs.doc(db, 'tfr', code), { active: !off }); fbAdminLoad(); } catch (e) { setStatus('操作失敗：' + errText(e)); }
+}
+function fbExport() {
+  const A = state.fbAdmin; if (!A) return;
+  const sel = state.fbFilter || '', list = fbSorted(A.comments.filter(x => !sel || x.code === sel));
+  let last = '', rows = '';
+  list.forEach(c => {
+    const g = c.loc === 'general' ? '整體意見' : fbGroup(c.label);
+    if (g !== last) { rows += `<tr class="g"><td colspan="3">${esc(g)}</td></tr>`; last = g; }
+    rows += `<tr><td>${esc(c.label)}${c.quote ? `<br><span class="q">${br(c.quote)}</span>` : ''}</td><td>${esc(c.who)}<br><span class="q">${esc(when(c.at))}</span></td><td>${br(c.text)}</td></tr>`;
+  });
+  const now = new Date(), ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+  const html = `﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>模板意見彙整</title><style>body{font-family:"Times New Roman","標楷體";font-size:12pt}h1{font-size:16pt;text-align:center}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:4pt;vertical-align:top;font-size:11pt}th{background:#eee}tr.g td{background:#f3e6e4;font-weight:bold}.q{color:#555;font-size:10pt}</style></head><body><h1>病主緩和臨床指引模板意見彙整</h1><p>意見截止日：${FEEDBACK.due}｜匯出時間：${esc(now.toLocaleString('zh-TW'))}｜${sel ? '審查者：' + esc((A.reviewers.find(r => r.code === sel) || {}).name || '') : '全部審查者'}，共 ${list.length} 則</p><table><tr><th style="width:36%">位置與原句</th><th style="width:14%">審查者</th><th>意見</th></tr>${rows}</table></body></html>`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'application/msword' })); a.download = `模板意見彙整_${ymd}.doc`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
 function init() {
   $('#go-home').addEventListener('click', e => { e.preventDefault(); goHome(); });
   $('#btn-home').addEventListener('click', goHome);
@@ -2096,6 +2318,7 @@ function init() {
   main.addEventListener('focusout', onBlur);
   main.addEventListener('click', e => {
     const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.fb) { e.preventDefault(); fbOpen(t.dataset.fb); return; }
     if (t.id === 'btn-addref') {
       state.data.refs.push(''); renderRefs();
       const i = state.data.refs.length - 1; $('#ref-' + i).focus();
@@ -2138,8 +2361,12 @@ function init() {
     const hh = (location.hash || '').slice(1), kk = hh.match(/^k=([a-z0-9]+)/i);
     if (kk) { history.replaceState(null, '', location.pathname); openCloud(kk[1], false); }
     else if (hh === 'admin') { history.replaceState(null, '', location.pathname); adminEntry(); }
+    else { const rr = hh.match(/^rv=([a-z0-9]+)/i); if (rr) { history.replaceState(null, '', location.pathname); renderLanding(); fbLoad(rr[1], true); } }
   });
   const h = (location.hash || '').slice(1);
+  const rvm = h.match(/^rv=([a-z0-9]+)/i);
+  if (rvm) { history.replaceState(null, '', location.pathname); renderLanding(); fbLoad(rvm[1], true); return; }
+  { const rv = lsGet(KEY + 'rv'); if (rv) setTimeout(() => fbLoad(rv, false), 0); }
   const km = h.match(/^k=([a-z0-9]+)/i);
   if (km) { history.replaceState(null, '', location.pathname); openCloud(km[1], false); return; }
   if (h === 'admin') { history.replaceState(null, '', location.pathname); renderLanding(); adminEntry(); return; }
