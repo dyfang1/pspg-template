@@ -741,7 +741,7 @@ function profile(soc) {
 const FILLS = {
   '1A': { stage: 1, label: '本專科告知病人得經ACP為預立醫療決定之時機與方式' },
   '2A': { stage: 2, label: '積極治療之方針' },
-  '2B': { stage: 2, label: '啟動緩和共同照護之時機與指標' },
+  '2B': { stage: 2, label: '啟動緩和共同照護之時機與指標', hospLabel: '接受照會後之緩和共同照護內容與分工', hospNote: '本格寫各疾病共通之做法；因疾病不同而需調整者，於內文補充。' }, // 台灣安寧緩和醫學學會為受照會方，題目不同（1151013）
   '3A': { stage: 3, label: '操作型確診指標及所需檢查', refLabel: '本專科轉介或會同確診之專科與流程' },
   '3B': { stage: 3, label: '照會確認之作業流程', only: 'hospice' }, // 受照會方；僅台灣安寧緩和醫學學會（1151012）
   '4A': { stage: 4, label: '本專科意思能力之評估方式' },
@@ -752,6 +752,7 @@ const FILLS = {
 // 引導問題（孫教授1151009意見七-4，採A＋B：僅供參考，不列入手冊）
 const GQ = {"1A": ["本專科病人在病程中哪些時點（如確診、分期改變、首次住院）適合告知？", "由誰告知、在什麼場合（門診、住院、個案管理）？", "如何轉介或安排預立醫療照護諮商？"], "2A": ["本會各疾病共通之積極治療原則為何？", "共通之重新評估治療目標之時點為何？"], "2B": ["本會各疾病共通之啟動緩和共同照護原則為何？", "由誰提出、如何徵得病人同意？"], "3A": ["本會各疾病共通之確診作業流程為何？", "判定有疑義時，如何會同其他專科？"], "4A": ["本專科病人常見哪些影響意思能力之因素（如意識波動、認知障礙、溝通障礙）？", "採用何種評估方式或工具，由誰評估？", "如何依最大協助原則協助病人表達（如溝通輔具、選擇評估時機）？"], "4B": ["本專科常見病人改變意思之情境為何？", "依表4-1處理時，由誰確認、如何記載？", "需協助病人以書面變更預立醫療決定時，流程為何？"], "4C": ["本專科哪些治療適合限時嘗試？", "各治療合理之嘗試期程與評估時點為何？", "停損點之判斷指標為何？屆期後如何轉銜緩和醫療？"], "5A": ["本專科常見之執行情境為何（如撤除呼吸器）？", "執行時團隊如何分工（主治醫師、緩和醫療團隊、護理）？", "本專科病人之症狀控制與舒適照護，需做哪些調整？"]};
 const GQ_SOLO = { '2A': ['本專科主要疾病之標準治療路徑為何？', '在什麼情況下需要重新評估治療目標（如療效不佳、併發症反覆）？', '重新評估時，如何與病人討論治療之效益與負擔？'], '2B': ['本專科以哪些客觀指標判斷病程進展（如分期、功能量表、住院次數）？', '達到什麼程度時，主治醫師應提出緩和共同照護評估？', '由誰提出、如何徵得病人同意？'], '3A': ['本會可擔任確診之各款（見上表），各以哪些臨床表現與檢查判定？', '需要哪些檢查或評估工具，結果如何記載？', '判定有疑義時，如何會同其他專科？'] };
+const GQ_2B_HOSP = ['接獲照會後，由誰、於多久內完成初次評估？', '共同照護期間，與原團隊如何分工（如症狀處理、溝通照護目標、協助預立醫療照護諮商）？', '非癌症疾病（如末期腎臟病、失智症）之共同照護，有哪些需要調整之處？', '何時轉介安寧病房、居家安寧，或結束共同照護？'];
 const GQ_3B = ['接獲照會後，由誰、於多久內完成評估？', '二次照會之內容為何？', '如何確認病人之預立醫療決定及其內容，並記載於病歷？', '緩和醫療團隊之組成為何？'];
 const GQ_3A_REF = ["病人符合哪些情形時，應轉介確診？", "轉介或會同哪些專科、透過什麼流程？", "轉介期間，本專科之照護角色為何？"];
 const CODES = Object.keys(FILLS);
@@ -1298,7 +1299,8 @@ function dzName(e) { return (e.n || '').trim() || '（未命名）'; }
 function isRefSoc() { return profile(socOf(state.socId)).roles[3] === 'ref'; }
 // 台灣安寧緩和醫學學會：階段二為受照會方（免填）；階段三分確診方（3-A）與受照會方（3-B）
 function isHospice() { return state.socId === 'hospice'; }
-const HOSPICE_S2 = '本會於本階段為受照會方，免填；啟動緩和共同照護之時機，於「安寧緩和學會共通建議」撰寫。';
+// 依學會身分取填寫格題目（轉介型學會之3-A、台灣安寧緩和醫學學會之2-B）
+function fillLabel(k, prof) { const F = FILLS[k]; return k === '3A' && !prof.diag.length ? F.refLabel : k === '2B' && isHospice() ? F.hospLabel : F.label; }
 function legalLines(e) {
   const out = [];
   e.lg.forEach(g => {
@@ -1360,7 +1362,7 @@ function cfieldHTML(k) {
 function dzStageHTML(n, prof) {
   const { cards } = dzEntries();
   if (isHospice()) {
-    if (n === 2) return `<p class="refline">${HOSPICE_S2}</p>`;
+    if (n === 2) return fillHTML('2B', prof);
     const pend = prof.diag.every(x => x.st === 'gray') ? '<p class="refline">本會會員得否擔任確診尚待確認；確認前得先不填。</p>' : '';
     const dx = !cards.length ? fillHTML('3A', prof) : commonCardHTML(['3A'], prof) + cards.map(e => dzCardHTML(e, 3)).join('');
     return `<h3>（一）確診方</h3>${pend}${dx}<h3>（二）受照會方</h3>${fillHTML('3B', prof)}`;
@@ -1466,7 +1468,7 @@ function progressItems() {
   it.push([1, isDone('1A')]);
   if (!isHospice()) { if (cards.length) cards.forEach(e => { it.push([2, dzDone(e.id, 'a')], [2, dzDone(e.id, 'b')]); }); else it.push([2, isDone('2A')], [2, isDone('2B')]); }
   if (ref || !cards.length) it.push([3, isDone('3A')]); else cards.forEach(e => it.push([3, dzDone(e.id, 'c')]));
-  if (isHospice()) it.push([3, isDone('3B')]);
+  if (isHospice()) it.push([2, isDone('2B')], [3, isDone('3B')]);
   ['4A', '4B', '4C', '5A'].forEach(k => it.push([FILLS[k].stage, isDone(k)]));
   return it;
 }
@@ -1478,7 +1480,7 @@ function handbookStage(s, prof) {
   if (s.n !== 2 && s.n !== 3) return s.fills.map(k => recBlock(k, prof)).join('');
   const { cards } = dzEntries(), d = state.data;
   if (isHospice()) {
-    if (s.n === 2) return '<div class="ref">本會於本階段為受照會方；啟動緩和共同照護之時機，見上列安寧緩和學會共通建議。</div>';
+    if (s.n === 2) return recBlock('2B', prof);
     const tbl3 = `<table><tr><th style="width:34%">款別／疾病</th><th>確診資格依據</th></tr>${prof.diag.map(x => `<tr><td>${esc(x.label)}</td><td>${esc(x.basis)}</td></tr>`).join('')}</table>`;
     const dx = !cards.length ? recBlock('3A', prof) : `${tbl3}${isDone('3A') ? `<div class="dh">各疾病共通</div>${recBlock('3A', prof).replace(tbl3, '')}` : ''}` + cards.map(e => `<div class="dh">${esc(dzName(e))}　→　${esc(e.k)}</div>${legalLines(e).map(x => `<div class="lgp"><b>${esc(x.src)}〔法定要求〕</b>${x.lines.map(l => `<br>${esc(l)}`).join('')}</div>`).join('')}${drecHTML(e.id, 'c')}`).join('');
     return `<div class="gh">（一）確診方</div>${dx}<div class="gh">（二）受照會方</div>${recBlock('3B', prof)}`;
@@ -1497,7 +1499,8 @@ function summaryRows(prof) {
   const d = state.data, { cards } = dzEntries(), ref = isRefSoc(), rows = [];
   const add = (code, st, dz, txt) => { const fs = firstSentence(txt); if (fs) rows.push(`<tr><td>${code}</td><td>${ZH[st - 1]}</td><td>${esc(dz)}</td><td>${esc(fs)}</td></tr>`); };
   add('1-A', 1, '—', d.f['1A']);
-  if (!isHospice()) {
+  if (isHospice()) add('2-B', 2, '—', d.f['2B']);
+  else {
     add('2-A', 2, cards.length ? '各疾病共通' : '—', d.f['2A']); add('2-B', 2, cards.length ? '各疾病共通' : '—', d.f['2B']);
     cards.forEach(e => { add('2-A', 2, dzName(e), dzVal(e.id, 'a')); add('2-B', 2, dzName(e), dzVal(e.id, 'b')); });
   }
@@ -1569,16 +1572,16 @@ function renderComment(k) {
     <div class="cm-act"><button class="btn sm primary" type="button" data-issue="${k}">核定發出</button></div>`;
 }
 function fillHTML(k, prof) {
-  const F = FILLS[k];
-  const label = k === '3A' && !prof.diag.length ? F.refLabel : F.label;
+  const F = FILLS[k], hosp2 = k === '2B' && isHospice();
+  const label = fillLabel(k, prof), note = hosp2 ? F.hospNote : F.note;
   const ref3 = k === '3A' && prof.diag.length ? `<details class="ref-dx"><summary>本會於階段三可擔任確診之款別與疾病（共 ${prof.diag.length} 項，本模板預設）</summary>${diagTable(prof)}</details>` : '';
   const v = state.data.f[k] || '';
   const cloud = state.mode === 'cloud';
   const cm = cmBoxHTML(k);
   return `<div class="fill" id="card-${k}">
     <label class="hd" for="f-${k}"><span class="code">${codeOf(k)}</span><span class="q">${esc(label)}</span></label>
-    ${F.note ? `<div class="hint">${esc(F.note)}</div>` : ''}${ref3}
-    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${(k === '3B' ? GQ_3B : k === '3A' && !prof.diag.length ? GQ_3A_REF : GQ_SOLO[k] || GQ[k] || []).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
+    ${note ? `<div class="hint">${esc(note)}</div>` : ''}${ref3}
+    <div class="gq"><div class="gq-h">以下問題僅供參考，研發小組得自行決定是否採用：</div><ol>${(hosp2 ? GQ_2B_HOSP : k === '3B' ? GQ_3B : k === '3A' && !prof.diag.length ? GQ_3A_REF : GQ_SOLO[k] || GQ[k] || []).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>
     <div class="first">第一句請寫成完整建議句（例：「本會建議……」），將自動列入手冊之「本會建議一覽」；其後為說明。</div>
     <textarea id="f-${k}" data-k="f.${k}">${esc(v)}</textarea>
     <div class="ft"><span class="fm" id="fm-${k}"></span>${cloud ? `<button class="linkbtn" type="button" data-hist="${k}">歷史版本</button>` : ''}<span class="count" id="cnt-${k}">${v.length} 字</span></div>
@@ -1687,7 +1690,7 @@ function updateWhere() {
   const ck = whereField && /^K\d+$/.test(whereField) ? caseKeys().indexOf(whereField) : -1;
   const wd = whereField && whereField.match(/^(.+)_([abc])$/);
   const we = wd && state.data && state.data.dz ? dzEntries().cards.find(e => e.id === wd[1]) : null;
-  const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${FILLS[whereField].label}`
+  const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${fillLabel(whereField, profile(socOf(state.socId)))}`
     : ck >= 0 ? `　【案例${zh(ck + 1)}】${(state.data.x[whereField].t || '').trim()}`
     : we ? `　【${DZ_FIELD[wd[2]][0]}】${dzName(we)}`
     : /^hc_g\d+_[abc]$/.test(whereField || '') ? `　【${HC_TAG}】${(HC_GROUPS.find(x => x[0] === whereField.split('_')[1]) || [])[1] || ''}` : '';
@@ -1791,7 +1794,7 @@ function renderEditor() {
     <h2>本模板之使用</h2>
     <p class="lead">本網頁供研發小組擬訂「${esc(soc.name)}病主緩和臨床指引」。逐階段往下填寫，完成後於「手冊預覽」檢視成品，並以「列印／存成 PDF」產出手冊。本頁說明不會出現在手冊中。</p>
     ${who}${adminBar}${lockBar}${localBar}
-    ${isHospice() ? '<p class="notice">本會頁面另有「安寧緩和學會共通建議」一章（位於「參考文獻」之後）：撰寫各款疾病於醫療過程中照會與緩和醫療處置之建議，經審定後列入各學會指引之共通基準，供各學會共用；本章不印入本會手冊。本會於階段二為受照會方，免填；階段三分「確診方」與「受照會方」兩部分。</p>' : ''}
+    ${isHospice() ? '<p class="notice">本會頁面另有「安寧緩和學會共通建議」一章（位於「參考文獻」之後）：撰寫各款疾病於醫療過程中照會與緩和醫療處置之建議，經審定後列入各學會指引之共通基準，供各學會共用；本章不印入本會手冊。本會於階段二填寫接受照會後之緩和共同照護內容與分工；階段三分「確診方」與「受照會方」兩部分。</p>' : ''}
     ${TILES}
   </section>`;
 
@@ -1984,8 +1987,8 @@ function overviewSVG(prof) {
   return s;
 }
 function recBlock(k, prof) {
-  const F = FILLS[k], v = (state.data.f[k] || '').trim();
-  const label = k === '3A' && !prof.diag.length ? F.refLabel : F.label;
+  const v = (state.data.f[k] || '').trim();
+  const label = fillLabel(k, prof);
   let extra = '';
   if (k === '3A' && prof.diag.length) extra = `<table><tr><th style="width:34%">款別／疾病</th><th>確診資格依據</th></tr>${prof.diag.map(d => `<tr><td>${esc(d.label)}</td><td>${esc(d.basis)}</td></tr>`).join('')}</table>`;
   return `<div class="rec"><div class="code">【${codeOf(k)}】${esc(label)}</div>${extra}${v ? v.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join('') : '<p class="empty">（尚未填寫）</p>'}</div>`;
@@ -2138,8 +2141,8 @@ async function copyText(t) {
 const FEEDBACK = { open: true, due: '115年10月27日', dueShort: '10月27日' };
 // 意見三類（孫教授1151013）；適用範圍：各學會共用／本學會專屬／整份模板
 const FB_LAYERS = [['p', '專業內容', '醫療或法律上之正確性、完整性與可行性'], ['w', '文字用詞', '用語與語句是否清楚、通順、一致'], ['u', '使用便利性', '是否容易理解與填寫；版面與操作']];
-function fbScopeOf(loc) { return loc === 'general' ? 'whole' : /^(dz-|basic-|soc-)/.test(loc) ? 'soc' : 'all'; }
-function fbSocOf(loc) { const id = /^soc-/.test(loc) ? loc.slice(4) : /^(dz|basic)-/.test(loc) ? loc.split('-')[1] : ''; return id && socOf(id) ? socOf(id).name : ''; }
+function fbScopeOf(loc) { return loc === 'general' ? 'whole' : /^(dz-|basic-|soc-|hsp-|hc-)/.test(loc) ? 'soc' : 'all'; }
+function fbSocOf(loc) { const id = /^soc-/.test(loc) ? loc.slice(4) : /^(dz|basic)-/.test(loc) ? loc.split('-')[1] : /^(hsp|hc)-/.test(loc) ? 'hospice' : ''; return id && socOf(id) ? socOf(id).name : ''; }
 function fbScopeText(c) {
   const loc = typeof c === 'string' ? c : c.loc, inh = fbScopeOf(loc), sc = typeof c === 'string' ? inh : (c.scope || inh);
   if (sc === 'whole') return ['whole', '整份模板'];
@@ -2217,7 +2220,7 @@ function fbDecorate() {
     sec.querySelectorAll('.fill[id^="card-"] > .hd, .dfield[id^="card-"] > .sub-h').forEach(lab => {
       const card = lab.parentElement, key = card.id.slice(5), qs = Array.from(card.querySelectorAll(':scope > .gq li')).map(li => li.textContent.trim());
       const quote = txt(lab) + (qs.length ? '\n參考問題：' + qs.join('；') : '');
-      if (FILLS[key]) { const inCommon = card.closest('details.dz'); add(lab, 'f-' + key, `${sl}${inCommon ? ' › 各疾病共通' : ''} › 【${codeOf(key)}】${FILLS[key].label}`, `【${codeOf(key)}】${txt(lab).replace(/^【?\d-[A-Z]】?/, '')}` + (qs.length ? '\n參考問題：' + qs.join('；') : '')); return; }
+      if (FILLS[key]) { const inCommon = card.closest('details.dz'), hsp = isHospice() && (key === '2B' || key === '3B'); add(lab, (hsp ? 'hsp-' : 'f-') + key, `${sl}${inCommon ? ' › 各疾病共通' : ''} › 【${codeOf(key)}】${fillLabel(key, profile(soc))}`, `【${codeOf(key)}】${txt(lab).replace(/^【?\d-[A-Z]】?/, '')}` + (qs.length ? '\n參考問題：' + qs.join('；') : '')); return; }
       const mh = key.match(/^hc_(g\d+)_([abc])$/);
       if (mh) { add(lab, `hc-${mh[1]}-${mh[2]}`, `${HC_TAG} › ${(HC_GROUPS.find(x => x[0] === mh[1]) || [])[1] || ''} › ${HC_FIELDS[mh[2]][1]}`, quote); return; }
       const md = key.match(/^(.+)_([abc])$/);
