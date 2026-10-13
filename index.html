@@ -2140,7 +2140,16 @@ const FEEDBACK = { open: true, due: '115年10月27日', dueShort: '10月27日' }
 const FB_LAYERS = [['p', '專業內容', '醫療或法律上之正確性、完整性與可行性'], ['w', '文字用詞', '用語與語句是否清楚、通順、一致'], ['u', '使用便利性', '是否容易理解與填寫；版面與操作']];
 function fbScopeOf(loc) { return loc === 'general' ? 'whole' : /^(dz-|basic-|soc-)/.test(loc) ? 'soc' : 'all'; }
 function fbSocOf(loc) { const id = /^soc-/.test(loc) ? loc.slice(4) : /^(dz|basic)-/.test(loc) ? loc.split('-')[1] : ''; return id && socOf(id) ? socOf(id).name : ''; }
-function fbScopeHTML(loc) { const sc = fbScopeOf(loc); return `<span class="sc ${sc}">${sc === 'whole' ? '整份模板' : sc === 'soc' ? esc(fbSocOf(loc)) + '專屬' : '各學會共用'}</span>`; }
+function fbScopeText(c) {
+  const loc = typeof c === 'string' ? c : c.loc, inh = fbScopeOf(loc), sc = typeof c === 'string' ? inh : (c.scope || inh);
+  if (sc === 'whole') return ['whole', '整份模板'];
+  if (sc === 'soc') return ['soc', inh === 'soc' ? fbSocOf(loc) + '專屬' : '僅針對' + (c.soc || '本學會')];
+  return ['all', '各學會共用'];
+}
+function fbScopeHTML(c) { const [k, t] = fbScopeText(c); return `<span class="sc ${k}">${esc(t)}</span>`; }
+// 各學會共用之位置，可另存「僅針對本學會」之意見（文件 ID：位置~學會代碼）
+function fbIds(loc) { const ids = { all: loc }; if (fbScopeOf(loc) === 'all' && state.socId) ids.soc = loc + '~' + state.socId; return ids; }
+function fbHasAny(loc) { const ids = fbIds(loc); return !!(state.fbc[ids.all] || (ids.soc && state.fbc[ids.soc])); }
 function fbHasText(c) { return !!c && FB_LAYERS.some(([k]) => (c[k] || '').trim()); }
 state.fbr = null; state.fbc = {}; state.fbMeta = {};
 function fbLink(code) { return location.origin + location.pathname + '#rv=' + code; }
@@ -2170,7 +2179,7 @@ function fbWelcomeHTML() {
   const n = Object.keys(state.fbc).length;
   return `<section class="entry fb-welcome"><div class="who">模板意見</div><h2>${nm}，您好</h2>
     <p>感謝您協助檢視病主緩和臨床指引模板，請於 <b>${FEEDBACK.due}</b> 前提供意見。${n ? `您已送出 ${n} 則意見。` : ''}</p>
-    <ol><li>選擇一個學會進入，即可檢視該會之模板內容；可換不同學會檢視。</li><li>模板上每章標題、每條共通基準、每個填寫格旁，都有「意見」按鈕；按下即可撰寫，系統會自動記下所在位置與原文，不必另外註明是哪一段。</li><li>意見分三類：專業內容、文字用詞、使用便利性；有意見的類別再填即可。</li><li>意見視窗會標示適用範圍：「各學會共用」（如共通基準、填寫格之題目）或「本學會專屬」（如確診資格、角色與預設疾病）。</li><li>您的意見只有您本人與基金會看得到；送出後仍可修改或刪除。</li></ol>
+    <ol><li>選擇一個學會進入，即可檢視該會之模板內容；可換不同學會檢視。</li><li>模板上每章標題、每條共通基準、每個填寫格旁，都有「意見」按鈕；按下即可撰寫，系統會自動記下所在位置與原文，不必另外註明是哪一段。</li><li>意見分三類：專業內容、文字用詞、使用便利性；有意見的類別再填即可。</li><li>意見視窗會標示適用範圍：「各學會共用」（如共通基準、填寫格之題目）或「本學會專屬」（如確診資格、角色與預設疾病）。各學會共用之處，若意見只針對所檢視之學會，可改選「僅針對本學會」。</li><li>您的意見只有您本人與基金會看得到；送出後仍可修改或刪除。</li></ol>
     <div class="row"><select id="fb-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.filter(x => !x.test).map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><button class="btn primary" type="button" id="fb-go">開始檢視</button><button class="btn" type="button" id="fb-general-home">撰寫對整份模板的意見</button></div></section>`;
 }
 function fbBind() {
@@ -2189,7 +2198,7 @@ function fbDecorate() {
   const add = (host, loc, label, quote) => {
     if (!host) return;
     meta[loc] = meta[loc] || { label, quote: cut(quote, 300), ord: ++ord };
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'fbb' + (state.fbc[loc] ? ' has' : ''); b.dataset.fb = loc; b.textContent = state.fbc[loc] ? '已留意見' : '意見';
+    const b = document.createElement('button'); b.type = 'button'; const has = fbHasAny(loc); b.className = 'fbb' + (has ? ' has' : ''); b.dataset.fb = loc; b.textContent = has ? '已留意見' : '意見';
     host.appendChild(b);
   };
   document.querySelectorAll('#main section.chapter[id^="sec-"]').forEach(sec => {
@@ -2233,33 +2242,54 @@ function fbOpen(loc) {
   if (!state.fbr || !FEEDBACK.open) return;
   const m = (state.fbMeta || {})[loc] || (loc === 'general' ? { label: '對整份模板的意見', quote: '', ord: 100000 } : null); if (!m) return;
   const isSoc = /^soc-/.test(loc), socName = isSoc && socOf(loc.slice(4)) ? socOf(loc.slice(4)).name : '';
-  const cur = state.fbc[loc];
+  const ids = fbIds(loc), two = !!ids.soc, curSocName = state.socId ? socOf(state.socId).name : '';
+  const read0 = id => { const c = state.fbc[id]; return Object.fromEntries(FB_LAYERS.map(([k]) => [k, c ? (c[k] || (k === 'p' ? c.text || '' : '')) : ''])); };
+  const buf = { all: read0(ids.all) }; if (two) buf.soc = read0(ids.soc);
+  let sc = two && !state.fbc[ids.all] && state.fbc[ids.soc] ? 'soc' : 'all';
   let d = $('#fbdlg');
   if (!d) { d = document.createElement('div'); d.id = 'fbdlg'; d.className = 'fbdlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.hidden = true; }); }
-  const val = k => esc(cur ? (cur[k] || (k === 'p' ? cur.text || '' : '')) : '');
+  const scopeRow = two
+    ? `<p class="scope">適用範圍：<label><input type="radio" name="fbsc" value="all"${sc === 'all' ? ' checked' : ''}> 各學會共用</label>　<label><input type="radio" name="fbsc" value="soc"${sc === 'soc' ? ' checked' : ''}> 僅針對本學會（${esc(curSocName)}）</label><br><small>兩種範圍可各寫一則；切換即可分別撰寫。</small></p>`
+    : `<p class="scope">適用範圍：${fbScopeHTML(loc)}</p>`;
+  const anyCur = () => !!(state.fbc[ids.all] || (two && state.fbc[ids.soc]));
   d.innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-labelledby="fbdlg-h"><h3 id="fbdlg-h">${loc === 'general' ? '對整份模板的意見' : isSoc ? '對本學會頁面的意見' : '意見'}</h3>
-    ${loc === 'general' || isSoc ? '' : `<p class="loc">位置：<b>${esc(m.label)}</b></p>`}<p class="scope">適用範圍：${fbScopeHTML(loc)}</p>${m.quote ? `<div class="quote">${esc(m.quote)}</div>` : loc === 'general' ? '<div class="quote">不針對特定位置或特定學會之意見，例如整體架構、手冊版面。</div>' : isSoc ? `<div class="quote">針對「${esc(socName)}」頁面之整體意見，例如本會之確診資格、角色與預設疾病。針對特定段落之意見，請按該處旁之「意見」按鈕。</div>` : ''}
-    ${FB_LAYERS.map(([k, t, h]) => `<div class="lyr"><label for="fbdlg-${k}"><b>${t}</b><small>${h}</small></label><textarea id="fbdlg-${k}">${val(k)}</textarea></div>`).join('')}
-    <div class="act"><span class="note">有意見的類別再填即可；只有您本人與基金會看得到${cur && cur.at ? '｜上次送出：' + esc(when(cur.at)) : ''}</span>${cur ? '<button class="btn sm" type="button" id="fbdlg-del">刪除</button>' : ''}<button class="btn sm" type="button" id="fbdlg-x">取消</button><button class="btn sm primary" type="button" id="fbdlg-ok">${cur ? '更新' : '送出'}</button></div></div>`;
-  d.hidden = false; $('#fbdlg-p').focus();
+    ${loc === 'general' || isSoc ? '' : `<p class="loc">位置：<b>${esc(m.label)}</b></p>`}${scopeRow}${m.quote ? `<div class="quote">${esc(m.quote)}</div>` : loc === 'general' ? '<div class="quote">不針對特定位置或特定學會之意見，例如整體架構、手冊版面。</div>' : isSoc ? `<div class="quote">針對「${esc(socName)}」頁面之整體意見，例如本會之確診資格、角色與預設疾病。針對特定段落之意見，請按該處旁之「意見」按鈕。</div>` : ''}
+    ${FB_LAYERS.map(([k, t, h]) => `<div class="lyr"><label for="fbdlg-${k}"><b>${t}</b><small>${h}</small></label><textarea id="fbdlg-${k}"></textarea></div>`).join('')}
+    <div class="act"><span class="note" id="fbdlg-note"></span><button class="btn sm" type="button" id="fbdlg-del">刪除</button><button class="btn sm" type="button" id="fbdlg-x">取消</button><button class="btn sm primary" type="button" id="fbdlg-ok">${anyCur() ? '更新' : '送出'}</button></div></div>`;
+  const id = () => ids[sc];
   const vals = () => Object.fromEntries(FB_LAYERS.map(([k]) => [k, $('#fbdlg-' + k).value]));
+  const show = () => {
+    FB_LAYERS.forEach(([k]) => { $('#fbdlg-' + k).value = buf[sc][k]; });
+    const c = state.fbc[id()];
+    $('#fbdlg-del').hidden = !c;
+    $('#fbdlg-note').textContent = '有意見的類別再填即可；只有您本人與基金會看得到' + (c && c.at ? '｜此範圍上次送出：' + when(c.at) : '');
+  };
+  show(); d.hidden = false; $('#fbdlg-p').focus();
+  d.querySelectorAll('input[name="fbsc"]').forEach(r => r.addEventListener('change', () => { buf[sc] = vals(); sc = r.value; show(); }));
   $('#fbdlg-x').onclick = () => { d.hidden = true; };
-  $('#fbdlg-ok').onclick = () => { const v = vals(); if (!fbHasText(v)) { window.alert('請至少於一個類別填寫意見。'); return; } fbSave(loc, m, v); };
-  if (cur) $('#fbdlg-del').onclick = () => { if (window.confirm('刪除這則意見？')) fbSave(loc, m, null); };
+  $('#fbdlg-ok').onclick = () => {
+    buf[sc] = vals();
+    const todo = Object.keys(ids).filter(k => fbHasText(buf[k]) || state.fbc[ids[k]]);
+    if (!todo.some(k => fbHasText(buf[k])) && !todo.length) { window.alert('請至少於一個類別填寫意見。'); return; }
+    fbSave(loc, m, todo.map(k => ({ id: ids[k], scope: k === 'soc' ? 'soc' : fbScopeOf(loc), v: buf[k] })));
+  };
+  $('#fbdlg-del').onclick = () => { if (!window.confirm('刪除此範圍之意見？')) return; buf[sc] = vals(); fbSave(loc, m, [{ id: id(), scope: sc, v: null }]); };
 }
-async function fbSave(loc, m, v) {
+async function fbSave(loc, m, items) {
   const ok = $('#fbdlg-ok'); if (ok) ok.disabled = true;
   try {
     const { fs, db } = await fb();
-    const ref = fs.doc(db, 'tfr', state.fbr.code, 'tfc', loc);
-    if (!fbHasText(v)) { await fs.deleteDoc(ref); delete state.fbc[loc]; setStatus('已刪除意見'); }
-    else {
-      const rec = { loc, label: m.label, quote: m.quote || '', soc: state.socId ? socOf(state.socId).name : '', ord: m.ord || 0, scope: fbScopeOf(loc), at: fs.serverTimestamp() };
-      FB_LAYERS.forEach(([k]) => { rec[k] = (v[k] || '').trim(); });
-      await fs.setDoc(ref, rec); state.fbc[loc] = Object.assign({}, rec, { at: new Date() }); setStatus('已送出意見 ' + hhmm());
+    let wrote = 0, del = 0;
+    for (const it of items) {
+      const ref = fs.doc(db, 'tfr', state.fbr.code, 'tfc', it.id);
+      if (!fbHasText(it.v)) { if (state.fbc[it.id]) { await fs.deleteDoc(ref); delete state.fbc[it.id]; del++; } continue; }
+      const rec = { loc, label: m.label, quote: m.quote || '', soc: state.socId ? socOf(state.socId).name : '', ord: m.ord || 0, scope: it.scope, at: fs.serverTimestamp() };
+      FB_LAYERS.forEach(([k]) => { rec[k] = (it.v[k] || '').trim(); });
+      await fs.setDoc(ref, rec); state.fbc[it.id] = Object.assign({}, rec, { at: new Date() }); wrote++;
     }
+    setStatus(wrote ? '已送出意見 ' + hhmm() : del ? '已刪除意見' : '');
     $('#fbdlg').hidden = true;
-    document.querySelectorAll(`#main .fbb[data-fb="${loc}"]`).forEach(b => { b.classList.toggle('has', !!state.fbc[loc]); b.textContent = state.fbc[loc] ? '已留意見' : '意見'; });
+    document.querySelectorAll(`#main .fbb[data-fb="${loc}"]`).forEach(b => { const has = fbHasAny(loc); b.classList.toggle('has', has); b.textContent = has ? '已留意見' : '意見'; });
     fbChip(); if (!state.mode) renderLanding();
   } catch (e) { if (ok) ok.disabled = false; window.alert('送出失敗：' + errText(e) + '。意見內容仍在框內，請稍後再試。'); }
 }
@@ -2296,7 +2326,7 @@ function fbAdminRender() {
   list.forEach(c => {
     const g = fbGroup(c);
     if (g !== last) { rows += `<tr class="g"><td colspan="3">${esc(g)}</td></tr>`; last = g; }
-    rows += `<tr><td class="loc">${esc(c.label)}<small>適用範圍：${fbScopeHTML(c.loc)}</small>${c.quote ? `<small>${esc(c.quote)}</small>` : ''}</td><td>${esc(c.who)}<br><span class="muted">${esc(when(c.at))}</span></td><td>${lays.filter(([k]) => txtOf(c, k)).map(([k, t]) => `<div class="ly"><span class="lt ${k}">${t}</span>${br(txtOf(c, k))}</div>`).join('')}</td></tr>`;
+    rows += `<tr><td class="loc">${esc(c.label)}<small>適用範圍：${fbScopeHTML(c)}</small>${c.quote ? `<small>${esc(c.quote)}</small>` : ''}</td><td>${esc(c.who)}<br><span class="muted">${esc(when(c.at))}</span></td><td>${lays.filter(([k]) => txtOf(c, k)).map(([k, t]) => `<div class="ly"><span class="lt ${k}">${t}</span>${br(txtOf(c, k))}</div>`).join('')}</td></tr>`;
   });
   const lc = k => A.comments.filter(x => txtOf(x, k)).length;
   const given = new Set(A.comments.map(x => x.code)).size;
@@ -2327,12 +2357,11 @@ function fbExport() {
   const sel = state.fbFilter || '', lay = state.fbLayer || '', lays = FB_LAYERS.filter(([k]) => !lay || k === lay);
   const txtOf = (c, k) => (c[k] || (k === 'p' ? c.text || '' : '')).trim();
   const list = fbSorted(A.comments.filter(x => (!sel || x.code === sel) && lays.some(([k]) => txtOf(x, k))));
-  const sc = loc => { const t = fbScopeOf(loc); return t === 'whole' ? '整份模板' : t === 'soc' ? fbSocOf(loc) + '專屬' : '各學會共用'; };
   let last = '', rows = '';
   list.forEach(c => {
     const g = fbGroup(c);
     if (g !== last) { rows += `<tr class="g"><td colspan="${2 + lays.length}">${esc(g)}</td></tr>`; last = g; }
-    rows += `<tr><td>${esc(c.label)}<br><span class="q">適用範圍：${esc(sc(c.loc))}</span>${c.quote ? `<br><span class="q">${br(c.quote)}</span>` : ''}</td><td>${esc(c.who)}<br><span class="q">${esc(when(c.at))}</span></td>${lays.map(([k]) => `<td>${br(txtOf(c, k))}</td>`).join('')}</tr>`;
+    rows += `<tr><td>${esc(c.label)}<br><span class="q">適用範圍：${esc(fbScopeText(c)[1])}</span>${c.quote ? `<br><span class="q">${br(c.quote)}</span>` : ''}</td><td>${esc(c.who)}<br><span class="q">${esc(when(c.at))}</span></td>${lays.map(([k]) => `<td>${br(txtOf(c, k))}</td>`).join('')}</tr>`;
   });
   const now = new Date(), ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
   const html = `﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>模板意見彙整</title><style>@page WordSection1{size:841.9pt 595.3pt;mso-page-orientation:landscape;margin:54pt 54pt 54pt 54pt}div.WordSection1{page:WordSection1}body{font-family:"Times New Roman","標楷體";font-size:12pt}h1{font-size:16pt;text-align:center}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:4pt;vertical-align:top;font-size:11pt}th{background:#eee}tr.g td{background:#f3e6e4;font-weight:bold}.q{color:#555;font-size:10pt}</style></head><body><div class="WordSection1"><h1>病主緩和臨床指引模板意見彙整</h1><p>意見截止日：${FEEDBACK.due}｜匯出時間：${esc(now.toLocaleString('zh-TW'))}｜${sel ? '審查者：' + esc((A.reviewers.find(r => r.code === sel) || {}).name || '') : '全部審查者'}${lay ? '｜類別：' + esc(lays[0][1]) : ''}，共 ${list.length} 處</p><table><tr><th style="width:${lays.length > 1 ? 28 : 36}%">位置與原文</th><th style="width:11%">審查者</th>${lays.map(([, t]) => `<th>${t}</th>`).join('')}</tr>${rows}</table></div></body></html>`;
