@@ -1780,7 +1780,7 @@ function renderEditor() {
     ? `<div class="whobar"><span>審查中：可於各格下方書寫審查意見，意見經基金會核定後才會發給研發小組；不能修改研發小組擬訂之內容。</span><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>`
     : `<div class="whobar"><span>基金會管理者檢閱中：草案內容唯讀；可於各格下方併入審查委員之草擬、撰寫發出稿並核定發出（研發小組看不到審查委員姓名）。目前狀態：<b>${d.status === 'approved' ? '核定版' : '草案'}</b></span><button class="btn sm primary" type="button" id="btn-issue-all">全部發出</button><button class="btn sm" type="button" id="btn-approve">${d.status === 'approved' ? '退回為草案' : '登錄為核定版'}</button><button class="btn sm" type="button" id="btn-back-admin">回到總覽</button></div>`;
   const lockBar = state.mode === 'cloud' && !state.admin && d.status === 'approved' ? `<p class="notice">本指引已登錄為核定版，內容已鎖定；如需修改，請洽基金會。</p>` : '';
-  const localBar = state.mode === 'local' ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向基金會索取邀請碼。</p>` : '';
+  const localBar = state.mode === 'local' && !(state.fbr && FEEDBACK.open) ? `<p class="notice">本機試填：內容只存在這台電腦之瀏覽器，不與他人共享。要多人共同編輯，請向基金會索取邀請碼。</p>` : '';
   const base = (inner, items) => {
     const n = k => items.filter(x => x[1] === k).length, total = n(LAW) + n(INT) + n(TABLE) + n(REC);
     const parts = [[LAW, '法定要求'], [INT, '法律解釋'], [REC, '倫理與臨床建議']].map(([k, l]) => { const c = n(k) + (k === INT ? n(TABLE) : 0); return c ? l + ' ' + c : ''; }).filter(Boolean).join('、');
@@ -2179,7 +2179,7 @@ function fbWelcomeHTML() {
   const n = Object.keys(state.fbc).length;
   return `<section class="entry fb-welcome"><div class="who">模板意見</div><h2>${nm}，您好</h2>
     <p>感謝您協助檢視病主緩和臨床指引模板，請於 <b>${FEEDBACK.due}</b> 前提供意見。${n ? `您已送出 ${n} 則意見。` : ''}</p>
-    <ol><li>選擇一個學會進入，即可檢視該會之模板內容；可換不同學會檢視。</li><li>模板上每章標題、每條共通基準、每個填寫格旁，都有「意見」按鈕；按下即可撰寫，系統會自動記下所在位置與原文，不必另外註明是哪一段。</li><li>意見分三類：專業內容、文字用詞、使用便利性；有意見的類別再填即可。</li><li>意見視窗會標示適用範圍：「各學會共用」（如共通基準、填寫格之題目）或「本學會專屬」（如確診資格、角色與預設疾病）。各學會共用之處，若意見只針對所檢視之學會，可改選「僅針對本學會」。</li><li>您的意見只有您本人與基金會看得到；送出後仍可修改或刪除。</li></ol>
+    <ol><li>選擇一個學會進入，即可檢視該會之模板內容；可換不同學會檢視。</li><li>模板上每章標題、每條共通基準、每個研發小組填寫格旁，都有「意見」按鈕；按下即可撰寫，系統會自動記下所在位置與原文，不必另外註明是哪一段。</li><li>意見分三類：專業內容、文字用詞、使用便利性；有意見的類別再填即可。</li><li>意見視窗會標示適用範圍：「各學會共用」（如共通基準、研發小組填寫格之題目）或「本學會專屬」（如確診資格、角色與預設疾病）。各學會共用之處，若意見只針對所檢視之學會，可改選「僅針對本學會」。</li><li>您的意見只有您本人與基金會看得到；送出後仍可修改或刪除。</li></ol>
     <div class="row"><select id="fb-pick" aria-label="選擇學會"><option value="">選擇學會</option>${SOCIETIES.filter(x => !x.test).map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><button class="btn primary" type="button" id="fb-go">開始檢視</button><button class="btn" type="button" id="fb-general-home">撰寫對整份模板的意見</button></div></section>`;
 }
 function fbBind() {
@@ -2228,7 +2228,8 @@ function fbDecorate() {
   meta['soc-' + state.socId] = { label: `${soc.name} › 對本學會頁面的意見`, quote: '', ord: 99999 };
   state.fbMeta = meta;
   const g = $('#sec-guide');
-  if (g) g.querySelector(':scope > h2').insertAdjacentHTML('afterend', `<p class="fbnote">模板意見模式（${esc(state.fbr.name)}）：各章標題、每條共通基準與每個填寫格旁之「意見」按鈕，按下即可撰寫，系統會自動記下所在位置與原文；意見分專業內容、文字用詞、使用便利性三類。填寫格可試填，內容只存在本機，不會送出。請於${FEEDBACK.due}前提供意見。</p>`);
+  if (g) g.querySelectorAll('.notice').forEach(n => { if (n.textContent.startsWith('本機試填：')) n.remove(); }); // 審查者不需「索取邀請碼」之提示
+  if (g) g.querySelector(':scope > h2').insertAdjacentHTML('afterend', `<p class="fbnote">模板意見模式（${esc(state.fbr.name)}）：各章標題、每條共通基準與每個研發小組填寫格（如【1-A】）旁，都有「意見」按鈕，按下即可撰寫；系統會自動記下所在位置與原文，意見分專業內容、文字用詞、使用便利性三類。研發小組填寫格本身也可試打，但內容只存在這台電腦，不會送給基金會；給基金會的意見，請一律由「意見」按鈕撰寫。請於${FEEDBACK.due}前提供意見。</p>`);
   fbChip();
 }
 function fbChip() {
