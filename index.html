@@ -794,9 +794,9 @@ function blank() {
   return { meta: { target: '', team: '', version: '', approval: '' }, f, fm: {}, c: {}, refs: ['', '', ''], x: blankCases() };
 }
 // 案例：x.K1…K5（可再新增）；t 標題、b 內容、r 套用結果（ok／hard）、fb 對本指引之回饋。r 與 fb 不列入手冊。
-const CASE_MIN = 5;
+const CASE_GOAL = 5; // 建議則數（進度標記用）；新草稿只先給一則空白案例，其餘由研發小組按「新增一則案例」逐則加入（1151104，依蔡宏斌醫師意見）
 function blankCase() { return { t: '', b: '', r: '', fb: '', d: '', st: '', lc: '', lad: '', lopt: '', lhca: '', lcap: '' }; }
-function blankCases() { const x = {}; for (let i = 1; i <= CASE_MIN; i++) x['K' + i] = blankCase(); return x; }
+function blankCases() { return { K1: blankCase() }; }
 function normCases(x) {
   const ks = Object.keys(x || {}).filter(k => /^K\d+$/.test(k));
   if (!ks.length) return blankCases();
@@ -804,6 +804,14 @@ function normCases(x) {
   return out;
 }
 function caseKeys() { return Object.keys((state.data || {}).x || {}).filter(k => /^K\d+$/.test(k)).sort((a, b) => a.slice(1) - b.slice(1)); }
+// 顯示中的案例：有內容者、本次已顯示或新增者；皆無時顯示第一則空白。既有草稿中預先建立之空白案例不顯示，按新增時再依序顯示。
+const CASE_SHOWN = new Set();
+const caseSid = k => (state.token || state.socId) + ':' + k;
+function visibleCases() {
+  const ks = caseKeys(), vis = ks.filter(k => !caseBlank(k) || CASE_SHOWN.has(caseSid(k)));
+  if (!vis.length && ks.length) vis.push(ks[0]);
+  return vis;
+}
 function caseBlank(k) { const c = state.data.x[k] || {}; return !Object.keys(blankCase()).some(f => (c[f] || '').trim()); }
 function casePrinted(k) { return caseFilled(k) && (state.data.x[k] || {}).d === 'y'; }
 function caseFilled(k) { const c = state.data.x[k] || {}; return !!((c.t || '').trim() || (c.b || '').trim()); }
@@ -1647,7 +1655,7 @@ async function deleteCase(k) {
 }
 function renderCases() {
   const box = $('#cases-list'); if (!box) return;
-  const ks = caseKeys();
+  const ks = visibleCases(); ks.forEach(k => CASE_SHOWN.add(caseSid(k)));
   box.innerHTML = ks.map(caseHTML).join('');
   ks.forEach(k => { showFm(k); renderComment(k); });
   applyReadOnly();
@@ -1702,7 +1710,7 @@ function updateWhere() {
     if (on && !a.classList.contains('active') && window.innerWidth <= 960) { const nav = $('#nav'); nav.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' }); }
     a.classList.toggle('active', on);
   });
-  const ck = whereField && /^K\d+$/.test(whereField) ? caseKeys().indexOf(whereField) : -1;
+  const ck = whereField && /^K\d+$/.test(whereField) ? visibleCases().indexOf(whereField) : -1;
   const wd = whereField && whereField.match(/^(.+)_([abc])$/);
   const we = wd && state.data && state.data.dz ? dzEntries().cards.find(e => e.id === wd[1]) : null;
   const f = whereField && FILLS[whereField] ? `　【${codeOf(whereField)}】${fillLabel(whereField, profile(socOf(state.socId)))}`
@@ -1930,8 +1938,8 @@ function updateProgress() {
   if (!state.data) return;
   const it = progressItems(), done = it.filter(x => x[1]).length;
   const ks = caseKeys(), nc = ks.filter(caseFilled).length;
-  $('#st-prog').textContent = `已填 ${done}／${it.length} 格｜案例 ${nc}／${ks.length} 則`;
-  const dc = $('#dot-cases'); if (dc) dc.classList.toggle('done', nc >= CASE_MIN);
+  $('#st-prog').textContent = `已填 ${done}／${it.length} 格｜案例 ${nc}／${CASE_GOAL} 則`;
+  const dc = $('#dot-cases'); if (dc) dc.classList.toggle('done', nc >= CASE_GOAL);
   $('#st-bar').style.width = (done / it.length * 100) + '%';
   STAGES.forEach(s => { const dot = document.querySelector(`.dot[data-stage="${s.n}"]`); if (dot) dot.classList.toggle('done', it.filter(x => x[0] === s.n).every(x => x[1])); });
 }
@@ -2407,8 +2415,10 @@ function init() {
       const i = state.data.refs.length - 1; $('#ref-' + i).focus();
       if (state.mode === 'cloud') queueCloud('refs', state.data.refs.slice()); else saveLocal();
     } else if (t.id === 'btn-addcase') {
-      const ks = caseKeys(), k = 'K' + (Math.max(0, ...ks.map(x => +x.slice(1))) + 1);
-      state.data.x[k] = blankCase(); renderCases(); updateProgress();
+      const ks = caseKeys(), vis = visibleCases(), hid = ks.find(x => caseBlank(x) && !vis.includes(x));
+      if (hid) { CASE_SHOWN.add(caseSid(hid)); renderCases(); updateProgress(); $('#t-' + hid).focus(); return; }
+      const k = 'K' + (Math.max(0, ...ks.map(x => +x.slice(1))) + 1);
+      state.data.x[k] = blankCase(); CASE_SHOWN.add(caseSid(k)); renderCases(); updateProgress();
       if (state.mode === 'cloud') { queueCloud('x.' + k, blankCase()); flushCloud('x.' + k); } else saveLocal();
       $('#t-' + k).focus();
     } else if (t.dataset.rvadd) { rvAdd(t.dataset.rvadd);
