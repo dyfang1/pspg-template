@@ -2161,7 +2161,7 @@ async function copyText(t) {
 //   權限：持代碼者只能讀寫自己的意見；基金會管理者（config/admins）可讀全部、新增或停用審查者（見 firestore.rules）。
 //   截止後將 FEEDBACK.open 改為 false：連結只顯示「已結束」，已收意見保留。
 // ====================================================================
-const FEEDBACK = { open: true, due: '115年10月27日', dueShort: '10月27日' };
+const FEEDBACK = { open: true, due: '115年11月29日', dueShort: '11月29日' };
 // 意見三類（孫教授1151013）；適用範圍：各學會共用／本學會專屬／整份模板
 const FB_LAYERS = [['p', '專業內容', '醫療或法律上之正確性、完整性與可行性'], ['w', '文字用詞', '用語與語句是否清楚、通順、一致'], ['u', '使用便利性', '是否容易理解與填寫；版面與操作']];
 function fbScopeOf(loc) { return loc === 'general' ? 'whole' : /^(dz-|basic-|soc-|hsp-|hc-)/.test(loc) ? 'soc' : 'all'; }
